@@ -62,7 +62,7 @@ def candidate_actions(
     else:
         picks = ranked[:max_candidates]
     return {
-        "mask": model["mask"], "probs": model["probs"],
+        "mask": model["mask"], "probs": model["probs"], "value": model["value"],
         "sampled_action": model["sampled_action"], "candidates": picks,
     }
 
