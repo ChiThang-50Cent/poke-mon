@@ -10,4 +10,5 @@ __pycache__/
 shard-*.tar
 shard-*.tar.part
 datasets/w4/outcomes.json
+datasets/w4/outcomes_holdout.json
 datasets/w4/*.npz

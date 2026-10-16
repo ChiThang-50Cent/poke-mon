@@ -33,12 +33,18 @@ class RunConfig:
     team_preview_checkpoint: str | None = None
     team_preview_argmax: bool = False
     schedule_seed: int | None = None
+    swap_team_pairs: bool = False
+    alternate_challenger: bool = False
 
     def __post_init__(self) -> None:
         if self.battles < 1 or self.concurrent < 1:
             raise ValueError("battles and concurrent must be positive")
         if not math.isfinite(self.timeout_s) or self.timeout_s <= 0:
             raise ValueError("timeout_s must be positive and finite")
+        if self.swap_team_pairs and (
+            self.schedule_seed is None or self.battles % 2
+        ):
+            raise ValueError("swapped pairs require a seed and an even battle count")
 
 
 def wilson_interval(wins: int, total: int) -> tuple[float, float]:
@@ -140,6 +146,12 @@ def _build_schedule(
             packed_teams[filename] = (packed, Path(filename).name)
         return packed_teams[filename]
 
+    if config.swap_team_pairs:
+        schedule = []
+        for _ in range(config.battles // 2):
+            first, second = draw(), draw()
+            schedule.extend(((first, second), (second, first)))
+        return schedule
     return [(draw(), draw()) for _ in range(config.battles)]
 
 
@@ -241,11 +253,28 @@ def _counted_baseline(name: str) -> type:
         ) -> None:
             self._protocol_choices.pop(battle.battle_tag, None)
             _prepare_revival_request(battle)
+            if battle.reviving:
+                # Native default orders and cached Pokemon status can select a
+                # previously revived target. The request is authoritative.
+                maybe_default_order = False
             await super()._handle_battle_request(battle, maybe_default_order)
 
         def choose_move(self, battle: Any) -> Any:
             self.decisions += 1
-            order = super().choose_move(battle)
+            if getattr(battle, "reviving", False):
+                from pokeai.agents.neural_player import RevivalOrder
+
+                request = getattr(battle, "last_request", None) or battle._last_request
+                targets = [
+                    index for index, pokemon in
+                    enumerate(request["side"]["pokemon"], 1)
+                    if pokemon["condition"].endswith(" fnt")
+                ]
+                if not targets:
+                    raise RuntimeError("Revival request has no fainted target")
+                order = RevivalOrder(random.choice(targets))
+            else:
+                order = super().choose_move(battle)
             self._protocol_choices[battle.battle_tag] = _protocol_choice_evidence(
                 battle, order
             )
@@ -440,8 +469,14 @@ async def _run_on_poke_loop(
                         opponent.update_team(FixedTeam(opponent_team))
                         player.randomize()
                         opponent.randomize()
+                        challenger, challenged = (
+                            (opponent, player)
+                            if config.alternate_challenger and index % 2
+                            else (player, opponent)
+                        )
+                        record["player_challenges"] = challenger is player
                         await asyncio.wait_for(
-                            player.battle_against(opponent, n_battles=1),
+                            challenger.battle_against(challenged, n_battles=1),
                             timeout=config.timeout_s,
                         )
                         battle = player.battles[next(reversed(player.battles))]
@@ -605,6 +640,8 @@ def main() -> None:
         "--schedule-seed", type=int,
         help="Precompute paired team draws by matchup index for reproducible arms.",
     )
+    parser.add_argument("--swap-team-pairs", action="store_true")
+    parser.add_argument("--alternate-challenger", action="store_true")
     args = parser.parse_args()
     summary = asyncio.run(run_battles(RunConfig(**vars(args))))
     print(json.dumps(summary, indent=2))

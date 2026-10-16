@@ -1,0 +1,190 @@
+{
+  "method": "seeded percentile paired bootstrap clustered by team pair; both directions together; pooled stratified by opponent",
+  "comparisons": {
+    "D-C": {
+      "RandomBaseline": {
+        "win_rate_difference": 0.008,
+        "bootstrap_95": [
+          -0.004,
+          0.02
+        ],
+        "verdict": "inconclusive",
+        "clusters": 250,
+        "seed": 20271016,
+        "resamples": 5000
+      },
+      "Grunt": {
+        "win_rate_difference": -0.05,
+        "bootstrap_95": [
+          -0.104,
+          0.004
+        ],
+        "verdict": "inconclusive",
+        "clusters": 250,
+        "seed": 20271017,
+        "resamples": 5000
+      },
+      "GymLeader": {
+        "win_rate_difference": -0.03,
+        "bootstrap_95": [
+          -0.082,
+          0.024
+        ],
+        "verdict": "inconclusive",
+        "clusters": 250,
+        "seed": 20271018,
+        "resamples": 5000
+      },
+      "pooled": {
+        "win_rate_difference": -0.024,
+        "bootstrap_95": [
+          -0.05,
+          0.001333333333333334
+        ],
+        "verdict": "inconclusive",
+        "resamples": 5000,
+        "seed": 20281016,
+        "clusters": 750
+      }
+    },
+    "B-A": {
+      "RandomBaseline": {
+        "win_rate_difference": 0.034,
+        "bootstrap_95": [
+          0.012,
+          0.056
+        ],
+        "verdict": "positive",
+        "clusters": 250,
+        "seed": 20271016,
+        "resamples": 5000
+      },
+      "Grunt": {
+        "win_rate_difference": 0.354,
+        "bootstrap_95": [
+          0.3,
+          0.40804999999999925
+        ],
+        "verdict": "positive",
+        "clusters": 250,
+        "seed": 20271017,
+        "resamples": 5000
+      },
+      "GymLeader": {
+        "win_rate_difference": 0.348,
+        "bootstrap_95": [
+          0.29,
+          0.404
+        ],
+        "verdict": "positive",
+        "clusters": 250,
+        "seed": 20271018,
+        "resamples": 5000
+      },
+      "pooled": {
+        "win_rate_difference": 0.24533333333333332,
+        "bootstrap_95": [
+          0.21866666666666668,
+          0.272
+        ],
+        "verdict": "positive",
+        "resamples": 5000,
+        "seed": 20281016,
+        "clusters": 750
+      }
+    },
+    "C-B": {
+      "RandomBaseline": {
+        "win_rate_difference": 0.004,
+        "bootstrap_95": [
+          -0.012,
+          0.02
+        ],
+        "verdict": "inconclusive",
+        "clusters": 250,
+        "seed": 20271016,
+        "resamples": 5000
+      },
+      "Grunt": {
+        "win_rate_difference": 0.056,
+        "bootstrap_95": [
+          0.004,
+          0.106
+        ],
+        "verdict": "positive",
+        "clusters": 250,
+        "seed": 20271017,
+        "resamples": 5000
+      },
+      "GymLeader": {
+        "win_rate_difference": 0.042,
+        "bootstrap_95": [
+          -0.01,
+          0.094
+        ],
+        "verdict": "inconclusive",
+        "clusters": 250,
+        "seed": 20271018,
+        "resamples": 5000
+      },
+      "pooled": {
+        "win_rate_difference": 0.034,
+        "bootstrap_95": [
+          0.008666666666666666,
+          0.057999999999999996
+        ],
+        "verdict": "positive",
+        "resamples": 5000,
+        "seed": 20281016,
+        "clusters": 750
+      }
+    },
+    "C-A": {
+      "RandomBaseline": {
+        "win_rate_difference": 0.038,
+        "bootstrap_95": [
+          0.016,
+          0.062
+        ],
+        "verdict": "positive",
+        "clusters": 250,
+        "seed": 20271016,
+        "resamples": 5000
+      },
+      "Grunt": {
+        "win_rate_difference": 0.41,
+        "bootstrap_95": [
+          0.354,
+          0.462
+        ],
+        "verdict": "positive",
+        "clusters": 250,
+        "seed": 20271017,
+        "resamples": 5000
+      },
+      "GymLeader": {
+        "win_rate_difference": 0.39,
+        "bootstrap_95": [
+          0.332,
+          0.444
+        ],
+        "verdict": "positive",
+        "clusters": 250,
+        "seed": 20271018,
+        "resamples": 5000
+      },
+      "pooled": {
+        "win_rate_difference": 0.2793333333333333,
+        "bootstrap_95": [
+          0.25266666666666665,
+          0.30533333333333335
+        ],
+        "verdict": "positive",
+        "resamples": 5000,
+        "seed": 20281016,
+        "clusters": 750
+      }
+    }
+  },
+  "multiple_comparisons": "16 comparisons; no multiplicity adjustment; exploratory except primary D-C"
+}

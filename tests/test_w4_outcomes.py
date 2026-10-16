@@ -11,7 +11,7 @@ from pokeai.data.w4 import prepare_entries, temporal_split
 from pokeai.data.w4_outcomes import build_outcomes, load_outcomes
 
 
-def _fixture(tmp_path: Path) -> tuple[Path, Path]:
+def _fixture(tmp_path: Path, *, holdout: bool = False) -> tuple[Path, Path]:
     source, root = tmp_path / "source", tmp_path / "data"
     (source / "gen9ou").mkdir(parents=True)
     root.mkdir()
@@ -30,15 +30,15 @@ def _fixture(tmp_path: Path) -> tuple[Path, Path]:
                 }] * 3,
                 "actions": [1, 2, -1],
             }
-            # A holdout body cannot be decoded; construction must not open it.
+            # Default holdout body cannot be decoded; only opt-in fixtures open it.
             path.write_bytes(
-                b"never open holdout" if battle == 3 else
+                b"never open holdout" if battle == 3 and not holdout else
                 lz4.frame.compress(json.dumps(raw).encode())
             )
     entries, _ = prepare_entries([str(p) for p in (source / "gen9ou").iterdir()])
     splits = temporal_split(entries)
     (root / "split_ids.json").write_text(json.dumps(splits))
-    for split in ("train", "val"):
+    for split in (("train", "val", "test") if holdout else ("train", "val")):
         rows = [r for r in entries if r["battle_id"] in splits[split]]
         numbers = np.zeros((4, 48), dtype=np.float32)
         numbers[:, 0] = 1
@@ -140,3 +140,47 @@ def test_build_rejects_raw_action_mismatch(tmp_path: Path) -> None:
     np.savez(root / "train.npz", **arrays)
     with pytest.raises(ValueError, match="POV/action"):
         build_outcomes(root, source)
+
+
+def test_holdout_opt_in_uses_separate_sidecar_and_preserves_guard(tmp_path: Path) -> None:
+    root, source = _fixture(tmp_path, holdout=True)
+    build_outcomes(root, source)
+    training_sidecar = (root / "outcomes.json").read_bytes()
+    sidecar = build_outcomes(root, source, allow_holdout=True)
+    assert set(sidecar["splits"]) == {"test"}
+    assert (root / "outcomes.json").read_bytes() == training_sidecar
+    assert (root / "outcomes_holdout.json").exists()
+    arrays = _load(root, "test")
+    with pytest.raises(ValueError, match="restricted"):
+        load_outcomes(root, "test", arrays)
+    labels = load_outcomes(root, "test", arrays, allow_holdout=True)
+    np.testing.assert_array_equal(labels, [1., 0.])
+    assert labels.dtype == np.float32
+    np.testing.assert_array_equal(load_outcomes(root, "train", _load(root)), [1., 0.])
+
+
+def test_holdout_build_opens_only_opted_in_split(tmp_path: Path) -> None:
+    root, source = _fixture(tmp_path, holdout=True)
+    (root / "train.npz").unlink()
+    (root / "val.npz").unlink()
+    sidecar = build_outcomes(root, source, allow_holdout=True)
+    assert set(sidecar["splits"]) == {"test"}
+    assert not (root / "outcomes.json").exists()
+
+
+def test_holdout_opt_in_retains_alignment_checks(tmp_path: Path) -> None:
+    root, source = _fixture(tmp_path, holdout=True)
+    build_outcomes(root, source, allow_holdout=True)
+    arrays = _load(root, "test")
+    arrays["tokens"].flat[0] = 9
+    with pytest.raises(ValueError, match="hash mismatch"):
+        load_outcomes(root, "test", arrays, allow_holdout=True)
+
+
+def test_holdout_sidecar_cannot_contaminate_training(tmp_path: Path) -> None:
+    root, source = _fixture(tmp_path, holdout=True)
+    sidecar = build_outcomes(root, source)
+    sidecar["splits"]["test"] = sidecar["splits"]["val"]
+    (root / "outcomes.json").write_text(json.dumps(sidecar))
+    with pytest.raises(ValueError, match="holdout contamination"):
+        load_outcomes(root, "train", _load(root), allow_holdout=True)

@@ -4,7 +4,8 @@ Labels use prepare_entries/temporal_split only. The original NPZ has no POV
 field: sorted source order alone is insufficient proof. Building additionally
 compares every raw decision's own/opponent HP, opponents remaining and action
 against NPZ (no observation encoding), then seals every stored array with SHA256.
-Only train/val are opened; test source bodies and test NPZ are never opened.
+By default only train/val are opened. Final evaluation must explicitly opt in
+to test-only labels in a separate outcomes_holdout.json; training stays sealed.
 """
 
 from __future__ import annotations
@@ -80,14 +81,18 @@ def _prove_pov(path: Path, arrays: dict[str, np.ndarray], index: int) -> None:
 def build_outcomes(
     root: str | Path = "datasets/w4",
     source_root: str | Path = ".cache/metamon/w4-human",
+    *,
+    allow_holdout: bool = False,
 ) -> dict[str, Any]:
-    """Write outcomes.json without re-encoding or reading holdout trajectories.
+    """Write sealed labels, with test-only access requiring explicit opt-in.
 
     Initial POV proof checks all-step raw actions and HP against existing NPZ.
     Full-array digests subsequently reject any ordering/content change, including
     swapping same-battle POVs. No label or filename metadata is a model input.
     """
     root, source_root = Path(root), Path(source_root)
+    splits = ("test",) if allow_holdout else ("train", "val")
+    filename = "outcomes_holdout.json" if allow_holdout else "outcomes.json"
     filenames = sorted(str(path) for path in (source_root / "gen9ou").glob("*.json.lz4"))
     entries, _ = prepare_entries(filenames)
     assignments = temporal_split(entries)
@@ -100,11 +105,15 @@ def build_outcomes(
             "initial_pov_proof": "all decision actions, own HP, opponent HP, opponents_remaining",
             "sealed_arrays": [*_STEPS, *_META],
             "turns": "unavailable: DefaultObservationSpace numbers[48] contains no turn feature",
-            "holdout": "test filenames only for splitting; no test NPZ or raw bodies opened",
+            "holdout": (
+                "explicit final-evaluation opt-in; test-only NPZ and raw POV proof"
+                if allow_holdout else
+                "test filenames only for splitting; no test NPZ or raw bodies opened"
+            ),
         },
         "splits": {},
     }
-    for split in ("train", "val"):
+    for split in splits:
         if assignments[split] != frozen[split]:
             raise ValueError(f"Outcome frozen {split} battle IDs mismatch")
         selected = set(assignments[split])
@@ -131,18 +140,22 @@ def build_outcomes(
             ],
         }
         del arrays
-    (root / "outcomes.json").write_text(json.dumps(sidecar, indent=2) + "\n")
+    (root / filename).write_text(json.dumps(sidecar, indent=2) + "\n")
     return sidecar
 
 
 def load_outcomes(
-    root: str | Path, split: str, arrays: dict[str, np.ndarray]
+    root: str | Path, split: str, arrays: dict[str, np.ndarray],
+    *, allow_holdout: bool = False,
 ) -> np.ndarray:
-    """Return float32 per-trajectory labels only for the exact sealed full split."""
-    if split not in {"train", "val"}:
+    """Return sealed labels; test requires opt-in and its separate sidecar."""
+    if split not in {"train", "val", "test"} or (split == "test" and not allow_holdout):
         raise ValueError("Outcome labels are restricted to train and val")
-    sidecar = json.loads((Path(root) / "outcomes.json").read_text())
-    if sidecar.get("version") != 1 or set(sidecar["splits"]) != {"train", "val"}:
+    holdout = split == "test"
+    filename = "outcomes_holdout.json" if holdout else "outcomes.json"
+    expected_splits = {"test"} if holdout else {"train", "val"}
+    sidecar = json.loads((Path(root) / filename).read_text())
+    if sidecar.get("version") != 1 or set(sidecar["splits"]) != expected_splits:
         raise ValueError("Unsupported outcome sidecar or holdout contamination")
     stored = sidecar["splits"][split]
     rows = stored["trajectories"]
