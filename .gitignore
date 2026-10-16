@@ -9,3 +9,4 @@ __pycache__/
 .ruff_cache/
 shard-*.tar
 shard-*.tar.part
+datasets/w4/*.npz

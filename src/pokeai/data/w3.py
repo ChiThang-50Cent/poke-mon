@@ -45,6 +45,28 @@ def decision_validity(
     }
 
 
+def encode_trajectory(
+    native: Any, filename: str
+) -> tuple[dict[str, np.ndarray], dict[str, int]]:
+    """Shared W3/W4 native loading, decision alignment and legality contract."""
+    observations, action_info, _, _ = native.load_filename(filename)
+    actions = np.asarray(action_info["chosen"], dtype=np.int64)
+    masks = np.zeros((len(actions), 13), dtype=bool)
+    for step, legal in enumerate(action_info["legal"]):
+        for action in legal:
+            if 0 <= action < 13:
+                masks[step, action] = True
+    missing = np.asarray(action_info["missing"], dtype=bool)
+    valid, excluded = decision_validity(actions, masks, missing)
+    return {
+        "tokens": np.asarray(observations["tokens"][:-1], dtype=np.int32),
+        "numbers": np.asarray(observations["numbers"][:-1], dtype=np.float32),
+        "masks": masks,
+        "actions": actions,
+        "valid": valid,
+    }, excluded
+
+
 def load_split(split: str, root: str | Path = "datasets/w3") -> dict[str, np.ndarray]:
     if split not in {"train", "val", "test"}:
         raise ValueError(f"Unknown split: {split}")
@@ -128,7 +150,9 @@ def build_w3_dataset(
         expected = encoder.space.state_to_obs(state)
         encoded = encoder.encode(state)
         native_tokens = np.asarray(expected["text_tokens"])
-        expected_tokens = np.where(native_tokens == -1, encoder.unknown_id, native_tokens)
+        expected_tokens = np.where(
+            native_tokens == -1, encoder.unknown_id, native_tokens
+        )
         if not np.array_equal(encoded["tokens"], expected_tokens):
             raise ValueError("Encoder IDs diverge from TokenizedObservationSpace")
         if not np.array_equal(encoded["numbers"], expected["numbers"]):
@@ -145,26 +169,11 @@ def build_w3_dataset(
         offsets = [0]
         reasons: Counter[str] = Counter()
         for row in rows:
-            observations, action_info, _, _ = native.load_filename(row["file"])
-            actions = np.asarray(action_info["chosen"], dtype=np.int64)
-            masks = np.zeros((len(actions), 13), dtype=bool)
-            for step, legal in enumerate(action_info["legal"]):
-                for action in legal:
-                    if 0 <= action < 13:
-                        masks[step, action] = True
-            missing = np.asarray(action_info["missing"], dtype=bool)
-            valid, excluded = decision_validity(actions, masks, missing)
+            encoded, excluded = encode_trajectory(native, row["file"])
             reasons.update(excluded)
-            chunks["tokens"].append(
-                np.asarray(observations["tokens"][:-1], dtype=np.int32)
-            )
-            chunks["numbers"].append(
-                np.asarray(observations["numbers"][:-1], dtype=np.float32)
-            )
-            chunks["masks"].append(masks)
-            chunks["actions"].append(actions)
-            chunks["valid"].append(valid)
-            offsets.append(offsets[-1] + len(actions))
+            for key, values in chunks.items():
+                values.append(encoded[key])
+            offsets.append(offsets[-1] + len(encoded["actions"]))
         arrays = {key: np.concatenate(values) for key, values in chunks.items()}
         arrays.update(
             offsets=np.asarray(offsets, dtype=np.int64),
