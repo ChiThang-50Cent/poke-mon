@@ -1,0 +1,53 @@
+{
+  "stage": "W2",
+  "format": "gen9ou",
+  "completed_battles": 100,
+  "expected_player_trajectories": 200,
+  "saved_player_trajectories": 200,
+  "total_decision_steps": 5241,
+  "invalid_action_count": 0,
+  "missing_observation_count": 0,
+  "terminal_result_mismatches": 0,
+  "hidden_information_leakage_failures": 0,
+  "schema_validation": "PASS",
+  "dataset_load_test": "PASS",
+  "overall_status": "PASS",
+  "human_replay_sample": {
+    "source": "https://huggingface.co/datasets/jakegrigsby/metamon-parsed-replays/resolve/v6/gen9ou.tar.gz",
+    "revision": "v6",
+    "etag": "\"75a79ada1f95e8e551011101f3eb7075c013bb2a51ef3d3512b78fde1441f41d\"",
+    "config": {
+      "max_files": 2,
+      "target_valid_decisions": null,
+      "min_rating": null,
+      "rate_limit_bps": 12000000,
+      "max_bytes": 1000000000,
+      "url": "https://huggingface.co/datasets/jakegrigsby/metamon-parsed-replays/resolve/v6/gen9ou.tar.gz"
+    },
+    "stopped_reason": "target_reached",
+    "archive_prefix_bytes": 20480,
+    "downloaded_bytes_this_session": 20480,
+    "elapsed_s": 2.09,
+    "avg_rate_bps": 9795,
+    "members_seen": 2,
+    "trajectory_count": 2,
+    "skipped": {},
+    "valid_decisions": 54,
+    "missing_decisions": 8,
+    "stored_bytes": 14500,
+    "rating_deciles": null,
+    "months": {
+      "2023-11": 2
+    },
+    "observation_space_version": "DefaultObservationSpace@metamon-0a00a75",
+    "action_space": "DefaultActionSpace",
+    "reward_function": "DefaultShapedReward",
+    "decision_steps": 62,
+    "missing_actions": 8,
+    "load_status": "PASS"
+  },
+  "unsupported_action_counts": {
+    "struggle": 25
+  },
+  "errors": []
+}

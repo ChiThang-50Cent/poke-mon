@@ -1,0 +1,105 @@
+"""Small structured policy shared by replay training and live inference."""
+
+from dataclasses import asdict, dataclass
+from pathlib import Path
+from typing import Any
+
+import torch
+import yaml
+from torch import Tensor, nn
+
+
+@dataclass
+class PokeDecisionConfig:
+    arch: str = "gru"
+    vocab_size: int = 4096
+    token_len: int = 1
+    d_model: int = 96
+    hidden_size: int = 384
+    numeric_size: int = 128
+
+
+class PokeDecision(nn.Module):
+    def __init__(
+        self, config: PokeDecisionConfig, feature_mean: Any, feature_std: Any
+    ) -> None:
+        super().__init__()
+        if config.arch not in {"gru", "mlp"}:
+            raise ValueError(f"Unknown architecture: {config.arch}")
+        self.config = config
+        self.register_buffer("feature_mean", torch.as_tensor(feature_mean).float())
+        self.register_buffer(
+            "feature_std", torch.as_tensor(feature_std).float().clamp_min(1e-6)
+        )
+        self.tokens = nn.Embedding(config.vocab_size, config.d_model)
+        self.fields = nn.Embedding(config.token_len, config.d_model)
+        self.token_projection = nn.Linear(config.d_model, config.d_model)
+        self.numeric = nn.Sequential(
+            nn.Linear(48, config.numeric_size), nn.GELU(),
+            nn.Linear(config.numeric_size, config.numeric_size), nn.GELU(),
+        )
+        self.fusion = nn.Sequential(
+            nn.Linear(2 * config.d_model + config.numeric_size, config.hidden_size),
+            nn.GELU(),
+        )
+        if config.arch == "gru":
+            self.memory = nn.GRU(config.hidden_size, config.hidden_size, batch_first=True)
+        else:
+            self.memory = nn.Sequential(
+                nn.Linear(config.hidden_size, 2 * config.hidden_size), nn.GELU(),
+                nn.Linear(2 * config.hidden_size, config.hidden_size), nn.GELU(),
+                nn.Linear(config.hidden_size, config.hidden_size), nn.GELU(),
+            )
+        self.policy = nn.Linear(config.hidden_size, 13)
+
+    def forward(
+        self, tokens: Tensor, numbers: Tensor, hidden: Tensor | None = None
+    ) -> tuple[Tensor, Tensor | None]:
+        positions = torch.arange(self.config.token_len, device=tokens.device)
+        embedded = self.tokens(tokens) + self.fields(positions)
+        embedded = torch.nn.functional.gelu(self.token_projection(embedded))
+        categorical = torch.cat((embedded.mean(-2), embedded.amax(-2)), dim=-1)
+        numerical = self.numeric((numbers - self.feature_mean) / self.feature_std)
+        fused = self.fusion(torch.cat((categorical, numerical), dim=-1))
+        if self.config.arch == "gru":
+            features, hidden = self.memory(fused, hidden)
+        else:
+            features, hidden = self.memory(fused), None
+        return self.policy(features), hidden
+
+
+def masked_logits(logits: Tensor, masks: Tensor) -> Tensor:
+    """All-false rows remain all -inf; callers must skip/fallback for those."""
+    return logits.masked_fill(~masks.bool(), -torch.inf)
+
+
+def save_checkpoint(model: PokeDecision, path: str | Path) -> None:
+    torch.save(
+        {
+            "state_dict": model.state_dict(),
+            "config": asdict(model.config),
+            "feature_mean": model.feature_mean.cpu(),
+            "feature_std": model.feature_std.cpu(),
+        },
+        path,
+    )
+
+
+def load_pokedecision(
+    model_dir: str | Path, device: str | torch.device = "cpu"
+) -> tuple[PokeDecision, Any, PokeDecisionConfig]:
+    from pokeai.data.features import ObservationEncoder
+
+    model_dir = Path(model_dir)
+    checkpoint = torch.load(
+        model_dir / "best.pt", map_location="cpu", weights_only=True
+    )
+    recorded = yaml.safe_load((model_dir / "config.yaml").read_text())
+    config = PokeDecisionConfig(**recorded["model"])
+    model = PokeDecision(
+        config, checkpoint["feature_mean"], checkpoint["feature_std"]
+    )
+    model.load_state_dict(checkpoint["state_dict"])
+    model.to(device).eval()
+    encoder = ObservationEncoder.load(model_dir / "tokenizer.json")
+    return model, encoder, config

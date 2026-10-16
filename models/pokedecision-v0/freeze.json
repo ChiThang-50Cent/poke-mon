@@ -1,0 +1,33 @@
+{
+  "policy_version": "pokedecision-v0",
+  "frozen_as": "git tag w3-freeze",
+  "git_commit": null,
+  "git_commit_note": "trained before the repo had commits; tag w3-freeze is the first commit containing this checkpoint",
+  "dataset_version": "w3",
+  "observation_space_version": "DefaultObservationSpace@metamon-0a00a75",
+  "checkpoint_sha256": "121d4105352ca77e76f756173e69815b3f737fdda1ff183a3065e52ab4f6b631",
+  "tokenizer_sha256": "801521a3ecce057ffea589a6fbe3228e1f5fce84cc82c4bfbaddaaeb4bf43e1d",
+  "config_sha256": "1d5a59d6d656c31523e0d5e58fe4d89c71481e1d39c118b7670edfd396444d23",
+  "dataset_sha256": {
+    "encoder.json": "801521a3ecce057ffea589a6fbe3228e1f5fce84cc82c4bfbaddaaeb4bf43e1d",
+    "feature_stats.json": "47aafe9fb7b5a5d35b60c0fa74d20f7ada91e9dc7f8dd0a9af6c91681849d191",
+    "index.jsonl": "a32e3005e442d39ade12b2df0489aed00d577c0766401807b0a042841a16ae44",
+    "split_ids.json": "5cb5d911cfe3a7a98b10cc2deda314a67e1b0fcdf864c597d4dc8c9433e6d12f",
+    "test.npz": "7f9fae1d10496abec0ff60f9b41f38f5ec20f4ebe8ea7d0a8102de065e2ead09",
+    "train.npz": "b267ac9cc606b53eccd05e7f07a52550a145c73f100d400feeec8c9caf8aaf48",
+    "val.npz": "fe0519e0fca9405d04052846600183a8a298cfc024f8ca60a89f1e437e805ce3"
+  },
+  "reports_sha256": {
+    "w3_dataset_validation.json": "557d23c4bac2fe1b42d0bdd8d9f392faabcbbb61045b3e4d2d2d5e05fed0e6d8",
+    "w3_evaluation.json": "25f4d70f70cf1d18ae4000b784a1ff36dba10bd1cedbe0a79de32202fee4d791",
+    "w3_training_metrics.json": "1e17da8eac88de92815e47923d75012ea2fdbe8d98df7850c0ddc5e3cbeeaaf2"
+  },
+  "source_sha256_at_freeze": "4a193bcd213c7dd353e13dbaa772a34b8556aacdd7d78fca0e682373132c3640",
+  "verification": {
+    "val_loss_recomputed": 1.701218,
+    "val_loss_recorded": 1.7012179189755634,
+    "val_accuracy_recomputed": 0.33380281690140845,
+    "note": "model/encoder/training code unchanged since W3 eval (post-eval edits were import ordering only)",
+    "w3_rebuild_from_tag": "build_w3_dataset at this commit reproduces datasets/w3 {train,val,test}.npz, encoder.json, feature_stats.json, split_ids.json byte-identically"
+  }
+}

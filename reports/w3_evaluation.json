@@ -1,0 +1,182 @@
+{
+  "created_at": "2026-10-16T08:19:43.177309+00:00",
+  "model": "models/pokedecision-v0",
+  "fingerprints": {
+    "best.pt": "121d4105352ca77e76f756173e69815b3f737fdda1ff183a3065e52ab4f6b631",
+    "config.yaml": "1d5a59d6d656c31523e0d5e58fe4d89c71481e1d39c118b7670edfd396444d23",
+    "tokenizer.json": "801521a3ecce057ffea589a6fbe3228e1f5fce84cc82c4bfbaddaaeb4bf43e1d"
+  },
+  "source_sha256": "30c6245d2dd4bfbc7f4351b8c700b6957eecd39cba561227b259cc2545da556e",
+  "metamon_commit": "0a00a75",
+  "python": "3.11.9",
+  "torch": "2.14.1+cu130",
+  "seed": 20261016,
+  "team_pool": "data/teams",
+  "team_manifest_sha256": "8a7be9f187bec0a8e480d385d128e76b3d10a36d644639b80c5e0879197fd1f3",
+  "backend": {
+    "selected": "metamon",
+    "reason": "MetamonPlayer uses SimProtocol/ParsedReplay, the same replay parser as human trajectories. UniversalState.from_Battle reads its replay-backed attributes, matching Metamon PokeEnvWrapper's adapter.",
+    "evidence": [
+      "third_party/metamon/metamon/env/metamon_player.py:31-38",
+      "third_party/metamon/metamon/env/metamon_battle.py:19-25,44-47,72-77",
+      "third_party/metamon/metamon/env/wrappers.py:301-310,359-360",
+      "third_party/metamon/README.md:1188-1200"
+    ],
+    "alternative": "poke-env is documented to have a replay sim2sim gap, broken PP counting and tera types; not selected.",
+    "feature_diff_measurement": "Not measured against poke-env; live unknown token counts and rates are measured per opponent below.",
+    "revival": "Explicit fainted-party-slot fallback; vendor online parser skips side updates on reviving requests."
+  },
+  "opponents": {
+    "RandomBaseline": {
+      "attempted": 200,
+      "completed": 200,
+      "wins": 189,
+      "losses": 11,
+      "ties": 0,
+      "error_count": 0,
+      "win_rate": 0.945,
+      "lose_rate": 0.055,
+      "tie_rate": 0.0,
+      "win_rate_wilson_95": [
+        0.9042130012276914,
+        0.9690146582965411
+      ],
+      "wall_time_s": 32.50095399300335,
+      "games_per_s": 6.153665521419926,
+      "decisions_player": 7765,
+      "decisions_per_s": 238.91606386912864,
+      "config": {
+        "player": "neural:models/pokedecision-v0",
+        "opponent": "RandomBaseline",
+        "battles": 200,
+        "concurrent": 8,
+        "teams": "data/teams",
+        "timeout_s": 120.0,
+        "out": "runs",
+        "sample": false,
+        "temperature": 1.0,
+        "device": "cpu"
+      },
+      "run_id": "20261016T081943-de6f346a",
+      "neural": {
+        "player": {
+          "decisions": 7754,
+          "fallbacks": {
+            "team_preview": 200,
+            "struggle": 10,
+            "revival_target": 1
+          },
+          "illegal_actions": 0,
+          "inference_ms_p50": 0.7181485052569769,
+          "inference_ms_p95": 1.2385046538838649,
+          "unknown_tokens": 0,
+          "total_tokens": 674598,
+          "unknown_token_rate": 0.0,
+          "backend": "metamon"
+        }
+      }
+    },
+    "Grunt": {
+      "attempted": 200,
+      "completed": 200,
+      "wins": 57,
+      "losses": 143,
+      "ties": 0,
+      "error_count": 0,
+      "win_rate": 0.285,
+      "lose_rate": 0.715,
+      "tie_rate": 0.0,
+      "win_rate_wilson_95": [
+        0.22695003004617292,
+        0.3511534602960517
+      ],
+      "wall_time_s": 26.91393312899163,
+      "games_per_s": 7.431095226455788,
+      "decisions_player": 6589,
+      "decisions_per_s": 244.81743223558595,
+      "config": {
+        "player": "neural:models/pokedecision-v0",
+        "opponent": "Grunt",
+        "battles": 200,
+        "concurrent": 8,
+        "teams": "data/teams",
+        "timeout_s": 120.0,
+        "out": "runs",
+        "sample": false,
+        "temperature": 1.0,
+        "device": "cpu"
+      },
+      "run_id": "20261016T082015-b1686434",
+      "neural": {
+        "player": {
+          "decisions": 6587,
+          "fallbacks": {
+            "team_preview": 200,
+            "revival_target": 2
+          },
+          "illegal_actions": 0,
+          "inference_ms_p50": 0.7208769966382533,
+          "inference_ms_p95": 1.2065451024682259,
+          "unknown_tokens": 0,
+          "total_tokens": 573069,
+          "unknown_token_rate": 0.0,
+          "backend": "metamon"
+        }
+      }
+    },
+    "GymLeader": {
+      "attempted": 200,
+      "completed": 200,
+      "wins": 52,
+      "losses": 148,
+      "ties": 0,
+      "error_count": 0,
+      "win_rate": 0.26,
+      "lose_rate": 0.74,
+      "tie_rate": 0.0,
+      "win_rate_wilson_95": [
+        0.20413830063574687,
+        0.32490745602534116
+      ],
+      "wall_time_s": 27.05982441100059,
+      "games_per_s": 7.391030960226567,
+      "decisions_player": 6535,
+      "decisions_per_s": 241.5019366254031,
+      "config": {
+        "player": "neural:models/pokedecision-v0",
+        "opponent": "GymLeader",
+        "battles": 200,
+        "concurrent": 8,
+        "teams": "data/teams",
+        "timeout_s": 120.0,
+        "out": "runs",
+        "sample": false,
+        "temperature": 1.0,
+        "device": "cpu"
+      },
+      "run_id": "20261016T082042-c406a90b",
+      "neural": {
+        "player": {
+          "decisions": 6531,
+          "fallbacks": {
+            "team_preview": 200,
+            "struggle": 4
+          },
+          "illegal_actions": 0,
+          "inference_ms_p50": 0.7148110016714782,
+          "inference_ms_p95": 1.2102635009796359,
+          "unknown_tokens": 0,
+          "total_tokens": 568197,
+          "unknown_token_rate": 0.0,
+          "backend": "metamon"
+        }
+      }
+    }
+  },
+  "run_ids": [
+    "20261016T081943-de6f346a",
+    "20261016T082015-b1686434",
+    "20261016T082042-c406a90b"
+  ],
+  "passed": true
+}

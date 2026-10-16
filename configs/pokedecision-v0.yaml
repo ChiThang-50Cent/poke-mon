@@ -1,0 +1,19 @@
+# Both architectures use this exact budget; no test-set checkpoint selection.
+seed: 20261016
+data_root: datasets/w3
+output_dir: models/pokedecision-v0
+report_path: reports/w3_training_metrics.json
+model:
+  d_model: 96
+  hidden_size: 384
+  numeric_size: 128
+train:
+  device: cuda
+  epochs: 12
+  patience: 3
+  batch_size: 16
+  sequence_policy: full_trajectories
+  learning_rate: 0.0005
+  weight_decay: 0.0001
+  grad_clip: 1.0
+  cpu_threads: 4
