@@ -38,10 +38,14 @@ def behavior(action=0, *, fallback=None, retry=False):
         "probabilities": None if fallback else [1.0] + [0.0] * 12,
         "chosen_index": -1 if fallback else action,
         "log_probability": None if fallback else 0.0,
-        "mode": "sample", "temperature": 1.0,
+        "mode": "sample",
+        "temperature": 1.0,
         "mask": [0] * 13 if fallback else [1] + [0] * 12,
-        "policy_version": "test", "checkpoint_sha256": "a" * 64,
-        "value": None, "fallback_reason": fallback, "protocol_retry": retry,
+        "policy_version": "test",
+        "checkpoint_sha256": "a" * 64,
+        "value": None,
+        "fallback_reason": fallback,
+        "protocol_retry": retry,
     }
 
 
@@ -49,11 +53,14 @@ def sample():
     return (
         {"actions": [0, -1]},
         {
-            "behavior": [behavior()], "policy_version": "test",
+            "behavior": [behavior()],
+            "policy_version": "test",
             "checkpoint_sha256": "a" * 64,
-            "action_masks": [[1] + [0] * 12], "unsupported_reasons": [None],
+            "action_masks": [[1] + [0] * 12],
+            "unsupported_reasons": [None],
             "team_preview": {
-                "chosen_index": -1, "fallback_reason": "team_preview",
+                "chosen_index": -1,
+                "fallback_reason": "team_preview",
                 "probabilities": [1 / 6] * 6,
             },
         },
@@ -92,7 +99,8 @@ def test_argmax_mutation():
     data, meta = sample()
     meta["action_masks"] = [[1, 1] + [0] * 11]
     meta["behavior"][0].update(
-        mask=meta["action_masks"][0], mode="argmax",
+        mask=meta["action_masks"][0],
+        mode="argmax",
         probabilities=[0.25, 0.75] + [0.0] * 11,
         log_probability=math.log(0.25),
     )
@@ -141,15 +149,20 @@ def replay_sample(synthetic_run):
     # Memory before model steps is 0, 1 (rejected), 1 (corrected), 2.
     records = []
     for memory, fallback, retry in (
-        (0, None, False), (None, "struggle", False),
-        (1, None, True), (1, None, False), (2, None, False),
+        (0, None, False),
+        (None, "struggle", False),
+        (1, None, True),
+        (1, None, False),
+        (2, None, False),
     ):
         b = behavior(fallback=fallback, retry=retry)
         if not fallback:
             p = torch.softmax(torch.tensor([float(memory), 0.0]), 0).tolist()
-            b.update(mask=[1, 1] + [0] * 11,
-                     probabilities=p + [0.0] * 11,
-                     log_probability=math.log(p[0]))
+            b.update(
+                mask=[1, 1] + [0] * 11,
+                probabilities=p + [0.0] * 11,
+                log_probability=math.log(p[0]),
+            )
         records.append(b)
     return {"states": [copy.deepcopy(state) for _ in range(6)]}, {"behavior": records}
 
@@ -162,6 +175,20 @@ def test_parity_preserves_memory_skips_fallback_and_rolls_back_retry(synthetic_r
     assert result["compared_decisions"] == 4
     assert model.calls == 4
     assert result["tokens"] == 5 * 87
+
+
+def test_parity_feature_sink_observes_continuous_post_decision_memory(synthetic_run):
+    data, meta = replay_sample(synthetic_run)
+    observed = []
+
+    def collect(index, behavior_record, hidden):
+        observed.append((index, behavior_record["protocol_retry"], hidden.item()))
+
+    result = replay_parity(
+        data, meta, RecurrentProbe(), ObservationEncoder(), decision_sink=collect
+    )
+    assert result["errors"] == []
+    assert observed == [(0, False, 1), (2, True, 2), (3, False, 2), (4, False, 3)]
 
 
 def test_parity_retry_flag_mutation(synthetic_run):
@@ -209,11 +236,15 @@ def test_checkpoint_digest_mutation(selfplay_run, tmp_path):
         path = Path(entry["meta"])
         meta = json.loads(path.read_text())
         meta.update(
-            model_dir=str(checkpoint), checkpoint_sha256="a" * 64,
-            policy_version="test", learner=True, opponent_type="neural",
+            model_dir=str(checkpoint),
+            checkpoint_sha256="a" * 64,
+            policy_version="test",
+            learner=True,
+            opponent_type="neural",
             behavior=[behavior(), behavior()],
             team_preview={
-                "chosen_index": -1, "fallback_reason": "team_preview",
+                "chosen_index": -1,
+                "fallback_reason": "team_preview",
                 "probabilities": None,
             },
         )

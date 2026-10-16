@@ -42,9 +42,16 @@ def behavior_errors(data: dict, meta: dict) -> list[str]:
             errors.append(f"{prefix}: not an object")
             continue
         required = {
-            "probabilities", "chosen_index", "log_probability", "mode",
-            "temperature", "mask", "policy_version", "checkpoint_sha256",
-            "value", "fallback_reason",
+            "probabilities",
+            "chosen_index",
+            "log_probability",
+            "mode",
+            "temperature",
+            "mask",
+            "policy_version",
+            "checkpoint_sha256",
+            "value",
+            "fallback_reason",
         }
         if required - behavior.keys():
             errors.append(
@@ -55,9 +62,11 @@ def behavior_errors(data: dict, meta: dict) -> list[str]:
         masks = meta.get("action_masks", [])
         mask = behavior.get("mask")
         if (
-            not isinstance(mask, list) or len(mask) != 13
+            not isinstance(mask, list)
+            or len(mask) != 13
             or any(type(x) is not int or x not in (0, 1) for x in mask)
-            or i >= len(masks) or mask != masks[i]
+            or i >= len(masks)
+            or mask != masks[i]
         ):
             errors.append(f"{prefix}: invalid/different mask")
             continue
@@ -76,16 +85,22 @@ def behavior_errors(data: dict, meta: dict) -> list[str]:
             errors.append(f"{prefix}: protocol_retry must be boolean")
         fallback = behavior.get("fallback_reason")
         if fallback:
-            if (action != -1 or any(mask)
+            if (
+                action != -1
+                or any(mask)
                 or behavior.get("probabilities") is not None
                 or behavior.get("log_probability") is not None
                 or behavior.get("value") is not None
-                or fallback != meta.get("unsupported_reasons", [])[i]):
+                or fallback != meta.get("unsupported_reasons", [])[i]
+            ):
                 errors.append(f"{prefix}: inconsistent fallback")
             continue
         probabilities = behavior.get("probabilities")
-        if (not isinstance(probabilities, list) or len(probabilities) != 13
-            or not all(_finite(p) and 0 <= p <= 1 for p in probabilities)):
+        if (
+            not isinstance(probabilities, list)
+            or len(probabilities) != 13
+            or not all(_finite(p) and 0 <= p <= 1 for p in probabilities)
+        ):
             errors.append(f"{prefix}: invalid probabilities")
             continue
         p = np.asarray(probabilities)
@@ -121,7 +136,9 @@ def behavior_errors(data: dict, meta: dict) -> list[str]:
         if probabilities is not None:
             p = np.asarray(probabilities, dtype=float).reshape(-1)
             if (
-                len(p) != 6 or not np.isfinite(p).all() or (p < 0).any()
+                len(p) != 6
+                or not np.isfinite(p).all()
+                or (p < 0).any()
                 or not np.isclose(p.sum(), 1, atol=1e-6)
             ):
                 errors.append("Invalid preview probabilities")
@@ -137,7 +154,12 @@ def _finite(value: Any) -> bool:
 
 
 def replay_parity(
-    data: dict, meta: dict, model: Any, encoder: Any, device: str = "cpu"
+    data: dict,
+    meta: dict,
+    model: Any,
+    encoder: Any,
+    device: str = "cpu",
+    decision_sink: Any = None,
 ) -> dict:
     """Replay each POV from its own initial memory, undoing rejected requests.
 
@@ -177,19 +199,25 @@ def replay_parity(
                     errors.append(f"{i}: value recorded for policy-only model")
             mask = torch.as_tensor(behavior["mask"], device=device).bool()
             scores = logits[0, 0].masked_fill(~mask, -torch.inf)
-            expected = torch.softmax(
-                scores.float() / behavior["temperature"], -1
-            ).cpu().numpy()
+            expected = (
+                torch.softmax(scores.float() / behavior["temperature"], -1)
+                .cpu()
+                .numpy()
+            )
             actual = np.asarray(behavior["probabilities"])
             difference = float(np.max(np.abs(expected - actual)))
             max_difference = max(max_difference, difference)
             if not np.allclose(expected, actual, atol=2e-5, rtol=1e-5):
                 errors.append(f"{i}: probability parity")
             compared += 1
+            if decision_sink is not None:
+                decision_sink(i, behavior, next_hidden)
             hidden = before if behavior.get("protocol_retry", False) else next_hidden
     return {
-        "errors": errors, "compared_decisions": compared,
-        "unknown_tokens": unknown, "tokens": tokens_seen,
+        "errors": errors,
+        "compared_decisions": compared,
+        "unknown_tokens": unknown,
+        "tokens": tokens_seen,
         "max_probability_difference": max_difference,
     }
 
@@ -209,21 +237,37 @@ def validate_selfplay(
     """
     run = Path(run)
     report: dict[str, Any] = {
-        "stage": "W5.1", "overall_status": "FAIL", "errors": [],
-        "native_dataset_load": "FAIL", "trajectories": 0,
-        "neural_parity_trajectories": 0, "neural_parity_by_side": {},
-        "compared_decisions": 0, "unknown_tokens": 0, "tokens": 0,
-        "max_probability_difference": 0.0, "opponent_statistics": {},
-        "battle_count": 0, "battle_error_count": 0,
+        "stage": "W5.1",
+        "overall_status": "FAIL",
+        "errors": [],
+        "native_dataset_load": "FAIL",
+        "trajectories": 0,
+        "neural_parity_trajectories": 0,
+        "neural_parity_by_side": {},
+        "compared_decisions": 0,
+        "unknown_tokens": 0,
+        "tokens": 0,
+        "max_probability_difference": 0.0,
+        "opponent_statistics": {},
+        "battle_count": 0,
+        "battle_error_count": 0,
         "model_illegal_actions": 0,
     }
     errors = report["errors"]
     loaded: dict[tuple[str, str], tuple[dict, dict]] = {}
     models = {}
-    groups: dict[str, dict] = defaultdict(lambda: {
-        "trajectories": 0, "wins": 0, "losses": 0, "ties": 0,
-        "lengths": [], "actions": Counter(), "entropy": [], "fallbacks": Counter(),
-    })
+    groups: dict[str, dict] = defaultdict(
+        lambda: {
+            "trajectories": 0,
+            "wins": 0,
+            "losses": 0,
+            "ties": 0,
+            "lengths": [],
+            "actions": Counter(),
+            "entropy": [],
+            "fallbacks": Counter(),
+        }
+    )
     sides: Counter = Counter()
     try:
         manifest = json.loads((run / "manifest.json").read_text())
@@ -255,16 +299,21 @@ def validate_selfplay(
                     errors.append(f"Nonzero/missing neural illegal_actions: {role}")
         by_id = {b["battle_id"]: b for b in battles}
         entries = manifest["trajectory_files"]
-        if (not battles or len(by_id) != len(battles) or manifest.get("missing")
+        if (
+            not battles
+            or len(by_id) != len(battles)
+            or manifest.get("missing")
             or manifest.get("expected_trajectories") != 2 * len(battles)
             or manifest.get("saved_trajectories") != len(entries)
-            or len(entries) != 2 * len(battles)):
+            or len(entries) != 2 * len(battles)
+        ):
             errors.append("Incomplete/duplicate battles or manifest counts")
         for b in battles:
-            if (
-                b.get("error") is not None
-                or b.get("winner") not in {"player", "opponent", "tie"}
-            ):
+            if b.get("error") is not None or b.get("winner") not in {
+                "player",
+                "opponent",
+                "tie",
+            }:
                 errors.append(f"Incomplete/error battle: {b['battle_id']}")
         for entry in entries:
             identity = (entry["battle_id"], entry["player_side"])
@@ -272,7 +321,8 @@ def validate_selfplay(
                 data = read_native(resolve_run_path(run, entry["file"]))
                 meta = json.loads(resolve_run_path(run, entry["meta"]).read_text())
                 if identity in loaded or identity != (
-                    meta.get("battle_id"), meta.get("player_side")
+                    meta.get("battle_id"),
+                    meta.get("player_side"),
                 ):
                     errors.append(f"Duplicate/mismatched POV: {identity}")
                 loaded[identity] = data, meta
@@ -282,19 +332,21 @@ def validate_selfplay(
                 battle = by_id[identity[0]]
                 winner = battle.get("winner")
                 expected = (
-                    "tie" if winner == "tie"
+                    "tie"
+                    if winner == "tie"
                     else "win"
                     if (winner == "player") == meta.get("learner")
                     else "loss"
                 )
                 terminal = data["states"][-1]
-                if (meta.get("final_result") != expected
-                    or bool(terminal.get("battle_won")) != (expected == "win")
-                    or bool(terminal.get("battle_lost")) != (expected == "loss")):
-                    issues.append("Terminal result mismatch")
                 if (
-                    type(meta.get("learner")) is not bool
-                    or not meta.get("opponent_type")
+                    meta.get("final_result") != expected
+                    or bool(terminal.get("battle_won")) != (expected == "win")
+                    or bool(terminal.get("battle_lost")) != (expected == "loss")
+                ):
+                    issues.append("Terminal result mismatch")
+                if type(meta.get("learner")) is not bool or not meta.get(
+                    "opponent_type"
                 ):
                     issues.append("Missing learner/opponent provenance")
                 neural = bool(meta.get("model_dir"))
@@ -330,7 +382,9 @@ def validate_selfplay(
                 group["trajectories"] += 1
                 if meta.get("learner"):
                     result_key = {
-                        "win": "wins", "loss": "losses", "tie": "ties",
+                        "win": "wins",
+                        "loss": "losses",
+                        "tie": "ties",
                     }[meta["final_result"]]
                     group[result_key] += 1
                     group["learner_decisions"] = (
@@ -350,8 +404,13 @@ def validate_selfplay(
                             entropy = float(-(positive * np.log(positive)).sum())
                             group["entropy"].append(entropy)
             except (
-                OSError, ValueError, TypeError, KeyError, IndexError,
-                RuntimeError, AssertionError,
+                OSError,
+                ValueError,
+                TypeError,
+                KeyError,
+                IndexError,
+                RuntimeError,
+                AssertionError,
             ) as exc:
                 errors.append(f"{identity}: {type(exc).__name__}: {exc}")
         for battle_id in by_id:
@@ -363,9 +422,7 @@ def validate_selfplay(
             try:
                 errors.extend(
                     f"{battle_id}/{side}: {e}"
-                    for e in leakage_errors(
-                        data, meta, *(other or (None, None))
-                    )
+                    for e in leakage_errors(data, meta, *(other or (None, None)))
                 )
             except (ValueError, TypeError, KeyError, IndexError) as exc:
                 errors.append(f"{battle_id}/{side}: leakage check: {exc}")
@@ -379,14 +436,24 @@ def validate_selfplay(
         for filename in native.filenames:
             observations, action_info, rewards, dones = native.load_filename(filename)
             n = len(action_info["chosen"])
-            if (n == 0 or len(observations["numbers"]) != n + 1
-                or len(rewards) != n or len(dones) != n or not dones[-1]
-                or not np.isfinite(rewards).all()):
+            if (
+                n == 0
+                or len(observations["numbers"]) != n + 1
+                or len(rewards) != n
+                or len(dones) != n
+                or not dones[-1]
+                or not np.isfinite(rewards).all()
+            ):
                 raise ValueError(f"Invalid native loaded trajectory: {filename}")
         report["native_dataset_load"] = "PASS"
     except (
-        OSError, ValueError, TypeError, KeyError, IndexError,
-        RuntimeError, AssertionError,
+        OSError,
+        ValueError,
+        TypeError,
+        KeyError,
+        IndexError,
+        RuntimeError,
+        AssertionError,
     ) as exc:
         errors.append(f"Run/native loading: {type(exc).__name__}: {exc}")
     report["trajectories"] = len(loaded)
@@ -429,16 +496,21 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("run", type=Path)
     parser.add_argument(
-        "--report", type=Path,
+        "--report",
+        type=Path,
         default=Path("reports/w5_1_selfplay_validation.json"),
     )
     parser.add_argument("--device", default="cpu")
     args = parser.parse_args()
     report = validate_selfplay(args.run, args.report, device=args.device)
-    print(json.dumps({
-        "overall_status": report["overall_status"],
-        "errors": len(report["errors"]),
-    }))
+    print(
+        json.dumps(
+            {
+                "overall_status": report["overall_status"],
+                "errors": len(report["errors"]),
+            }
+        )
+    )
     raise SystemExit(0 if report["overall_status"] == "PASS" else 1)
 
 

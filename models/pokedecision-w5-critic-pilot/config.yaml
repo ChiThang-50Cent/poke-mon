@@ -1,0 +1,42 @@
+source_run: runs/w5-selfplay-pilot-20261016-final
+C_hashes:
+  best.pt: 0d987dc4fe7f36ab782b142efade20facab0eb53136b1f5bcb9e33eefd4e51ae
+  config.yaml: 384e1b59fbc9174e08b9eed5159f1fbfbbd77b2412ab345d192013d524fe71d2
+  metrics.json: aa968afd7a75f4e7cdf00aa3684213b09ccd42c2aef73818d004dabe8b7f5d1f
+  tokenizer.json: 801521a3ecce057ffea589a6fbe3228e1f5fce84cc82c4bfbaddaaeb4bf43e1d
+split_seed: 20261016
+split_ids_sha256: 139710deb7a18a64de5491a367a3337e6f4f4c17ef757612fecee51e1446b3b8
+sample_counts:
+  train: 45080
+  val: 10737
+git_commit: c9a26a7a64f2b422d8fb143410b476beb1d74b36
+git_dirty: true
+target_definition: terminal win=1 loss=0 acting POV; ties excluded; Monte Carlo; no
+  shaping
+temperature_caveat: Values estimate sampled C at T=1.0, not production greedy C.
+encoder_frozen: true
+optimizer: AdamW
+lr: 0.001
+weight_decay: 0.0001
+batch_size: 4096
+max_epochs: 200
+patience: 10
+device: cuda
+seed: 20261016
+training:
+  v:
+    status: Recovered trained checkpoint; epoch history unavailable after report-finalization
+      failure
+  q:
+    status: Recovered trained checkpoint; epoch history unavailable after report-finalization
+      failure
+  shuffled:
+    status: Recovered trained checkpoint; epoch history unavailable after report-finalization
+      failure
+shuffled_control: Permute train actions within identical legal masks; singleton samples
+  from behavior probabilities
+execution_recovery:
+  training_repeated: false
+  feature_extraction_repeated_for_report_recovery: true
+  reason: Finalize evaluation from saved trained heads
+wall_seconds: 63.567172206006944
