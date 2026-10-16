@@ -158,6 +158,308 @@ def test_ordinary_switch_request_keeps_healthy_reserves() -> None:
     assert battle.available_switches == [healthy]
 
 
+@pytest.fixture
+def scheduled_runner(tmp_path, monkeypatch):
+    """Exercise runner lanes without a server or policy inference."""
+    from pokeai.env import runner, teams
+
+    files = []
+    for index in range(5):
+        path = tmp_path / f"team-{index}.gen9ou_team"
+        path.write_text(f"packed-{index}")
+        files.append(str(path))
+    samples = []
+
+    def sample():
+        samples.append(True)
+        return "default-packed"
+
+    teamset = SimpleNamespace(
+        team_files=list(reversed(files)),
+        parse_showdown_team=lambda text: text,
+        join_team=lambda team: team,
+        yield_team=sample,
+        most_recent_team_file="default.gen9ou_team",
+    )
+    monkeypatch.setattr(teams, "load_teamset", lambda path: teamset)
+
+    async def stop_listening():
+        return None
+
+    class Player:
+        def __init__(self, **kwargs):
+            self.battles = {}
+            self.decisions = 0
+            self.team_preview_records = {}
+            self.ps_client = SimpleNamespace(stop_listening=stop_listening)
+
+        def update_team(self, team):
+            self.team = team.yield_team()
+
+        def randomize(self):
+            pass
+
+        async def battle_against(self, opponent, n_battles):
+            # Different team-dependent delays change lane completion order.
+            await asyncio.sleep(0.001 if self.team.endswith("0") else 0)
+            tag = f"fake-{id(self)}-{len(self.battles)}"
+            self.battles[tag] = SimpleNamespace(
+                battle_tag=tag, turn=1, finished=True, won=True, lost=False,
+            )
+            self.team_preview_records[tag] = {
+                "source": "random_default", "chosen_lead": "pikachu",
+                "top_probability": None, "order": "/team 123456",
+            }
+            self.decisions = 1
+
+    monkeypatch.setattr(runner, "_counted_baseline", lambda name: Player)
+
+    def run(**kwargs):
+        summary = asyncio.run(runner.run_battles(RunConfig(
+            battles=12, out=str(tmp_path / "runs"), **kwargs,
+        )))
+        records = [
+            json.loads(line)
+            for line in (tmp_path / "runs" / summary["run_id"] / "battles.jsonl")
+            .read_text().splitlines()
+        ]
+        return summary, sorted(records, key=lambda record: record["matchup_index"])
+
+    return run, samples, teamset
+
+
+def test_seeded_schedule_is_paired_across_arms_and_concurrency(scheduled_runner):
+    import random
+
+    from pokeai.env.runner import _build_schedule
+
+    run, samples, teamset = scheduled_runner
+    state = random.getstate()
+    _build_schedule(teamset, RunConfig(schedule_seed=72))
+    assert random.getstate() == state
+    summary, first = run(schedule_seed=72, concurrent=1, player="GymLeader")
+    teamset.team_files.reverse()
+    _, second = run(schedule_seed=72, concurrent=4, player="Grunt")
+    _, different = run(schedule_seed=73, concurrent=2)
+    fields = (
+        "matchup_index", "player_team", "opponent_team",
+        "player_team_sha256", "opponent_team_sha256",
+    )
+
+    def pairs(records):
+        return [tuple(record[field] for field in fields) for record in records]
+
+    assert pairs(first) == pairs(second)
+    assert pairs(first) != pairs(different)
+    assert [record["matchup_index"] for record in first] == list(range(12))
+    assert samples == []
+    assert summary["completed"] == 12
+    assert summary["lead_source_counts"] == {"random_default": 12}
+    assert all(record["team_preview"]["chosen_lead"] == "pikachu" for record in first)
+
+
+def test_default_schedule_keeps_original_teamset_sampling(scheduled_runner):
+    from pokeai.env.runner import _build_schedule
+
+    run, samples, _ = scheduled_runner
+    # No file enumeration or parsing is required on the default path.
+    assert _build_schedule(object(), RunConfig()) is None
+    summary, records = run(concurrent=3)
+    assert len(samples) == 24
+    assert summary["config"]["schedule_seed"] is None
+    assert all(record["player_team"] == "default.gen9ou_team" for record in records)
+    assert all(record["opponent_team"] == "default.gen9ou_team" for record in records)
+
+
+@pytest.mark.parametrize("cuda_available", [False, True])
+def test_preview_checkpoint_loaded_once_and_shared(
+    scheduled_runner, monkeypatch, cuda_available
+):
+    import torch
+    from metamon.backend.team_preview.preview import TeamPreviewModel
+
+    from pokeai.env import runner
+
+    run, _, _ = scheduled_runner
+    shared_model = object()
+    loads = []
+    player_models = []
+
+    def load(path, **kwargs):
+        loads.append((path, kwargs))
+        return shared_model
+
+    original_player_type = runner._player_type
+
+    def player_type(name, config, team_preview_model):
+        player_models.append(team_preview_model)
+        return original_player_type("GymLeader", config, team_preview_model)
+
+    monkeypatch.setattr(torch.cuda, "is_available", lambda: cuda_available)
+    monkeypatch.setattr(TeamPreviewModel, "load_from_checkpoint", load)
+    monkeypatch.setattr(runner, "_player_type", player_type)
+    summary, _ = run(
+        player="neural:left", opponent="neural:right", concurrent=4,
+        team_preview_checkpoint="preview.pt", team_preview_argmax=True,
+        device="cpu", schedule_seed=9,
+    )
+    assert summary["completed"] == 12
+    assert loads == [("preview.pt", {
+        "device": "cuda" if cuda_available else "cpu", "use_argmax": True,
+    })]
+    assert player_models == [shared_model, shared_model]
+
+
+@pytest.mark.parametrize("error_kind", ["Unavailable", "Invalid"])
+@pytest.mark.parametrize("collect", [False, True])
+def test_hidden_trap_retry_keeps_protocol_evidence(
+    monkeypatch, error_kind, collect
+):
+    import metamon.baselines
+
+    from pokeai.env.runner import _counted_baseline
+
+    tag = "battle-gen9ou-retry"
+    battle = SimpleNamespace(
+        battle_tag=tag, turn=4,
+        active_pokemon=SimpleNamespace(species="corviknight", ability="pressure"),
+        opponent_active_pokemon=SimpleNamespace(species="magnezone", ability=None),
+    )
+
+    class Baseline:
+        def __init__(self):
+            self.sent = []
+            self.retry_handshakes = 0
+
+        def choose_move(self, battle):
+            return SimpleNamespace(message=battle._last_request["choice"])
+
+        async def _handle_battle_message(self, messages):
+            for message in messages[1:]:
+                if message[1] == "request":
+                    battle._last_request = json.loads(message[2])
+                    self.sent.append(self.choose_move(battle).message)
+                elif message[1] == "error":
+                    # The vendor, not our wrapper, schedules the retry handshake.
+                    self.retry_handshakes += 1
+
+    monkeypatch.setattr(metamon.baselines, "get_baseline", lambda name: Baseline)
+    player = _counted_baseline("unused")()
+    if collect:
+        player.collector = SimpleNamespace(
+            events=[], record=lambda battle, order: None,
+        )
+    original = {
+        "rqid": 9, "active": [{"maybeTrapped": True}],
+        "choice": "/choose switch 2",
+    }
+    revised = {
+        "rqid": 9, "active": [{"trapped": True}],
+        "choice": "/choose move 1",
+    }
+    error = f"[{error_kind} choice] Can't switch: The active Pokémon is trapped"
+    asyncio.run(player._handle_battle_message([
+        [">" + tag],
+        ["", "request", json.dumps(original)],
+        ["", "error", error],
+        ["", "request", json.dumps(revised)],
+    ]))
+    assert player.last_server_error is None
+    assert player.retry_handshakes == 1
+    assert player.sent == ["/choose switch 2", "/choose move 1"]
+    assert player.protocol_retries[tag] == [{
+        "order": "/choose switch 2",
+        "trapped": False, "maybeTrapped": True,
+        "rqid": 9, "turn": 4,
+        "active_species": "corviknight", "active_ability": "pressure",
+        "opponent_species": "magnezone", "opponent_ability": None,
+        "error": "|error|" + error,
+    }]
+    # Duplicate or unrelated errors cannot reuse an accepted retry's evidence.
+    asyncio.run(player._handle_battle_message([
+        [">" + tag], ["", "error", error],
+    ]))
+    assert player.last_server_error == "|error|" + error
+    assert len(player.protocol_retries[tag]) == 1
+
+
+@pytest.mark.parametrize(
+    "maybe_trapped,trapped,order,error",
+    [
+        (False, False, "/choose switch 2", "The active Pokémon is trapped"),
+        (True, True, "/choose switch 2", "The active Pokémon is trapped"),
+        (True, False, "/choose move 1", "The active Pokémon is trapped"),
+        (True, False, "/choose switch 2", "You can't switch to a fainted Pokémon"),
+    ],
+)
+def test_trap_retry_rejects_illegal_or_unrelated_choices(
+    maybe_trapped, trapped, order, error
+):
+    from pokeai.env.runner import _is_expected_trapped_retry
+
+    payload = "[Invalid choice] Can't switch: " + error
+    assert not _is_expected_trapped_retry(payload, {
+        "maybeTrapped": maybe_trapped, "trapped": trapped, "order": order,
+    })
+    assert not _is_expected_trapped_retry(payload, None)
+
+
+def test_summary_counts_protocol_retries_without_discarding_failed_attempts():
+    evidence = {
+        "order": "/choose switch 2", "trapped": False, "maybeTrapped": True,
+        "error": "|error|[Invalid choice] Can't switch: The active Pokémon is trapped",
+    }
+    records = [{
+        "battle_id": f"battle-{index}", "matchup_index": index,
+        "winner": "player" if index == 0 else None,
+        "error": None if index == 0 else "RuntimeError: unrelated error",
+        "decisions_player": 2,
+        "protocol_retries": {
+            "player": [evidence] if index == 0 else [],
+            "opponent": [evidence] if index == 1 else [],
+        },
+    } for index in range(2)]
+    summary = summarize(records, 1, {})
+    assert summary["completed"] == 1
+    assert summary["error_count"] == 1
+    assert summary["protocol_retry_counts"] == {"player": 1, "opponent": 1}
+    for role, index in (("player", 0), ("opponent", 1)):
+        assert summary["protocol_retry_evidence"][role] == [{
+            **evidence, "battle_id": f"battle-{index}", "matchup_index": index,
+        }]
+
+
+def test_runner_persists_retry_evidence_per_role(scheduled_runner, monkeypatch):
+    from pokeai.env import runner
+
+    run, _, _ = scheduled_runner
+    base = runner._counted_baseline("fixture")
+    evidence = {
+        "order": "/choose switch 2", "trapped": False, "maybeTrapped": True,
+        "active_species": "corviknight", "active_ability": "pressure",
+        "opponent_species": "magnezone", "opponent_ability": None,
+        "error": "|error|[Invalid choice] Can't switch: The active Pokémon is trapped",
+    }
+
+    class Player(base):
+        async def battle_against(self, opponent, n_battles):
+            await super().battle_against(opponent, n_battles)
+            tag = next(reversed(self.battles))
+            self.protocol_retries = {tag: [dict(evidence)]}
+            opponent.protocol_retries = {tag: [dict(evidence), dict(evidence)]}
+
+    monkeypatch.setattr(runner, "_counted_baseline", lambda name: Player)
+    summary, records = run(concurrent=3)
+    assert summary["completed"] == 12
+    assert summary["error_count"] == 0
+    assert summary["protocol_retry_counts"] == {"player": 12, "opponent": 24}
+    assert len(summary["protocol_retry_evidence"]["player"]) == 12
+    for record in records:
+        assert record["protocol_retries"] == {
+            "player": [evidence], "opponent": [evidence, evidence],
+        }
+
+
 @pytest.mark.server
 def test_real_battles(tmp_path) -> None:
     summary = asyncio.run(

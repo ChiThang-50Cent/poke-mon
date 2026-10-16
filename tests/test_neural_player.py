@@ -26,6 +26,17 @@ def policy() -> NeuralPlayer:
     player.unknown_tokens = 0
     player.total_tokens = 0
     player.fallbacks = Counter()
+    player.team_preview_model = None
+    player.team_preview_records = {}
+    player.lead_sources = Counter()
+    player._hidden_before = {}
+    player._pending_choice = {}
+    player._public_log = {}
+    player.protocol_retries = {}
+    player.illegal_actions = 0
+    player.last_server_error = None
+    player.decisions = 0
+    player.collector = None
     return player
 
 
@@ -77,7 +88,11 @@ def test_preview_resets_only_its_own_hidden_state(monkeypatch) -> None:
     monkeypatch.setattr(
         "metamon.env.metamon_player.MetamonPlayer.teampreview", lambda *_: "/team 123456"
     )
-    assert player.teampreview(SimpleNamespace(battle_tag="a")) == "/team 123456"
+    battle = SimpleNamespace(
+        battle_tag="a",
+        team={str(i): SimpleNamespace(species=f"species{i}") for i in range(6)},
+    )
+    assert player.teampreview(battle) == "/team 123456"
     assert "a" not in player.hidden
     assert "b" in player.hidden
 
@@ -152,3 +167,141 @@ def test_neural_completes_two_battles(tmp_path) -> None:
     assert summary["completed"] == 2
     assert summary["error_count"] == 0
     assert summary["neural"]["player"]["illegal_actions"] == 0
+
+
+@pytest.mark.parametrize("existing_hidden", [False, True])
+def test_expected_trapped_retry_restores_memory_and_preserves_evidence(
+    monkeypatch, existing_hidden
+) -> None:
+    import asyncio
+
+    player = policy()
+    if existing_hidden:
+        player.select_action("a", encoded(), np.arange(13) == 0)
+    before = player.hidden.get("a")
+    player.select_action("a", encoded(), np.arange(13) == 4)
+    player._model_choice["a"] = True
+    player._pending_choice["a"] = {
+        "order": "/choose switch 2", "trapped": False, "maybeTrapped": True,
+        "active_species": "corviknight", "active_ability": "pressure",
+        "opponent_species": "magnezone", "opponent_ability": None,
+    }
+    vendor_calls = []
+
+    async def accept_messages(_self, messages):
+        vendor_calls.append(messages)
+
+    monkeypatch.setattr(
+        "metamon.env.metamon_player.MetamonPlayer._handle_battle_message",
+        accept_messages,
+    )
+    error = "[Unavailable choice] Can't switch: The active Pokémon is trapped"
+    asyncio.run(player._handle_battle_message([
+        [">a"], ["", "-ability", "p2a: Magnezone", "Magnet Pull"],
+        ["", "error", error],
+    ]))
+    assert len(vendor_calls) == 1  # No second request or order sent by our adapter.
+    assert player.illegal_actions == 0
+    assert player.last_server_error is None
+    assert player.neural_stats()["protocol_retries"] == 1
+    evidence = player.protocol_retries["a"][0]
+    assert evidence["order"] == "/choose switch 2"
+    assert evidence["maybeTrapped"] and not evidence["trapped"]
+    assert evidence["opponent_species"] == "magnezone"
+    assert evidence["error"] == "|error|" + error
+    assert evidence["public_log"][0] == "|-ability|p2a: Magnezone|Magnet Pull"
+    if before is None:
+        assert "a" not in player.hidden
+    else:
+        assert torch.equal(player.hidden["a"], before)
+    with torch.inference_mode():
+        _, expected = player.model(
+            torch.as_tensor(encoded()["tokens"])[None, None],
+            torch.as_tensor(encoded()["numbers"])[None, None], before,
+        )
+    player.select_action("a", encoded(), np.arange(13) == 0)
+    assert torch.equal(player.hidden["a"], expected)
+
+
+@pytest.mark.parametrize(
+    "maybe_trapped,trapped,order",
+    [(False, False, "/choose switch 2"), (True, True, "/choose switch 2"),
+     (True, False, "/choose move 1")],
+)
+def test_unexpected_trapped_rejection_remains_illegal(
+    monkeypatch, maybe_trapped, trapped, order
+) -> None:
+    import asyncio
+
+    player = policy()
+    player._model_choice["a"] = True
+    player._pending_choice["a"] = {
+        "order": order, "maybeTrapped": maybe_trapped, "trapped": trapped,
+    }
+
+    async def accept_messages(*_):
+        return None
+
+    monkeypatch.setattr(
+        "metamon.env.metamon_player.MetamonPlayer._handle_battle_message",
+        accept_messages,
+    )
+    error = "[Invalid choice] Can't switch: The active Pokémon is trapped"
+    asyncio.run(player._handle_battle_message([["a"], ["", "error", error]]))
+    assert player.illegal_actions == 1
+    assert player.last_server_error == "|error|" + error
+    assert player.protocol_retries == {}
+
+
+def test_known_trapped_request_explicitly_masks_switches(monkeypatch) -> None:
+    from metamon.interface import UniversalAction, UniversalState
+
+    player = policy()
+    player.encoder = SimpleNamespace(encode=lambda _: encoded(), unknown_id=0)
+    battle = SimpleNamespace(
+        battle_tag="a", reviving=False, trapped=True, force_switch=False,
+        available_moves=[SimpleNamespace(id="tackle")],
+        _last_request={"active": [{"trapped": True}], "rqid": 1},
+        active_pokemon=SimpleNamespace(species="corviknight", ability="pressure"),
+        opponent_active_pokemon=SimpleNamespace(species="magnezone", ability=None),
+        turn=1,
+    )
+    monkeypatch.setattr(UniversalState, "from_Battle", lambda _: object())
+    # Even if vendor legality accidentally offers a switch, explicit trapped wins.
+    monkeypatch.setattr(
+        UniversalAction, "definitely_valid_actions",
+        lambda *_: {UniversalAction(0), UniversalAction(4)},
+    )
+
+    def convert(action, _):
+        assert action.action_idx == 0
+        return SimpleNamespace(message="/choose move 1")
+
+    monkeypatch.setattr(UniversalAction, "to_BattleOrder", convert)
+    assert player.choose_move(battle).message == "/choose move 1"
+    assert player._pending_choice["a"]["trapped"]
+
+
+def test_default_request_clears_previous_model_order_evidence(monkeypatch) -> None:
+    import asyncio
+
+    player = policy()
+    player._model_choice["a"] = True
+    player._pending_choice["a"] = {
+        "order": "/choose switch 2", "trapped": False, "maybeTrapped": True,
+    }
+    calls = []
+
+    async def native_default(_, battle, maybe_default_order=False):
+        assert "a" not in player._pending_choice
+        assert player._model_choice["a"] is False
+        calls.append((battle.battle_tag, maybe_default_order))
+
+    monkeypatch.setattr(
+        "metamon.env.metamon_player.MetamonPlayer._handle_battle_request",
+        native_default,
+    )
+    asyncio.run(player._handle_battle_request(
+        SimpleNamespace(battle_tag="a"), maybe_default_order=True
+    ))
+    assert calls == [("a", True)]

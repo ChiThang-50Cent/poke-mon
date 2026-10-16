@@ -3,14 +3,16 @@
 from __future__ import annotations
 
 import time
-from collections import Counter
+from collections import Counter, deque
 from pathlib import Path
 from typing import Any
 
 import numpy as np
 import torch
+from metamon.backend.replay_parser.str_parsing import move_name, pokemon_name
+from metamon.config import format_for_agent
 from metamon.env.metamon_player import MetamonPlayer
-from metamon.interface import UniversalAction, UniversalState
+from metamon.interface import UniversalAction, UniversalPokemon, UniversalState
 from poke_env.player.battle_order import BattleOrder
 
 
@@ -38,6 +40,7 @@ class NeuralPlayer(MetamonPlayer):
         device: str = "cpu",
         sample: bool = False,
         temperature: float = 1.0,
+        team_preview_model: Any = None,
         **kwargs: Any,
     ) -> None:
         if not np.isfinite(temperature) or temperature <= 0:
@@ -55,15 +58,21 @@ class NeuralPlayer(MetamonPlayer):
         self.temperature = temperature
         self.hidden: dict[str, Any] = {}
         self._model_choice: dict[str, bool] = {}
+        self._hidden_before: dict[str, Any] = {}
+        self._pending_choice: dict[str, dict[str, Any]] = {}
+        self._public_log: dict[str, deque[str]] = {}
+        self.protocol_retries: dict[str, list[dict[str, Any]]] = {}
         self.decisions = 0
         self.last_server_error: str | None = None
         self.collector: Any = None
         self.fallbacks: Counter[str] = Counter()
+        self.team_preview_records: dict[str, dict[str, Any]] = {}
+        self.lead_sources: Counter[str] = Counter()
         self.illegal_actions = 0
         self.latencies_ms: list[float] = []
         self.unknown_tokens = 0
         self.total_tokens = 0
-        super().__init__(*args, **kwargs)
+        super().__init__(*args, team_preview_model=team_preview_model, **kwargs)
 
     def randomize(self) -> None:
         """Greedy evaluation deliberately has no policy randomization."""
@@ -71,22 +80,120 @@ class NeuralPlayer(MetamonPlayer):
     def _battle_finished_callback(self, battle: Any) -> None:
         self.hidden.pop(battle.battle_tag, None)
         self._model_choice.pop(battle.battle_tag, None)
+        self._hidden_before.pop(battle.battle_tag, None)
+        self._pending_choice.pop(battle.battle_tag, None)
+        self._public_log.pop(battle.battle_tag, None)
         super()._battle_finished_callback(battle)
 
     async def _handle_battle_message(self, split_messages: list[list[str]]) -> None:
+        from pokeai.env.runner import _is_expected_trapped_retry
+
         tag = split_messages[0][0].removeprefix(">")
+        public_log = self._public_log.setdefault(tag, deque(maxlen=40))
         for message in split_messages[1:]:
-            if len(message) > 1 and message[1] == "error":
-                self.last_server_error = "|".join(message)
-                if self._model_choice.get(tag, False):
-                    self.illegal_actions += 1
+            if len(message) > 1 and message[1] != "request":
+                public_log.append("|".join(message))
+            if len(message) > 2 and message[1] == "error":
+                error = "|".join(message)
+                previous = self._pending_choice.get(tag)
+                if _is_expected_trapped_retry(message[2], previous):
+                    self.protocol_retries.setdefault(tag, []).append({
+                        **previous, "error": error, "public_log": list(public_log),
+                    })
+                    # Showdown sends a corrected request; the vendor owns retry
+                    # scheduling. Restore memory so that request is not a new turn.
+                    if self._model_choice.get(tag, False):
+                        hidden = self._hidden_before.pop(tag, None)
+                        if hidden is None:
+                            self.hidden.pop(tag, None)
+                        else:
+                            self.hidden[tag] = hidden
+                    self._pending_choice.pop(tag, None)
+                else:
+                    self.last_server_error = error
+                    if self._model_choice.get(tag, False):
+                        self.illegal_actions += 1
         await super()._handle_battle_message(split_messages)
 
+    async def _handle_battle_request(
+        self, battle: Any, maybe_default_order: bool = False
+    ) -> None:
+        # Native default orders bypass choose_move. Never attribute their errors
+        # to the preceding policy order or reuse its hidden-trap evidence.
+        self._pending_choice.pop(battle.battle_tag, None)
+        self._model_choice[battle.battle_tag] = False
+        await super()._handle_battle_request(battle, maybe_default_order)
+
     def teampreview(self, battle: Any) -> str:
+        """Record source, actual lead, order, and maximum predicted lead probability.
+
+        Match the vendor adapter's inputs and ordering without its per-battle
+        warning. Random previews retain the team_preview fallback count; model
+        fallbacks additionally retain the exact reason in lead_sources and the
+        per-battle record. Probability is None when no prediction was made.
+        """
         self.hidden.pop(battle.battle_tag, None)
         self._model_choice[battle.battle_tag] = False
-        self.fallbacks["team_preview"] += 1
-        return super().teampreview(battle)
+        top_probability = None
+        if self.team_preview_model is None:
+            source = "random_default"
+            # Preserve the vendor's default random order and RNG consumption.
+            order = super().teampreview(battle)
+        else:
+            agent_format = format_for_agent(self._format.replace("-", "").lower())
+            team = list(battle.team.values())
+            opponent = list(battle.opponent_team.values())
+            reason = None
+            if agent_format not in self.team_preview_model.trained_formats:
+                reason = "format_not_trained"
+            elif len(team) != 6 or len(opponent) != 6:
+                reason = "team_size_not_six"
+            else:
+                predicted_lead, probabilities, _ = self.team_preview_model.predict_lead(
+                    our_team=[pokemon_name(p.species) for p in team],
+                    our_team_moves=[
+                        [move_name(m.id) for m in p.moves.values()] if p.moves else []
+                        for p in team
+                    ],
+                    our_team_abilities=[
+                        UniversalPokemon.universal_abilities(p.ability) for p in team
+                    ],
+                    our_team_items=[
+                        UniversalPokemon.universal_items(p.item) for p in team
+                    ],
+                    opponent_team=[pokemon_name(p.species) for p in opponent],
+                    battle_format=agent_format,
+                )
+                top_probability = float(probabilities.max().item())
+                lead_position = next(
+                    (i for i, p in enumerate(team, 1)
+                     if pokemon_name(p.species) == predicted_lead),
+                    None,
+                )
+                if lead_position is None:
+                    reason = "predicted_lead_not_found"
+                else:
+                    members = [lead_position] + [
+                        i for i in range(1, len(team) + 1) if i != lead_position
+                    ]
+                    order = "/team " + "".join(str(i) for i in members)
+            if reason is not None:
+                source = f"model_fallback:{reason}"
+                order = self.random_teampreview(battle)
+            else:
+                source = "model"
+
+        if source != "model":
+            self.fallbacks["team_preview"] += 1
+        self.lead_sources[source] += 1
+        lead_index = int(order.removeprefix("/team ")[0]) - 1
+        self.team_preview_records[battle.battle_tag] = {
+            "source": source,
+            "chosen_lead": list(battle.team.values())[lead_index].species,
+            "top_probability": top_probability,
+            "order": order,
+        }
+        return order
 
     def _fallback(self, battle: Any, reason: str) -> Any:
         self.fallbacks[reason] += 1
@@ -111,6 +218,7 @@ class NeuralPlayer(MetamonPlayer):
         ]
         start = time.perf_counter()
         with torch.inference_mode():
+            self._hidden_before[tag] = self.hidden.get(tag)
             logits, hidden = self.model(tokens, numbers, self.hidden.get(tag))
             scores = logits[0, 0].masked_fill(
                 ~torch.as_tensor(mask, device=self.device), -torch.inf
@@ -132,6 +240,8 @@ class NeuralPlayer(MetamonPlayer):
         return action
 
     def choose_move(self, battle: Any) -> Any:
+        from pokeai.env.runner import _protocol_choice_evidence
+
         self.decisions += 1
         if battle.reviving:
             order = self._fallback(battle, "revival_target")
@@ -144,6 +254,8 @@ class NeuralPlayer(MetamonPlayer):
             state = UniversalState.from_Battle(battle)
             legal = UniversalAction.definitely_valid_actions(state, battle)
             mask = np.array([UniversalAction(i) in legal for i in range(13)])
+            if battle.trapped and not battle.force_switch:
+                mask[4:9] = False
             action = self.select_action(
                 battle.battle_tag, self.encoder.encode(state), mask
             )
@@ -154,6 +266,7 @@ class NeuralPlayer(MetamonPlayer):
                 if order is None:
                     raise RuntimeError("Masked-legal action failed conversion")
                 self._model_choice[battle.battle_tag] = True
+        self._pending_choice[battle.battle_tag] = _protocol_choice_evidence(battle, order)
         if self.collector is not None:
             self.collector.record(battle, order)
         return order
@@ -162,6 +275,8 @@ class NeuralPlayer(MetamonPlayer):
         return {
             "model_decisions": len(self.latencies_ms),
             "fallbacks": dict(self.fallbacks),
+            "lead_sources": dict(self.lead_sources),
+            "protocol_retries": sum(map(len, self.protocol_retries.values())),
             "illegal_actions": self.illegal_actions,
             "inference_ms": self.latencies_ms.copy(),
             "unknown_tokens": self.unknown_tokens,

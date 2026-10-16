@@ -1,4 +1,4 @@
-"""Run Metamon baselines against each other on the local Showdown server."""
+"""Run local battles; runner CLI supports shared preview models and seeded schedules."""
 
 from pokeai.env.runner import main
 
