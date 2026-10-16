@@ -72,6 +72,7 @@ def test_default_random_preview_preserves_shuffle_and_counts(monkeypatch):
     assert player.team_preview_records["preview"] == {
         "source": "random_default", "chosen_lead": "venusaur",
         "top_probability": None, "order": "/team 426135",
+        "probabilities": None, "chosen_index": -1, "fallback_reason": "team_preview",
     }
     assert set(player.hidden) == {"other"}
     assert player._model_choice == {"preview": False, "other": True}
@@ -92,6 +93,8 @@ def test_model_preview_matches_vendor_inputs_and_stable_remaining_order(caplog):
     assert player.team_preview_records["preview"] == {
         "source": "model", "chosen_lead": "blastoise",
         "top_probability": 0.5, "order": "/team 312456",
+        "probabilities": model.predict_lead.return_value[1].tolist(),
+        "chosen_index": -1, "fallback_reason": "team_preview",
     }
     assert player.fallbacks == {}
     assert player.neural_stats()["lead_sources"] == {"model": 1}
@@ -121,6 +124,11 @@ def test_model_fallback_reason_is_retained_without_vendor_warning(
     assert player.team_preview_records["preview"] == {
         "source": source, "chosen_lead": SPECIES[our_size - 1],
         "top_probability": probability, "order": order,
+        "probabilities": (
+            model.predict_lead.return_value[1].tolist()
+            if probability is not None else None
+        ),
+        "chosen_index": -1, "fallback_reason": "team_preview",
     }
     assert player.fallbacks == {"team_preview": 1}
     assert player.neural_stats()["lead_sources"] == {source: 1}

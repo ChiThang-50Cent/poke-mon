@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import random
@@ -112,6 +113,107 @@ def build_teamset(sources: list[str], sample: int, seed: int) -> None:
     print(f"Wrote {OUTPUT.relative_to(ROOT)}/manifest.json (seed={seed})")
 
 
+def normalized_sha256(text: str) -> str:
+    """Hash the canonical packed representation, not export whitespace."""
+    packed = TeamSet.join_team(TeamSet.parse_showdown_team(text))
+    return hashlib.sha256(packed.encode()).hexdigest()
+
+
+def seeded_candidates(paths: list[Path], seed: int) -> list[Path]:
+    ordered = sorted(paths)
+    random.Random(seed).shuffle(ordered)
+    return ordered
+
+
+def build_w5_pools(
+    output: Path, seed: int, sizes: dict[str, int], workers: int = 4,
+) -> None:
+    """Keep the first N valid unique teams in one deterministic shuffled stream."""
+    source = "hl_05_26"
+    source_paths = sorted(
+        Path(p) for p in get_metamon_teams("gen9ou", source).team_files
+    )
+    old = list(OUTPUT.glob("*.gen9ou_team"))
+    competitive = get_metamon_teams("gen9ou", "competitive").team_files
+    excluded = {
+        normalized_sha256(Path(p).read_text())
+        for p in [*old, *competitive]
+    }
+    # Explicitly exclude the entire original sampled source selection, including
+    # any team that the W4 validator might have rejected.
+    old_selection = sorted(random.Random(20261016).sample(source_paths, 200))
+    excluded.update(normalized_sha256(p.read_text()) for p in old_selection)
+    seen = set(excluded)
+    candidates = iter(seeded_candidates(source_paths, seed))
+    pool_hashes: dict[str, set[str]] = {}
+    with ThreadPoolExecutor(max_workers=workers) as executor:
+        for role, size in sizes.items():
+            target = output / role / "gen9ou"
+            if target.exists():
+                raise FileExistsError(f"Refusing to replace team pool: {target}")
+            entries, exports = [], {}
+            rejected: Counter[str] = Counter()
+            attempts = 0
+            while len(entries) < size:
+                batch = []
+                while len(batch) < min(workers, size - len(entries)):
+                    try:
+                        path = next(candidates)
+                    except StopIteration as exc:
+                        raise RuntimeError("Not enough valid disjoint teams") from exc
+                    digest = normalized_sha256(path.read_text())
+                    if digest in seen:
+                        rejected["excluded_or_duplicate_sha256"] += 1
+                        continue
+                    seen.add(digest)
+                    batch.append((path, digest))
+                results = executor.map(validate_team, [p for p, _ in batch])
+                for (path, digest), (text, errors) in zip(batch, results, strict=True):
+                    attempts += 1
+                    if errors:
+                        rejected.update(errors)
+                        continue
+                    filename = f"{source}-{len(entries) + 1:04d}.gen9ou_team"
+                    exports[filename] = text
+                    entries.append({
+                        "file": filename, "source": source,
+                        "source_file": path.name, "sha256": digest,
+                    })
+            hashes = {str(e["sha256"]) for e in entries}
+            proof = {
+                "normalization": "TeamSet.join_team(TeamSet.parse_showdown_team(text))",
+                "excluded_sha256_count": len(excluded),
+                "excluded_sha256_set_digest": hashlib.sha256(
+                    "\n".join(sorted(excluded)).encode()
+                ).hexdigest(),
+                "overlap_with_w4_and_competitive": len(hashes & excluded),
+                "overlap_with_previous_pools": {
+                    name: len(hashes & values) for name, values in pool_hashes.items()
+                },
+            }
+            pool_hashes[role] = hashes
+            target.mkdir(parents=True)
+            for filename, text in exports.items():
+                (target / filename).write_text(text)
+            manifest = {
+                "schema_version": 1, "role": role, "seed": seed,
+                "source": source, "source_count": len(source_paths),
+                "selection": "single seeded shuffle; first N valid unique teams",
+                "pool_order": list(sizes), "requested": size,
+                "validation": {
+                    "command": "node pokemon-showdown validate-team gen9ou",
+                    "server_git_commit": subprocess.check_output(
+                        ["git", "rev-parse", "HEAD"], cwd=SHOWDOWN.parent, text=True
+                    ).strip(),
+                    "attempted": attempts, "rejected_reasons": dict(rejected),
+                    "rejected_validation_count": attempts - size,
+                },
+                "disjointness": proof, "teams": entries,
+            }
+            (target / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
+            print(f"Wrote {role}: {size} validated teams", flush=True)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -120,12 +222,21 @@ def main() -> None:
     )
     parser.add_argument("--sample", type=int, default=200)
     parser.add_argument("--seed", type=int, default=20261016)
+    parser.add_argument("--w5", action="store_true")
+    parser.add_argument("--output", type=Path, default=ROOT / "data/teams_w5")
+    parser.add_argument("--workers", type=int, choices=range(1, 5), default=4)
     args = parser.parse_args()
     if args.sample < 1:
         parser.error("--sample must be positive")
     if len(set(args.sources)) != len(args.sources):
         parser.error("--sources must not contain duplicates")
-    build_teamset(args.sources, args.sample, args.seed)
+    if args.w5:
+        build_w5_pools(
+            args.output, args.seed, {"collect": 1000, "dev": 200, "heldout": 200},
+            args.workers,
+        )
+    else:
+        build_teamset(args.sources, args.sample, args.seed)
 
 
 if __name__ == "__main__":

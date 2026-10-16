@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import time
 from collections import Counter, deque
 from pathlib import Path
@@ -13,10 +14,11 @@ from metamon.backend.replay_parser.str_parsing import move_name, pokemon_name
 from metamon.config import format_for_agent
 from metamon.env.metamon_player import MetamonPlayer
 from metamon.interface import UniversalAction, UniversalPokemon, UniversalState
+from poke_env.data import GenData, to_id_str
 from poke_env.player.battle_order import BattleOrder
 
 
-class RevivalOrder(BattleOrder):
+class PartySlotOrder(BattleOrder):
     """Explicit party index for a request the vendor cannot map to Pokemon."""
 
     def __init__(self, party_index: int) -> None:
@@ -26,6 +28,29 @@ class RevivalOrder(BattleOrder):
     @property
     def message(self) -> str:
         return f"/choose switch {self.party_index}"
+
+
+def switch_by_party_slot(battle: Any, order: Any) -> Any:
+    """Address switches by request slot, not mutable battle-form species names."""
+    if not order.message.startswith("/choose switch "):
+        return order
+    request = getattr(battle, "last_request", None) or battle._last_request
+    selected = order.order
+
+    dex = GenData.from_gen(9).pokedex
+
+    def identity(species: str) -> str:
+        key = to_id_str(species)
+        return to_id_str(dex[key]["baseSpecies"])
+
+    species = identity(selected.species)
+    slots = [
+        index for index, pokemon in enumerate(request["side"]["pokemon"], 1)
+        if identity(pokemon["details"].split(",")[0]) == species
+    ]
+    if len(slots) != 1:
+        raise RuntimeError(f"Switch species {species} does not identify one request slot")
+    return PartySlotOrder(slots[0])
 
 
 class NeuralPlayer(MetamonPlayer):
@@ -57,6 +82,13 @@ class NeuralPlayer(MetamonPlayer):
         self.sample = sample
         self.temperature = temperature
         self.hidden: dict[str, Any] = {}
+        self.model_dir = str(model_dir) if model_dir is not None else None
+        self.policy_version = Path(model_dir).name if model_dir is not None else "injected"
+        self.checkpoint_sha256 = (
+            hashlib.sha256((Path(model_dir) / "best.pt").read_bytes()).hexdigest()
+            if model_dir is not None else None
+        )
+        self._behavior: dict[str, dict[str, Any]] = {}
         # P(win) for represented decisions only; fallbacks/preview have no value.
         self.decision_values: dict[str, list[float]] = {}
         self._model_choice: dict[str, bool] = {}
@@ -95,6 +127,8 @@ class NeuralPlayer(MetamonPlayer):
         for message in split_messages[1:]:
             if len(message) > 1 and message[1] != "request":
                 public_log.append("|".join(message))
+                if self.collector is not None:
+                    self.collector.events.append(message)
             if len(message) > 2 and message[1] == "error":
                 error = "|".join(message)
                 previous = self._pending_choice.get(tag)
@@ -111,6 +145,8 @@ class NeuralPlayer(MetamonPlayer):
                         else:
                             self.hidden[tag] = hidden
                         values = self.decision_values.get(tag)
+                        if self.collector is not None and self.collector.behavior:
+                            self.collector.behavior[-1]["protocol_retry"] = True
                         if values:
                             values.pop()
                     self._pending_choice.pop(tag, None)
@@ -140,6 +176,7 @@ class NeuralPlayer(MetamonPlayer):
         self.hidden.pop(battle.battle_tag, None)
         self._model_choice[battle.battle_tag] = False
         top_probability = None
+        preview_probabilities = None
         if self.team_preview_model is None:
             source = "random_default"
             # Preserve the vendor's default random order and RNG consumption.
@@ -170,6 +207,7 @@ class NeuralPlayer(MetamonPlayer):
                     battle_format=agent_format,
                 )
                 top_probability = float(probabilities.max().item())
+                preview_probabilities = probabilities.detach().float().cpu().tolist()
                 lead_position = next(
                     (i for i, p in enumerate(team, 1)
                      if pokemon_name(p.species) == predicted_lead),
@@ -197,19 +235,30 @@ class NeuralPlayer(MetamonPlayer):
             "chosen_lead": list(battle.team.values())[lead_index].species,
             "top_probability": top_probability,
             "order": order,
+            "probabilities": preview_probabilities,
+            "chosen_index": -1,
+            "fallback_reason": "team_preview",
         }
         return order
 
     def _fallback(self, battle: Any, reason: str) -> Any:
         self.fallbacks[reason] += 1
         self._model_choice[battle.battle_tag] = False
+        self._behavior[battle.battle_tag] = {
+            "probabilities": None, "chosen_index": -1, "log_probability": None,
+            "mode": "sample" if self.sample else "argmax",
+            "temperature": self.temperature, "mask": [0] * 13,
+            "policy_version": self.policy_version,
+            "checkpoint_sha256": self.checkpoint_sha256,
+            "value": None, "fallback_reason": reason,
+        }
         if battle.reviving:
             # Metamon's online request parser skips revival side updates. Read the
             # request's explicit party slots, not its empty available_switches.
             side = battle._last_request["side"]["pokemon"]
             for index, pokemon in enumerate(side, 1):
                 if pokemon["condition"].startswith("0 fnt"):
-                    return RevivalOrder(index)
+                    return PartySlotOrder(index)
             raise RuntimeError("Revival request has no fainted target")
         return self.choose_random_move(battle)
 
@@ -236,12 +285,27 @@ class NeuralPlayer(MetamonPlayer):
             scores = logits[0, 0].masked_fill(
                 ~torch.as_tensor(mask, device=self.device), -torch.inf
             )
+            if self.sample or self.collector is not None:
+                probabilities = torch.softmax(scores.float() / self.temperature, dim=-1)
             if self.sample:
-                action = int(torch.multinomial(
-                    torch.softmax(scores / self.temperature, dim=-1), 1
-                ).item())
+                action = int(torch.multinomial(probabilities, 1).item())
             else:
                 action = int(scores.argmax().item())
+            if self.collector is not None:
+                self._behavior[tag] = {
+                    "probabilities": probabilities.cpu().tolist(),
+                    "chosen_index": action,
+                    "log_probability": float(probabilities[action].log().item()),
+                    "mode": "sample" if self.sample else "argmax",
+                    "temperature": self.temperature, "mask": mask.astype(int).tolist(),
+                    "policy_version": self.policy_version,
+                    "checkpoint_sha256": self.checkpoint_sha256,
+                    "value": (
+                        self.decision_values[tag][-1]
+                        if self.model.config.value_head else None
+                    ),
+                    "fallback_reason": None,
+                }
             self.hidden[tag] = hidden
         self.latencies_ms.append((time.perf_counter() - start) * 1000)
         if not mask[action]:
@@ -278,10 +342,12 @@ class NeuralPlayer(MetamonPlayer):
                 order = UniversalAction(action).to_BattleOrder(battle)
                 if order is None:
                     raise RuntimeError("Masked-legal action failed conversion")
+                if 4 <= action <= 8:
+                    order = switch_by_party_slot(battle, order)
                 self._model_choice[battle.battle_tag] = True
         self._pending_choice[battle.battle_tag] = _protocol_choice_evidence(battle, order)
         if self.collector is not None:
-            self.collector.record(battle, order)
+            self.collector.record(battle, order, self._behavior.pop(battle.battle_tag))
         return order
 
     def neural_stats(self) -> dict[str, Any]:

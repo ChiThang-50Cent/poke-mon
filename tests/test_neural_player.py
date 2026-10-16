@@ -11,6 +11,20 @@ from pokeai.agents.neural_player import NeuralPlayer
 from pokeai.models.pokedecision import PokeDecision, PokeDecisionConfig
 
 
+@pytest.mark.parametrize("request_species", ["Cramorant-Gorging", "Cramorant"])
+def test_switch_uses_request_slot_not_form_name(request_species) -> None:
+    from pokeai.agents.neural_player import switch_by_party_slot
+
+    battle = SimpleNamespace(_last_request={"side": {"pokemon": [
+        {"ident": "p1: Rillaboom", "details": "Rillaboom, L100"},
+        {"ident": "p1: Cramorant", "details": f"{request_species}, L100"},
+    ]}})
+    order = SimpleNamespace(
+        message="/choose switch cramorantgorging",
+        order=SimpleNamespace(species="cramorantgorging"),
+    )
+    assert switch_by_party_slot(battle, order).message == "/choose switch 2"
+
 def policy(value_head: bool = False) -> NeuralPlayer:
     player = NeuralPlayer.__new__(NeuralPlayer)
     player.model = PokeDecision(
@@ -41,6 +55,9 @@ def policy(value_head: bool = False) -> NeuralPlayer:
     player.last_server_error = None
     player.decisions = 0
     player.collector = None
+    player._behavior = {}
+    player.policy_version = "test-policy"
+    player.checkpoint_sha256 = "test-checkpoint"
     return player
 
 
@@ -69,6 +86,9 @@ def test_all_masked_uses_fallback_without_advancing_memory() -> None:
     player.choose_random_move = lambda _: "fallback-order"
     assert player._fallback(battle, "all_masked") == "fallback-order"
     assert player.fallbacks == {"all_masked": 1}
+    assert player._behavior["a"]["probabilities"] is None
+    assert player._behavior["a"]["chosen_index"] == -1
+    assert player._behavior["a"]["fallback_reason"] == "all_masked"
     assert player._model_choice["a"] is False
 
 
@@ -94,6 +114,34 @@ def test_values_are_per_battle_and_do_not_change_actions(sample) -> None:
     assert legacy.decision_values == {}
     assert valued.select_action("a", encoded(), np.zeros(13, bool)) is None
     assert len(valued.decision_values["a"]) == 2
+
+
+@pytest.mark.parametrize("sample", [False, True])
+def test_behavior_records_exact_sampling_distribution(sample, monkeypatch) -> None:
+    player = policy(value_head=True)
+    player.sample = sample
+    player.collector = SimpleNamespace()
+    player.temperature = 0.75
+    mask = np.array([True, False, True] + [False] * 10)
+    captured = []
+    original = torch.multinomial
+
+    def capture(probabilities, count):
+        captured.append(probabilities.clone())
+        return original(probabilities, count)
+
+    monkeypatch.setattr(torch, "multinomial", capture)
+    action = player.select_action("a", encoded(), mask)
+    behavior = player._behavior["a"]
+    probabilities = np.asarray(behavior["probabilities"])
+    assert probabilities.sum() == pytest.approx(1, abs=1e-6)
+    assert not probabilities[~mask].any()
+    assert behavior["chosen_index"] == action
+    assert behavior["log_probability"] == pytest.approx(np.log(probabilities[action]))
+    assert behavior["value"] is not None
+    assert behavior["mode"] == ("sample" if sample else "argmax")
+    if sample:
+        np.testing.assert_array_equal(probabilities, captured[0].numpy())
 
 
 def test_revival_fallback_targets_fainted_party_slot() -> None:

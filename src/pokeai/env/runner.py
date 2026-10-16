@@ -35,6 +35,12 @@ class RunConfig:
     schedule_seed: int | None = None
     swap_team_pairs: bool = False
     alternate_challenger: bool = False
+    opponent_sample: bool | None = None
+    opponent_temperature: float | None = None
+    opponent_team_preview_checkpoint: str | None = None
+    opponent_team_preview_disabled: bool = False
+    opponent_team_preview_argmax: bool | None = None
+    opponent_type: str | None = None
 
     def __post_init__(self) -> None:
         if self.battles < 1 or self.concurrent < 1:
@@ -262,7 +268,7 @@ def _counted_baseline(name: str) -> type:
         def choose_move(self, battle: Any) -> Any:
             self.decisions += 1
             if getattr(battle, "reviving", False):
-                from pokeai.agents.neural_player import RevivalOrder
+                from pokeai.agents.neural_player import PartySlotOrder
 
                 request = getattr(battle, "last_request", None) or battle._last_request
                 targets = [
@@ -272,7 +278,7 @@ def _counted_baseline(name: str) -> type:
                 ]
                 if not targets:
                     raise RuntimeError("Revival request has no fainted target")
-                order = RevivalOrder(random.choice(targets))
+                order = PartySlotOrder(random.choice(targets))
             else:
                 order = super().choose_move(battle)
             self._protocol_choices[battle.battle_tag] = _protocol_choice_evidence(
@@ -368,7 +374,31 @@ async def _run_on_poke_loop(
             use_argmax=config.team_preview_argmax,
         )
     player_type = _player_type(config.player, config, team_preview_model)
-    opponent_type = _player_type(config.opponent, config, team_preview_model)
+    from dataclasses import replace
+
+    opponent_config = replace(
+        config,
+        sample=config.sample if config.opponent_sample is None else config.opponent_sample,
+        temperature=(
+            config.temperature if config.opponent_temperature is None
+            else config.opponent_temperature
+        ),
+    )
+    opponent_preview = team_preview_model
+    if config.opponent_team_preview_disabled:
+        opponent_preview = None
+    elif config.opponent_team_preview_checkpoint is not None:
+        from metamon.backend.team_preview.preview import TeamPreviewModel
+
+        opponent_preview = TeamPreviewModel.load_from_checkpoint(
+            config.opponent_team_preview_checkpoint, device=config.device,
+            use_argmax=(
+                config.team_preview_argmax
+                if config.opponent_team_preview_argmax is None
+                else config.opponent_team_preview_argmax
+            ),
+        )
+    opponent_type = _player_type(config.opponent, opponent_config, opponent_preview)
     records: list[dict[str, Any]] = []
     next_index = iter(range(config.battles))
     started = time.perf_counter()
@@ -427,6 +457,9 @@ async def _run_on_poke_loop(
                         "error": None,
                         "started_at": datetime.now(UTC).isoformat(),
                     }
+                    if config.opponent_type is not None:
+                        record["opponent_type"] = config.opponent_type
+                        record["learner"] = "player"
                     try:
                         if schedule is None:
                             player_draw = _sample_team(teamset)
@@ -630,6 +663,16 @@ def main() -> None:
     parser.add_argument("--save-trajectories", action="store_true")
     parser.add_argument("--sample", action="store_true")
     parser.add_argument("--temperature", type=float, default=1.0)
+    parser.add_argument(
+        "--opponent-sample", action=argparse.BooleanOptionalAction, default=None
+    )
+    parser.add_argument("--opponent-temperature", type=float)
+    parser.add_argument("--opponent-team-preview-checkpoint")
+    parser.add_argument("--opponent-team-preview-disabled", action="store_true")
+    parser.add_argument(
+        "--opponent-team-preview-argmax", action=argparse.BooleanOptionalAction,
+        default=None,
+    )
     parser.add_argument("--device", default="cpu")
     parser.add_argument(
         "--team-preview-checkpoint",

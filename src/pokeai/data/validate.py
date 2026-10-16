@@ -163,11 +163,14 @@ def _public_knowledge(events: list[list[str]], side: str) -> dict[str, dict[str,
             continue
         kind = event[1]
         ident = event[2] if len(event) > 2 else ""
-        if kind in {"switch", "drag", "replace", "detailschange"} and ident.startswith(
-            side
-        ):
+        if kind in {
+            "switch", "drag", "replace", "detailschange", "-formechange",
+        } and ident.startswith(side):
             species = clean_name(event[3].split(",")[0])
-            if kind in {"detailschange", "replace"} and ident in aliases:
+            if (
+                kind in {"detailschange", "-formechange", "replace"}
+                and ident in aliases
+            ):
                 known[species] = known[aliases[ident]]
             aliases[ident] = species
             known.setdefault(
@@ -186,6 +189,14 @@ def _public_knowledge(events: list[list[str]], side: str) -> dict[str, dict[str,
         source = next(
             (part[5:] for part in event[3:] if part.startswith("[of] ")), ident
         )
+        # Skill Swap publicly names the abilities each participant receives.
+        # Both revelations belong to this exact public protocol prefix.
+        if (
+            kind == "-activate" and len(event) > 5
+            and event[3] == "Skill Swap" and source != ident
+        ):
+            reveal("ability", ident, event[4])
+            reveal("ability", source, event[5])
 
         for part in event[3:]:
             if part.startswith("[from] ability: "):
@@ -340,6 +351,15 @@ def leakage_errors(
             dex = GenData.from_gen(9).pokedex.get(name, {})
             abilities = {clean_no_numbers(a) for a in dex.get("abilities", {}).values()}
             if field == "ability" and len(abilities) == 1 and value in abilities:
+                continue
+            # Publicly known forms imply their required items and Tera types,
+            # just like a species with only one possible ability. poke-env's
+            # dex uses forceTeraType; the simulator uses requiredTeraType.
+            required = {
+                "item": dex.get("requiredItem"),
+                "tera_type": dex.get("forceTeraType", dex.get("requiredTeraType")),
+            }.get(field)
+            if required and value == clean_no_numbers(required):
                 continue
             if value not in UNKNOWN and value not in evidence[field]:
                 errors.append(f"{index}: unrevealed opponent {field} {value}")

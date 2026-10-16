@@ -1,0 +1,17 @@
+seed: 20261016
+battles: 1000
+concurrent: 8
+teams: data/teams_w5/collect
+learner: models/pokedecision-v1-value
+team_preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+temperature: 1.0
+opponents:
+  - {policy: 'neural:models/pokedecision-v1-value', type: selfplay, weight: 0.4}
+  - {policy: 'neural:models/pokedecision-v0', type: earlier_neural, weight: 0.1}
+  - {policy: 'neural:models/pokedecision-v1', type: earlier_neural, weight: 0.1}
+  - {policy: 'neural:models/pokedecision-v1-joint-ablation', type: earlier_neural, weight: 0.1}
+  - {policy: Grunt, type: heuristic, weight: 0.06}
+  - {policy: GymLeader, type: heuristic, weight: 0.06}
+  - {policy: PokeEnvHeuristic, type: heuristic, weight: 0.06}
+  - {policy: EmeraldKaizo, type: heuristic, weight: 0.06}
+  - {policy: RandomBaseline, type: heuristic, weight: 0.06}

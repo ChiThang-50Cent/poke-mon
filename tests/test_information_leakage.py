@@ -247,3 +247,90 @@ def test_pickpocket_reveal_is_not_hidden_information(synthetic_run):
     assert leakage_errors(data, meta) == []
     meta["decision_event_counts"][0] = 2
     assert any("pickpocket" in error for error in leakage_errors(data, meta))
+
+
+@pytest.mark.parametrize(
+    "species,item,tera",
+    [
+        ("ogerpon", "unknownitem", "grass"),
+        ("ogerponwellspring", "wellspringmask", "water"),
+        ("ogerponhearthflame", "hearthflamemask", "fire"),
+        ("ogerponcornerstone", "cornerstonemask", "rock"),
+    ],
+)
+def test_public_form_required_dex_facts(synthetic_run, species, item, tera):
+    run, _ = synthetic_run
+    _, data, meta = trajectory(run)
+    meta["public_events"][1][3] = species
+    for state in data["states"]:
+        opponent = state["opponent_active_pokemon"]
+        opponent.update(name=species, item=item, tera_type=tera)
+    assert leakage_errors(data, meta) == []
+    data["states"][0]["opponent_active_pokemon"]["item"] = "leftovers"
+    assert any(
+        "unrevealed opponent item leftovers" in error
+        for error in leakage_errors(data, meta)
+    )
+    data["states"][0]["opponent_active_pokemon"]["item"] = item
+    data["states"][0]["opponent_active_pokemon"]["tera_type"] = "fairy"
+    assert any(
+        "unrevealed opponent tera_type fairy" in error
+        for error in leakage_errors(data, meta)
+    )
+
+
+@pytest.mark.parametrize("form", ["cramorantgulping", "cramorantgorging"])
+def test_public_form_change_preserves_reveals_and_requires_prefix(
+    synthetic_run, form,
+):
+    run, _ = synthetic_run
+    _, data, meta = trajectory(run)
+    meta["public_events"] = [
+        ["", "switch", "p1a: Pikachu", "Pikachu, L100", "100/100"],
+        ["", "switch", "p2a: Cramorant", "Cramorant, L100", "100/100"],
+        ["", "move", "p2a: Cramorant", "Surf", "p1a: Pikachu"],
+        ["", "-formechange", "p2a: Cramorant", form, ""],
+    ]
+    meta["decision_event_counts"] = [2, 4]
+    data["states"][0]["opponent_active_pokemon"].update(
+        name="cramorant", moves=[],
+    )
+    data["states"][1]["opponent_active_pokemon"].update(name=form, moves=[])
+    assert leakage_errors(data, meta) == []
+    from pokeai.data.validate import _public_knowledge
+
+    known = _public_knowledge(meta["public_events"], "p2")
+    assert "surf" in known[form]["moves"]
+    meta["decision_event_counts"][1] = 3
+    assert any(
+        "not publicly revealed" in error for error in leakage_errors(data, meta)
+    )
+
+
+def test_skill_swap_public_ability_ownership_and_prefix(synthetic_run):
+    from pokeai.data.validate import _public_knowledge
+
+    run, _ = synthetic_run
+    _, data, meta = trajectory(run)
+    exchange = [
+        "", "-activate", "p1a: Pikachu", "Skill Swap",
+        "Adaptability", "Static", "[of] p2a: Eevee",
+    ]
+    before = meta["public_events"][:2]
+    assert not _public_knowledge(before, "p1")["pikachu"]["ability"]
+    assert not _public_knowledge(before, "p2")["eevee"]["ability"]
+    after = before + [exchange]
+    own = _public_knowledge(after, "p1")["pikachu"]["ability"]
+    opponent = _public_knowledge(after, "p2")["eevee"]["ability"]
+    assert own == {"adaptability"}
+    assert opponent == {"static"}
+    meta["public_events"].insert(2, exchange)
+    meta["decision_event_counts"] = [3, 5]
+    for state in data["states"]:
+        state["opponent_active_pokemon"]["ability"] = "static"
+    assert leakage_errors(data, meta) == []
+    meta["decision_event_counts"][0] = 2
+    assert any(
+        "unrevealed opponent ability static" in error
+        for error in leakage_errors(data, meta)
+    )

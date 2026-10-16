@@ -74,13 +74,20 @@ class TrajectoryCollector:
     events: list[list[str]] = field(default_factory=list)
     event_counts: list[int] = field(default_factory=list)
     team_preview: dict[str, Any] | None = None
+    behavior: list[dict[str, Any] | None] = field(default_factory=list)
     error: str | None = None
 
-    def record(self, battle: Any, order: Any) -> None:
+    def record(
+        self, battle: Any, order: Any, behavior: dict[str, Any] | None = None
+    ) -> None:
         state = UniversalState.from_Battle(battle)
         legal = UniversalAction.definitely_valid_actions(state, battle)
         mask = [int(UniversalAction(index) in legal) for index in range(13)]
         action, reason = order_to_action(battle, order)
+        if behavior is not None:
+            action = behavior["chosen_index"]
+            reason = behavior["fallback_reason"]
+            mask = behavior["mask"]
         if action >= 0 and not mask[action]:
             raise ValueError(f"chosen action {action} outside mask: {mask}")
         self.states.append(state.to_dict())
@@ -89,6 +96,7 @@ class TrajectoryCollector:
         self.reasons.append(reason)
         self.turns.append(battle.turn)
         self.event_counts.append(len(self.events))
+        self.behavior.append(behavior)
 
     def payloads(
         self,
@@ -126,6 +134,7 @@ class TrajectoryCollector:
             "unsupported_reasons": self.reasons,
             "team_file": team_file,
             "team_preview": self.team_preview,
+            "behavior": self.behavior,
             "decision_turns": self.turns,
             "public_events": self.events,
             "decision_event_counts": self.event_counts,
@@ -152,6 +161,16 @@ def save_battle(
         native, meta = participant.collector.payloads(
             battle, run_id, record[policy_key], record[team_key], commit
         )
+        meta["team_preview"] = getattr(
+            participant, "team_preview_records", {}
+        ).get(battle.battle_tag, meta["team_preview"])
+        meta["model_dir"] = getattr(participant, "model_dir", None)
+        meta["checkpoint_sha256"] = getattr(participant, "checkpoint_sha256", None)
+        if meta["model_dir"] is not None:
+            meta["policy_version"] = participant.policy_version
+            meta["battle_backend"] = "metamon"
+        meta["learner"] = policy_key == "player"
+        meta["opponent_type"] = record.get("opponent_type", record["opponent"])
         expected = (
             "tie" if record["winner"] == "tie"
             else "win" if record["winner"] == policy_key else "loss"
