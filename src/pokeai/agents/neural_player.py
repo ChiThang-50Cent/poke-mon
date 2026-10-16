@@ -57,6 +57,8 @@ class NeuralPlayer(MetamonPlayer):
         self.sample = sample
         self.temperature = temperature
         self.hidden: dict[str, Any] = {}
+        # P(win) for represented decisions only; fallbacks/preview have no value.
+        self.decision_values: dict[str, list[float]] = {}
         self._model_choice: dict[str, bool] = {}
         self._hidden_before: dict[str, Any] = {}
         self._pending_choice: dict[str, dict[str, Any]] = {}
@@ -108,6 +110,9 @@ class NeuralPlayer(MetamonPlayer):
                             self.hidden.pop(tag, None)
                         else:
                             self.hidden[tag] = hidden
+                        values = self.decision_values.get(tag)
+                        if values:
+                            values.pop()
                     self._pending_choice.pop(tag, None)
                 else:
                     self.last_server_error = error
@@ -219,7 +224,15 @@ class NeuralPlayer(MetamonPlayer):
         start = time.perf_counter()
         with torch.inference_mode():
             self._hidden_before[tag] = self.hidden.get(tag)
-            logits, hidden = self.model(tokens, numbers, self.hidden.get(tag))
+            if self.model.config.value_head:
+                logits, value_logits, hidden = self.model.forward_with_value(
+                    tokens, numbers, self.hidden.get(tag)
+                )
+                self.decision_values.setdefault(tag, []).append(
+                    float(value_logits[0, 0].sigmoid().item())
+                )
+            else:
+                logits, hidden = self.model(tokens, numbers, self.hidden.get(tag))
             scores = logits[0, 0].masked_fill(
                 ~torch.as_tensor(mask, device=self.device), -torch.inf
             )

@@ -1,4 +1,9 @@
-"""Small structured policy shared by replay training and live inference."""
+"""Shared replay/live policy with an optional win-value head.
+
+Policy-only configs and checkpoints omit value parameters. Value-enabled models
+share the entire encoder/memory and expose raw value logits via forward_with_value;
+ordinary forward retains the policy-only return contract.
+"""
 
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -17,6 +22,7 @@ class PokeDecisionConfig:
     d_model: int = 96
     hidden_size: int = 384
     numeric_size: int = 128
+    value_head: bool = False
 
 
 class PokeDecision(nn.Module):
@@ -51,8 +57,12 @@ class PokeDecision(nn.Module):
                 nn.Linear(config.hidden_size, config.hidden_size), nn.GELU(),
             )
         self.policy = nn.Linear(config.hidden_size, 13)
+        # Construct last so enabling value prediction preserves seeded policy weights.
+        self.value_head = (
+            nn.Linear(config.hidden_size, 1) if config.value_head else None
+        )
 
-    def forward(
+    def _forward_features(
         self, tokens: Tensor, numbers: Tensor, hidden: Tensor | None = None
     ) -> tuple[Tensor, Tensor | None]:
         positions = torch.arange(self.config.token_len, device=tokens.device)
@@ -65,7 +75,23 @@ class PokeDecision(nn.Module):
             features, hidden = self.memory(fused, hidden)
         else:
             features, hidden = self.memory(fused), None
+        return features, hidden
+
+    def forward(
+        self, tokens: Tensor, numbers: Tensor, hidden: Tensor | None = None
+    ) -> tuple[Tensor, Tensor | None]:
+        """Return policy logits and memory without evaluating the optional value head."""
+        features, hidden = self._forward_features(tokens, numbers, hidden)
         return self.policy(features), hidden
+
+    def forward_with_value(
+        self, tokens: Tensor, numbers: Tensor, hidden: Tensor | None = None
+    ) -> tuple[Tensor, Tensor, Tensor | None]:
+        """Return policy logits, win-value logits [B,T], and shared memory."""
+        if self.value_head is None:
+            raise ValueError("Value prediction requires config.value_head=True")
+        features, hidden = self._forward_features(tokens, numbers, hidden)
+        return self.policy(features), self.value_head(features).squeeze(-1), hidden
 
 
 def masked_logits(logits: Tensor, masks: Tensor) -> Tensor:

@@ -71,10 +71,16 @@ class TrajectorySequences(Dataset):
 
     def __getitem__(self, index: int) -> dict[str, Tensor]:
         start, end = self.windows[index]
-        return {
+        result = {
             key: torch.from_numpy(self.arrays[key][start:end])
             for key in ("tokens", "numbers", "masks", "actions", "valid")
         }
+        if "outcomes" in self.arrays:
+            result["outcomes"] = torch.full(
+                (end - start,), float(self.arrays["outcomes"][index])
+            )
+            result["real"] = torch.ones(end - start, dtype=torch.bool)
+        return result
 
 
 def pad_sequences(batch: list[dict[str, Tensor]]) -> dict[str, Tensor]:
@@ -105,27 +111,51 @@ def baselines(train: dict, val: dict) -> dict:
     }
 
 
+def value_loss(logits: Tensor, outcomes: Tensor, real: Tensor) -> Tensor:
+    """Every observed step contributes, irrespective of BC eligibility."""
+    return F.binary_cross_entropy_with_logits(
+        logits[real.bool()], outcomes[real.bool()]
+    )
+
+
 def run_epoch(
     model: PokeDecision, loader: DataLoader, device: torch.device,
     optimizer: torch.optim.Optimizer | None, grad_clip: float,
+    value_weight: float = 0.5, probe: bool = False,
 ) -> dict[str, float | int]:
     model.train(optimizer is not None)
     total_loss = correct = nonforced_correct = count = nonforced = 0
+    total_value = real_count = 0
     for batch in loader:
         batch = {key: value.to(device) for key, value in batch.items()}
         with torch.set_grad_enabled(optimizer is not None):
-            logits, _ = model(batch["tokens"].long(), batch["numbers"])
+            if model.config.value_head:
+                logits, values, _ = model.forward_with_value(
+                    batch["tokens"].long(), batch["numbers"]
+                )
+                auxiliary = value_loss(values, batch["outcomes"], batch["real"])
+                steps = int(batch["real"].sum())
+                total_value += float(auxiliary.detach()) * steps
+                real_count += steps
+            else:
+                logits, _ = model(batch["tokens"].long(), batch["numbers"])
+                auxiliary = None
             valid = eligible_steps(batch["actions"], batch["masks"], batch["valid"])
             loss = masked_bc_loss(logits, batch["actions"], batch["masks"], valid)
-            if loss is None:
+            objective = (
+                auxiliary if probe else
+                (loss if auxiliary is None else
+                 (0 if loss is None else loss) + value_weight * auxiliary)
+            )
+            if objective is None:
                 continue
             if optimizer is not None:
                 optimizer.zero_grad(set_to_none=True)
-                loss.backward()
+                objective.backward()
                 torch.nn.utils.clip_grad_norm_(model.parameters(), grad_clip)
                 optimizer.step()
         n = int(valid.sum())
-        total_loss += float(loss.detach()) * n
+        total_loss += float(loss.detach()) * n if loss is not None else 0
         predictions = masked_logits(logits[valid], batch["masks"][valid]).argmax(-1)
         matches = predictions == batch["actions"][valid]
         choices = batch["masks"][valid].sum(-1) > 1
@@ -135,9 +165,18 @@ def run_epoch(
         nonforced_correct += int((matches & choices).sum())
     if not count:
         raise ValueError("No loss-eligible decisions in split")
-    return {"loss": total_loss / count, "accuracy": correct / count,
-            "accuracy_nonforced": nonforced_correct / max(nonforced, 1),
-            "valid_decisions": count, "nonforced_decisions": nonforced}
+    result = {"loss": total_loss / count, "accuracy": correct / count,
+              "accuracy_nonforced": nonforced_correct / max(nonforced, 1),
+              "valid_decisions": count, "nonforced_decisions": nonforced}
+    if real_count:
+        result["policy_loss"] = result["loss"]
+        result["value_bce"] = total_value / real_count
+        result["value_steps"] = real_count
+        result["loss"] = (
+            result["value_bce"] if probe else
+            result["policy_loss"] + value_weight * result["value_bce"]
+        )
+    return result
 
 
 def initialize_model(config: dict, arch: str, stats: dict, encoder: dict) -> PokeDecision:
@@ -150,9 +189,19 @@ def initialize_model(config: dict, arch: str, stats: dict, encoder: dict) -> Pok
     checkpoint_path = config.get("init_checkpoint")
     if checkpoint_path:
         checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=True)
-        if checkpoint["config"] != asdict(model_config):
+        checkpoint_config = PokeDecisionConfig(**checkpoint["config"])
+        probe = config.get("value_mode") == "probe"
+        expected_config = asdict(model_config) | ({"value_head": False} if probe else {})
+        if asdict(checkpoint_config) != expected_config:
             raise ValueError("Initialization checkpoint architecture mismatch")
-        model.load_state_dict(checkpoint["state_dict"], strict=True)
+        missing, unexpected = model.load_state_dict(
+            checkpoint["state_dict"], strict=not probe
+        )
+        if probe:
+            if set(missing) != {"value_head.weight", "value_head.bias"} or unexpected:
+                raise ValueError("Probe initialization must differ only by value head")
+            for name, parameter in model.named_parameters():
+                parameter.requires_grad_(name.startswith("value_head."))
     parameters = sum(p.numel() for p in model.parameters())
     expected = config.get("expected_parameters")
     if expected is not None and parameters != expected:
@@ -213,7 +262,8 @@ def train_arch(
         batch_size=settings["batch_size"], collate_fn=pad_sequences,
     )
     optimizer = torch.optim.AdamW(
-        model.parameters(), lr=settings["learning_rate"],
+        (p for p in model.parameters() if p.requires_grad),
+        lr=settings["learning_rate"],
         weight_decay=settings["weight_decay"],
     )
     output.mkdir(parents=True, exist_ok=True)
@@ -236,9 +286,13 @@ def train_arch(
     best_epoch = 0
     for epoch in range(1, settings["epochs"] + 1):
         training = run_epoch(
-            model, train_loader, device, optimizer, settings["grad_clip"]
+            model, train_loader, device, optimizer, settings["grad_clip"],
+            config.get("value_weight", 0.5), config.get("value_mode") == "probe",
         )
-        validation = run_epoch(model, val_loader, device, None, settings["grad_clip"])
+        validation = run_epoch(
+            model, val_loader, device, None, settings["grad_clip"],
+            config.get("value_weight", 0.5), config.get("value_mode") == "probe",
+        )
         row = {"epoch": epoch, "train": training, "val": validation,
                "elapsed_s": time.monotonic() - started}
         history.append(row)

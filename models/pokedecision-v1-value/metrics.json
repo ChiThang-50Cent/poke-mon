@@ -1,0 +1,724 @@
+{
+  "arch": "gru",
+  "parameters": 1300174,
+  "best_epoch": 2,
+  "stopping_epoch": 5,
+  "train_valid_decisions": 2512343,
+  "gpu": "NVIDIA GeForce RTX 3060",
+  "best_val": {
+    "loss": 0.6666421404818409,
+    "accuracy": 0.43198833533967207,
+    "accuracy_nonforced": 0.42372864751542144,
+    "valid_decisions": 310682,
+    "nonforced_decisions": 306229,
+    "policy_loss": 1.48380784453377,
+    "value_bce": 0.6666421404818409,
+    "value_steps": 338968
+  },
+  "epochs": [
+    {
+      "epoch": 1,
+      "train": {
+        "loss": 0.6684932948372482,
+        "accuracy": 0.4819803665343466,
+        "accuracy_nonforced": 0.47459983666060973,
+        "valid_decisions": 2512343,
+        "nonforced_decisions": 2477051,
+        "policy_loss": 1.3654622610436875,
+        "value_bce": 0.6684932948372482,
+        "value_steps": 2742268
+      },
+      "val": {
+        "loss": 0.6667433770288225,
+        "accuracy": 0.43198833533967207,
+        "accuracy_nonforced": 0.42372864751542144,
+        "valid_decisions": 310682,
+        "nonforced_decisions": 306229,
+        "policy_loss": 1.48380784453377,
+        "value_bce": 0.6667433770288225,
+        "value_steps": 338968
+      },
+      "elapsed_s": 35.10924985000747
+    },
+    {
+      "epoch": 2,
+      "train": {
+        "loss": 0.6665389959959804,
+        "accuracy": 0.48198474491739385,
+        "accuracy_nonforced": 0.474604277425051,
+        "valid_decisions": 2512343,
+        "nonforced_decisions": 2477051,
+        "policy_loss": 1.3654622829157481,
+        "value_bce": 0.6665389959959804,
+        "value_steps": 2742268
+      },
+      "val": {
+        "loss": 0.6666421404818409,
+        "accuracy": 0.43198833533967207,
+        "accuracy_nonforced": 0.42372864751542144,
+        "valid_decisions": 310682,
+        "nonforced_decisions": 306229,
+        "policy_loss": 1.48380784453377,
+        "value_bce": 0.6666421404818409,
+        "value_steps": 338968
+      },
+      "elapsed_s": 70.22376857101335
+    },
+    {
+      "epoch": 3,
+      "train": {
+        "loss": 0.6665380703771672,
+        "accuracy": 0.48198275474328145,
+        "accuracy_nonforced": 0.4746022588957595,
+        "valid_decisions": 2512343,
+        "nonforced_decisions": 2477051,
+        "policy_loss": 1.3654622588582135,
+        "value_bce": 0.6665380703771672,
+        "value_steps": 2742268
+      },
+      "val": {
+        "loss": 0.6672417326755133,
+        "accuracy": 0.43198833533967207,
+        "accuracy_nonforced": 0.42372864751542144,
+        "valid_decisions": 310682,
+        "nonforced_decisions": 306229,
+        "policy_loss": 1.48380784453377,
+        "value_bce": 0.6672417326755133,
+        "value_steps": 338968
+      },
+      "elapsed_s": 105.28978484100662
+    },
+    {
+      "epoch": 4,
+      "train": {
+        "loss": 0.6663975282499416,
+        "accuracy": 0.4819855409870388,
+        "accuracy_nonforced": 0.4746050848367676,
+        "valid_decisions": 2512343,
+        "nonforced_decisions": 2477051,
+        "policy_loss": 1.365462271963087,
+        "value_bce": 0.6663975282499416,
+        "value_steps": 2742268
+      },
+      "val": {
+        "loss": 0.6673565693223373,
+        "accuracy": 0.43198833533967207,
+        "accuracy_nonforced": 0.42372864751542144,
+        "valid_decisions": 310682,
+        "nonforced_decisions": 306229,
+        "policy_loss": 1.48380784453377,
+        "value_bce": 0.6673565693223373,
+        "value_steps": 338968
+      },
+      "elapsed_s": 139.95565893800813
+    },
+    {
+      "epoch": 5,
+      "train": {
+        "loss": 0.6663444697492225,
+        "accuracy": 0.4819811626039916,
+        "accuracy_nonforced": 0.4746006440723263,
+        "valid_decisions": 2512343,
+        "nonforced_decisions": 2477051,
+        "policy_loss": 1.3654622998926862,
+        "value_bce": 0.6663444697492225,
+        "value_steps": 2742268
+      },
+      "val": {
+        "loss": 0.6688477733817573,
+        "accuracy": 0.43198833533967207,
+        "accuracy_nonforced": 0.42372864751542144,
+        "valid_decisions": 310682,
+        "nonforced_decisions": 306229,
+        "policy_loss": 1.48380784453377,
+        "value_bce": 0.6688477733817573,
+        "value_steps": 338968
+      },
+      "elapsed_s": 175.01866043900372
+    }
+  ],
+  "wall_time_s": 175.0187389190105,
+  "source_sha256": "18154e90cfdd1977c399b706bf0584bbb3184301d18eb91e7433cff8b064c257",
+  "mode": "probe",
+  "checkpoint_dir": "checkpoints/w4-value/probe",
+  "value": {
+    "bce": 0.6666421337386432,
+    "brier": 0.23716398906681915,
+    "roc_auc": 0.628250536884277,
+    "accuracy": 0.5884950791815157,
+    "mean_probability": 0.5055584502787225,
+    "base_rate": 0.48963028958485755,
+    "ece": 0.016165523376177885,
+    "count": 338968,
+    "reliability": [
+      {
+        "lower": 0.0,
+        "upper": 0.1,
+        "count": 14,
+        "mean_probability": 0.08818681963852473,
+        "observed_rate": 0.07142857142857142
+      },
+      {
+        "lower": 0.1,
+        "upper": 0.2,
+        "count": 2055,
+        "mean_probability": 0.17293981460904262,
+        "observed_rate": 0.15766423357664233
+      },
+      {
+        "lower": 0.2,
+        "upper": 0.3,
+        "count": 17311,
+        "mean_probability": 0.261939695672541,
+        "observed_rate": 0.25215181098723355
+      },
+      {
+        "lower": 0.3,
+        "upper": 0.4,
+        "count": 52036,
+        "mean_probability": 0.35675683009300546,
+        "observed_rate": 0.3575024982704282
+      },
+      {
+        "lower": 0.4,
+        "upper": 0.5,
+        "count": 90800,
+        "mean_probability": 0.4527643394611349,
+        "observed_rate": 0.45219162995594714
+      },
+      {
+        "lower": 0.5,
+        "upper": 0.6,
+        "count": 96482,
+        "mean_probability": 0.5481725372311508,
+        "observed_rate": 0.5250202110238179
+      },
+      {
+        "lower": 0.6,
+        "upper": 0.7,
+        "count": 58699,
+        "mean_probability": 0.643201930043352,
+        "observed_rate": 0.6051210412443142
+      },
+      {
+        "lower": 0.7,
+        "upper": 0.8,
+        "count": 18974,
+        "mean_probability": 0.7380190305643493,
+        "observed_rate": 0.7033835775271424
+      },
+      {
+        "lower": 0.8,
+        "upper": 0.9,
+        "count": 2558,
+        "mean_probability": 0.8283948424134616,
+        "observed_rate": 0.8049257232212667
+      },
+      {
+        "lower": 0.9,
+        "upper": 1.0,
+        "count": 39,
+        "mean_probability": 0.9121131392625662,
+        "observed_rate": 0.9487179487179487
+      }
+    ],
+    "turn_buckets": {
+      "0-5": {
+        "bce": 0.6997962377958429,
+        "brier": 0.2529674467633373,
+        "roc_auc": 0.5430194268985367,
+        "accuracy": 0.5273416271315894,
+        "mean_probability": 0.5287370563902506,
+        "base_rate": 0.49814197376731345,
+        "ece": 0.056335613282322894,
+        "count": 68083,
+        "reliability": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 0,
+            "mean_probability": null,
+            "observed_rate": null
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 29,
+            "mean_probability": 0.17667920990236874,
+            "observed_rate": 0.3793103448275862
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 800,
+            "mean_probability": 0.2686802691034973,
+            "observed_rate": 0.36875
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 6161,
+            "mean_probability": 0.36294096141855275,
+            "observed_rate": 0.4262295081967213
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 19186,
+            "mean_probability": 0.4566666605800505,
+            "observed_rate": 0.47753570311685606
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 25515,
+            "mean_probability": 0.5485483165233948,
+            "observed_rate": 0.5014305310601607
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 13524,
+            "mean_probability": 0.6410682606198174,
+            "observed_rate": 0.542664892043774
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 2727,
+            "mean_probability": 0.7329933012323061,
+            "observed_rate": 0.5881921525485881
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 141,
+            "mean_probability": 0.8181638261105152,
+            "observed_rate": 0.5957446808510638
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 0,
+            "mean_probability": null,
+            "observed_rate": null
+          }
+        ]
+      },
+      "6-15": {
+        "bce": 0.6753161402113167,
+        "brier": 0.24122982304788781,
+        "roc_auc": 0.6114036873291235,
+        "accuracy": 0.5768285873813512,
+        "mean_probability": 0.5209807370859203,
+        "base_rate": 0.4946957007258515,
+        "ece": 0.027994899725530726,
+        "count": 107460,
+        "reliability": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 0,
+            "mean_probability": null,
+            "observed_rate": null
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 211,
+            "mean_probability": 0.1781824533761395,
+            "observed_rate": 0.16113744075829384
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 3361,
+            "mean_probability": 0.26544583327924165,
+            "observed_rate": 0.2630169592383219
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 14413,
+            "mean_probability": 0.3583821042144951,
+            "observed_rate": 0.3646707833206133
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 28561,
+            "mean_probability": 0.4531269076992361,
+            "observed_rate": 0.44417212282483104
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 32183,
+            "mean_probability": 0.5484839098932759,
+            "observed_rate": 0.5169810148214896
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 21059,
+            "mean_probability": 0.6437831374704399,
+            "observed_rate": 0.5868274846858825
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 6804,
+            "mean_probability": 0.7376112313410031,
+            "observed_rate": 0.6800411522633745
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 854,
+            "mean_probability": 0.8278101049625343,
+            "observed_rate": 0.7763466042154566
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 14,
+            "mean_probability": 0.9119838093008313,
+            "observed_rate": 1.0
+          }
+        ]
+      },
+      "16-30": {
+        "bce": 0.6482720820607869,
+        "brier": 0.22846721900844286,
+        "roc_auc": 0.6667006307193315,
+        "accuracy": 0.6199751647375529,
+        "mean_probability": 0.4909648801424863,
+        "base_rate": 0.4822663536577628,
+        "ece": 0.01057590854160969,
+        "count": 110327,
+        "reliability": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 7,
+            "mean_probability": 0.08733491067375455,
+            "observed_rate": 0.0
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 956,
+            "mean_probability": 0.1744602783641556,
+            "observed_rate": 0.12656903765690378
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 7986,
+            "mean_probability": 0.2613547923509381,
+            "observed_rate": 0.236038066616579
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 20508,
+            "mean_probability": 0.35503392306910125,
+            "observed_rate": 0.33543007606787595
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 29390,
+            "mean_probability": 0.4511697592916599,
+            "observed_rate": 0.44035386185777475
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 27006,
+            "mean_probability": 0.547609999055272,
+            "observed_rate": 0.5441013108198178
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 16896,
+            "mean_probability": 0.6439250022292871,
+            "observed_rate": 0.646484375
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 6511,
+            "mean_probability": 0.7397871526901375,
+            "observed_rate": 0.7467362924281984
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 1051,
+            "mean_probability": 0.8290724420297951,
+            "observed_rate": 0.8430066603235015
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 16,
+            "mean_probability": 0.9106818437576294,
+            "observed_rate": 0.9375
+          }
+        ]
+      },
+      "31+": {
+        "bce": 0.6447462636377558,
+        "brier": 0.22674226358323774,
+        "roc_auc": 0.6742756982380149,
+        "accuracy": 0.625108290331086,
+        "mean_probability": 0.4749493281315211,
+        "base_rate": 0.4837658668876417,
+        "ece": 0.011796197267349904,
+        "count": 53098,
+        "reliability": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "count": 7,
+            "mean_probability": 0.08903872860329491,
+            "observed_rate": 0.14285714285714285
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "count": 859,
+            "mean_probability": 0.1698336416250474,
+            "observed_rate": 0.1839348079161816
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "count": 5164,
+            "mean_probability": 0.25951801687421305,
+            "observed_rate": 0.25193648334624325
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "count": 10954,
+            "mean_probability": 0.3543657280514226,
+            "observed_rate": 0.35073945590651817
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "count": 13663,
+            "mean_probability": 0.4499567179098613,
+            "observed_rate": 0.45883041791700213
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "count": 11778,
+            "mean_probability": 0.5477975152368395,
+            "observed_rate": 0.5543385973849551
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "count": 7220,
+            "mean_probability": 0.6438112195756627,
+            "observed_rate": 0.6786703601108033
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "count": 2932,
+            "mean_probability": 0.7397132961315803,
+            "observed_rate": 0.7684174624829468
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "count": 512,
+            "mean_probability": 0.830796760157682,
+            "observed_rate": 0.83203125
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "count": 9,
+            "mean_probability": 0.9148588445451524,
+            "observed_rate": 0.8888888888888888
+          }
+        ]
+      }
+    },
+    "first_step": {
+      "bce": 0.7033198777581111,
+      "brier": 0.25490173403343314,
+      "roc_auc": 0.5103338289464955,
+      "accuracy": 0.5047099216480324,
+      "mean_probability": 0.5234147632444227,
+      "base_rate": 0.4982832995862312,
+      "ece": 0.05937461583733359,
+      "count": 11359,
+      "reliability": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "count": 0,
+          "mean_probability": null,
+          "observed_rate": null
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "count": 0,
+          "mean_probability": null,
+          "observed_rate": null
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "count": 11,
+          "mean_probability": 0.2839179689233953,
+          "observed_rate": 0.5454545454545454
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "count": 614,
+          "mean_probability": 0.37187893368328045,
+          "observed_rate": 0.498371335504886
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "count": 3684,
+          "mean_probability": 0.45929947184008446,
+          "observed_rate": 0.49022801302931596
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "count": 5241,
+          "mean_probability": 0.546709397905452,
+          "observed_rate": 0.4939896966227819
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "count": 1727,
+          "mean_probability": 0.6354488113676114,
+          "observed_rate": 0.5251881876085698
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "count": 82,
+          "mean_probability": 0.7222954492743422,
+          "observed_rate": 0.5609756097560976
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "count": 0,
+          "mean_probability": null,
+          "observed_rate": null
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "count": 0,
+          "mean_probability": null,
+          "observed_rate": null
+        }
+      ]
+    },
+    "final_step": {
+      "bce": 0.5424627640647697,
+      "brier": 0.17938431016263084,
+      "roc_auc": 0.8446911211873387,
+      "accuracy": 0.763183378818558,
+      "mean_probability": 0.4842961631254187,
+      "base_rate": 0.4982832995862312,
+      "ece": 0.12279341954159709,
+      "count": 11359,
+      "reliability": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "count": 5,
+          "mean_probability": 0.08525602221488952,
+          "observed_rate": 0.0
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "count": 267,
+          "mean_probability": 0.17033550547861429,
+          "observed_rate": 0.04868913857677903
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "count": 1412,
+          "mean_probability": 0.25602568701838296,
+          "observed_rate": 0.10764872521246459
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "count": 2247,
+          "mean_probability": 0.3523122125803018,
+          "observed_rate": 0.22296395193591456
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "count": 2360,
+          "mean_probability": 0.4491125478582867,
+          "observed_rate": 0.413135593220339
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "count": 2047,
+          "mean_probability": 0.5492941646035496,
+          "observed_rate": 0.6399609184171959
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "count": 1665,
+          "mean_probability": 0.6485279760919176,
+          "observed_rate": 0.8516516516516517
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "count": 1037,
+          "mean_probability": 0.7431856078260085,
+          "observed_rate": 0.9421407907425265
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "count": 309,
+          "mean_probability": 0.8353196270643315,
+          "observed_rate": 0.9838187702265372
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "count": 10,
+          "mean_probability": 0.9153356969356536,
+          "observed_rate": 1.0
+        }
+      ]
+    }
+  },
+  "eligible_for_config_D": true,
+  "policy_loss_delta_v1": 9.918694754418311e-10,
+  "probe_policy_bit_identical": true,
+  "added_parameters": 385
+}

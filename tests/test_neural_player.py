@@ -11,16 +11,20 @@ from pokeai.agents.neural_player import NeuralPlayer
 from pokeai.models.pokedecision import PokeDecision, PokeDecisionConfig
 
 
-def policy() -> NeuralPlayer:
+def policy(value_head: bool = False) -> NeuralPlayer:
     player = NeuralPlayer.__new__(NeuralPlayer)
     player.model = PokeDecision(
-        PokeDecisionConfig(vocab_size=20, token_len=3), np.zeros(48), np.ones(48)
+        PokeDecisionConfig(
+            vocab_size=20, token_len=3, d_model=8, hidden_size=16,
+            numeric_size=8, value_head=value_head,
+        ), np.zeros(48), np.ones(48)
     ).eval()
     player.encoder = SimpleNamespace(unknown_id=0)
     player.device = torch.device("cpu")
     player.sample = False
     player.temperature = 1.0
     player.hidden = {}
+    player.decision_values = {}
     player._model_choice = {}
     player.latencies_ms = []
     player.unknown_tokens = 0
@@ -66,6 +70,30 @@ def test_all_masked_uses_fallback_without_advancing_memory() -> None:
     assert player._fallback(battle, "all_masked") == "fallback-order"
     assert player.fallbacks == {"all_masked": 1}
     assert player._model_choice["a"] is False
+
+
+@pytest.mark.parametrize("sample", [False, True])
+def test_values_are_per_battle_and_do_not_change_actions(sample) -> None:
+    torch.manual_seed(13)
+    legacy = policy()
+    torch.manual_seed(13)
+    valued = policy(value_head=True)
+    legacy.sample = valued.sample = sample
+    with torch.no_grad():
+        valued.model.value_head.weight.zero_()
+        valued.model.value_head.bias.fill_(torch.log(torch.tensor(3.0)))
+    for tag in ("a", "b", "a"):
+        torch.manual_seed(29)
+        expected = legacy.select_action(tag, encoded(), np.ones(13, bool))
+        torch.manual_seed(29)
+        actual = valued.select_action(tag, encoded(), np.ones(13, bool))
+        assert actual == expected
+        assert torch.equal(valued.hidden[tag], legacy.hidden[tag])
+    assert valued.decision_values["a"] == pytest.approx([0.75, 0.75])
+    assert valued.decision_values["b"] == pytest.approx([0.75])
+    assert legacy.decision_values == {}
+    assert valued.select_action("a", encoded(), np.zeros(13, bool)) is None
+    assert len(valued.decision_values["a"]) == 2
 
 
 def test_revival_fallback_targets_fainted_party_slot() -> None:
@@ -169,13 +197,14 @@ def test_neural_completes_two_battles(tmp_path) -> None:
     assert summary["neural"]["player"]["illegal_actions"] == 0
 
 
+@pytest.mark.parametrize("value_head", [False, True])
 @pytest.mark.parametrize("existing_hidden", [False, True])
 def test_expected_trapped_retry_restores_memory_and_preserves_evidence(
-    monkeypatch, existing_hidden
+    monkeypatch, existing_hidden, value_head
 ) -> None:
     import asyncio
 
-    player = policy()
+    player = policy(value_head=value_head)
     if existing_hidden:
         player.select_action("a", encoded(), np.arange(13) == 0)
     before = player.hidden.get("a")
@@ -214,6 +243,8 @@ def test_expected_trapped_retry_restores_memory_and_preserves_evidence(
         assert "a" not in player.hidden
     else:
         assert torch.equal(player.hidden["a"], before)
+    if value_head:
+        assert len(player.decision_values["a"]) == int(existing_hidden)
     with torch.inference_mode():
         _, expected = player.model(
             torch.as_tensor(encoded()["tokens"])[None, None],
@@ -221,6 +252,8 @@ def test_expected_trapped_retry_restores_memory_and_preserves_evidence(
         )
     player.select_action("a", encoded(), np.arange(13) == 0)
     assert torch.equal(player.hidden["a"], expected)
+    if value_head:
+        assert len(player.decision_values["a"]) == int(existing_hidden) + 1
 
 
 @pytest.mark.parametrize(

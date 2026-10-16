@@ -1,5 +1,6 @@
 """Behavioral regression tests for the W3 masked policy."""
 
+import pytest
 import torch
 
 from pokeai.models.pokedecision import (
@@ -39,7 +40,8 @@ def test_masked_policy_never_selects_illegal_actions():
     assert torch.isneginf(masked_logits(logits, masks)[~masks]).all()
 
 
-def test_checkpoint_load_is_bit_identical_on_cpu(tmp_path):
+@pytest.mark.parametrize("value_head,legacy", [(False, False), (False, True), (True, False)])
+def test_checkpoint_load_is_bit_identical_on_cpu(tmp_path, value_head, legacy):
     from dataclasses import asdict
 
     import yaml
@@ -53,7 +55,7 @@ def test_checkpoint_load_is_bit_identical_on_cpu(tmp_path):
     metadata = json.loads((tmp_path / "tokenizer.json").read_text())
     config = PokeDecisionConfig(
         vocab_size=metadata["vocab_size"], token_len=metadata["token_len"],
-        d_model=8, hidden_size=16, numeric_size=8,
+        d_model=8, hidden_size=16, numeric_size=8, value_head=value_head,
     )
     for arch in ("gru", "mlp"):
         config.arch = arch
@@ -62,9 +64,26 @@ def test_checkpoint_load_is_bit_identical_on_cpu(tmp_path):
         numbers = torch.randn(2, 3, 48)
         with torch.no_grad():
             expected, _ = model(tokens, numbers)
+            if value_head:
+                policy, expected_value, value_hidden = model.forward_with_value(
+                    tokens, numbers
+                )
+                assert torch.equal(policy, expected)
+                assert expected_value.shape == (2, 3)
+                if arch == "gru":
+                    _, hidden = model(tokens, numbers)
+                    assert torch.equal(value_hidden, hidden)
+                else:
+                    assert value_hidden is None
         save_checkpoint(model, tmp_path / "best.pt")
+        recorded_config = asdict(config)
+        if legacy:
+            recorded_config.pop("value_head")
+            checkpoint = torch.load(tmp_path / "best.pt", weights_only=True)
+            checkpoint["config"].pop("value_head")
+            torch.save(checkpoint, tmp_path / "best.pt")
         (tmp_path / "config.yaml").write_text(
-            yaml.safe_dump({"model": asdict(config)})
+            yaml.safe_dump({"model": recorded_config})
         )
         restored, _, loaded_config = load_pokedecision(tmp_path, "cpu")
         with torch.no_grad():
@@ -72,6 +91,14 @@ def test_checkpoint_load_is_bit_identical_on_cpu(tmp_path):
         assert loaded_config == config
         assert torch.equal(actual, expected)
         assert torch.equal(actual.argmax(-1), expected.argmax(-1))
+        if value_head:
+            with torch.no_grad():
+                _, actual_value, _ = restored.forward_with_value(tokens, numbers)
+            assert torch.equal(actual_value, expected_value)
+        else:
+            assert not any(key.startswith("value_head.") for key in model.state_dict())
+            with pytest.raises(ValueError, match="value_head=True"):
+                restored.forward_with_value(tokens, numbers)
 
 
 def test_gru_hidden_state_matches_uninterrupted_sequence():
@@ -89,3 +116,44 @@ def test_gru_hidden_state_matches_uninterrupted_sequence():
         reset, _ = model(tokens[:, :2], numbers[:, :2], None)
     torch.testing.assert_close(continuation, full[:, 2:])
     torch.testing.assert_close(reset, full[:, :2])
+
+
+@pytest.mark.parametrize("arch", ["gru", "mlp"])
+def test_value_only_update_preserves_frozen_policy(arch):
+    config = {
+        "arch": arch, "vocab_size": 20, "token_len": 3, "d_model": 8,
+        "hidden_size": 16, "numeric_size": 8,
+    }
+    torch.manual_seed(17)
+    policy = PokeDecision(PokeDecisionConfig(**config), torch.zeros(48), torch.ones(48))
+    torch.manual_seed(17)
+    model = PokeDecision(
+        PokeDecisionConfig(**config, value_head=True), torch.zeros(48), torch.ones(48)
+    )
+    # Compare like-for-like frozen execution: CPU GRU kernels may differ by
+    # rounding when one copy retains trainable recurrent parameters.
+    policy.requires_grad_(False)
+    for name, value in policy.state_dict().items():
+        assert torch.equal(value, model.state_dict()[name])
+    for name, parameter in model.named_parameters():
+        parameter.requires_grad_(name.startswith("value_head."))
+    optimizer = torch.optim.SGD(model.value_head.parameters(), lr=0.1)
+    tokens, numbers = torch.randint(20, (2, 3, 3)), torch.randn(2, 3, 48)
+    with torch.no_grad():
+        expected, _ = policy(tokens, numbers)
+        actual, _ = model(tokens, numbers)
+    assert torch.equal(actual, expected)
+    before = {name: value.clone() for name, value in model.state_dict().items()}
+    _, value_logits, _ = model.forward_with_value(tokens, numbers)
+    loss = torch.nn.functional.binary_cross_entropy_with_logits(
+        value_logits, torch.ones_like(value_logits)
+    )
+    loss.backward()
+    optimizer.step()
+    for name, value in model.state_dict().items():
+        if not name.startswith("value_head."):
+            assert torch.equal(value, before[name])
+    assert not torch.equal(model.value_head.weight, before["value_head.weight"])
+    with torch.no_grad():
+        actual, _ = model(tokens, numbers)
+    assert torch.equal(actual, expected)

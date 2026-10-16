@@ -390,6 +390,7 @@ async def _run_on_poke_loop(
                         "opponent_team_sha256": None,
                         "team_preview": None,
                         "protocol_retries": {"player": [], "opponent": []},
+                        "values": {"player": [], "opponent": []},
                         "winner": None,
                         "turns": 0,
                         "decisions_player": 0,
@@ -492,6 +493,9 @@ async def _run_on_poke_loop(
                                     record["protocol_retries"][role] = getattr(
                                         participant, "protocol_retries", {}
                                     ).get(latest_tag, [])
+                                    record["values"][role] = getattr(
+                                        participant, "decision_values", {}
+                                    ).pop(latest_tag, [])
                             if record["error"]:
                                 cleanup_errors = await _close_players(players)
                                 if cleanup_errors:

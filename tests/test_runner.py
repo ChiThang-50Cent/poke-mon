@@ -269,6 +269,37 @@ def test_default_schedule_keeps_original_teamset_sampling(scheduled_runner):
     assert summary["config"]["schedule_seed"] is None
     assert all(record["player_team"] == "default.gen9ou_team" for record in records)
     assert all(record["opponent_team"] == "default.gen9ou_team" for record in records)
+    assert all(record["values"] == {"player": [], "opponent": []} for record in records)
+
+
+def test_runner_records_values_for_both_sides_without_cross_battle_reuse(
+    scheduled_runner, monkeypatch
+):
+    from pokeai.env import runner
+
+    run, _, _ = scheduled_runner
+    base_player = runner._counted_baseline("GymLeader")
+    participants = []
+
+    class ValuePlayer(base_player):
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+            self.decision_values = {}
+            participants.append(self)
+
+        async def battle_against(self, opponent, n_battles):
+            await super().battle_against(opponent, n_battles)
+            tag = next(reversed(self.battles))
+            self.decision_values[tag] = [0.25, 0.75]
+            opponent.decision_values[tag] = [0.4]
+
+    monkeypatch.setattr(runner, "_counted_baseline", lambda _: ValuePlayer)
+    summary, records = run(concurrent=3)
+    assert summary["completed"] == 12
+    assert all(record["values"] == {
+        "player": [0.25, 0.75], "opponent": [0.4],
+    } for record in records)
+    assert all(participant.decision_values == {} for participant in participants)
 
 
 @pytest.mark.parametrize("cuda_available", [False, True])
