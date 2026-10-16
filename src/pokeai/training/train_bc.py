@@ -8,10 +8,12 @@ optimizer, maximum epochs, and early-stopping patience.
 """
 
 import argparse
+import hashlib
 import json
 import platform
 import random
 import shutil
+import subprocess
 import time
 from dataclasses import asdict
 from pathlib import Path
@@ -138,20 +140,68 @@ def run_epoch(
             "valid_decisions": count, "nonforced_decisions": nonforced}
 
 
+def initialize_model(config: dict, arch: str, stats: dict, encoder: dict) -> PokeDecision:
+    """Initialize scratch statistics or restore the entire pretrained state."""
+    model_config = PokeDecisionConfig(
+        **(config["model"] | {"arch": arch, "vocab_size": encoder["vocab_size"],
+                              "token_len": encoder["token_len"]})
+    )
+    model = PokeDecision(model_config, stats["mean"], stats["std"])
+    checkpoint_path = config.get("init_checkpoint")
+    if checkpoint_path:
+        checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=True)
+        if checkpoint["config"] != asdict(model_config):
+            raise ValueError("Initialization checkpoint architecture mismatch")
+        model.load_state_dict(checkpoint["state_dict"], strict=True)
+    parameters = sum(p.numel() for p in model.parameters())
+    expected = config.get("expected_parameters")
+    if expected is not None and parameters != expected:
+        raise ValueError(f"Expected {expected} parameters, got {parameters}")
+    if not 1_000_000 <= parameters <= 3_000_000:
+        raise ValueError(f"Parameter budget violated: {parameters}")
+    return model
+
+
+def checkpoint_metadata(config: dict, tokenizer: Path) -> dict:
+    digest = hashlib.sha256(tokenizer.read_bytes()).hexdigest()
+    expected = config.get("tokenizer_sha256")
+    if expected is not None and digest != expected:
+        raise ValueError(f"Tokenizer hash mismatch: {digest} != {expected}")
+    init = config.get("init_checkpoint")
+    if init:
+        pretrained_tokenizer = Path(init).parent / "tokenizer.json"
+        if hashlib.sha256(pretrained_tokenizer.read_bytes()).hexdigest() != digest:
+            raise ValueError("Initialization tokenizer hash mismatch")
+    return {
+        "git_commit": subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], text=True
+        ).strip(),
+        "git_dirty": bool(subprocess.check_output(
+            ["git", "status", "--porcelain"], text=True
+        ).strip()),
+        "dataset_version": config.get("dataset_version", "w3"),
+        "train_tier": config.get("train_tier", "full"),
+        "tokenizer_sha256": digest,
+        "observation_space_version": "DefaultObservationSpace@metamon-0a00a75",
+        "init_checkpoint": str(init) if init else None,
+        "init_checkpoint_sha256": (
+            hashlib.sha256(Path(init).read_bytes()).hexdigest() if init else None
+        ),
+    }
+
+
 def train_arch(
     config: dict[str, Any], arch: str, train: dict, val: dict,
     stats: dict, encoder: dict, output: Path,
 ) -> dict:
     seed_everything(config["seed"])
     device = torch.device(config["train"]["device"])
-    model_config = PokeDecisionConfig(
-        **(config["model"] | {"arch": arch, "vocab_size": encoder["vocab_size"],
-                              "token_len": encoder["token_len"]})
+    metadata = checkpoint_metadata(
+        config, Path(config["data_root"]) / "encoder.json"
     )
-    model = PokeDecision(model_config, stats["mean"], stats["std"]).to(device)
+    model = initialize_model(config, arch, stats, encoder).to(device)
+    model_config = model.config
     params = sum(p.numel() for p in model.parameters())
-    if not 1_000_000 <= params <= 3_000_000:
-        raise ValueError(f"Parameter budget violated: {params}")
     settings = config["train"]
     train_loader = DataLoader(
         TrajectorySequences(train),
@@ -170,12 +220,15 @@ def train_arch(
     shutil.copyfile(
         Path(config["data_root"]) / "encoder.json", output / "tokenizer.json"
     )
-    recorded = config | {
+    recorded = config | metadata | {
         "model": asdict(model_config), "source_sha256": source_fingerprint(),
         "metamon_commit": "0a00a75", "python_version": platform.python_version(),
         "torch_version": str(torch.__version__), "numpy_version": np.__version__,
         "sequence_policy": "full trajectories; reset hidden only at trajectory start",
-        "feature_stats": stats,
+        "feature_stats": {
+            "mean": model.feature_mean.detach().cpu().tolist(),
+            "std": model.feature_std.detach().cpu().tolist(),
+        },
     }
     (output / "config.yaml").write_text(yaml.safe_dump(recorded, sort_keys=False))
     best, stale, history = float("inf"), 0, []
@@ -199,6 +252,9 @@ def train_arch(
             break
     result = {
         "arch": arch, "parameters": params, "best_epoch": best_epoch,
+        "stopping_epoch": history[-1]["epoch"],
+        "train_valid_decisions": history[0]["train"]["valid_decisions"],
+        "gpu": torch.cuda.get_device_name(device) if device.type == "cuda" else None,
         "best_val": history[best_epoch - 1]["val"], "epochs": history,
         "wall_time_s": time.monotonic() - started,
         "source_sha256": recorded["source_sha256"],
@@ -215,18 +271,30 @@ def main() -> None:
     # CUDA deterministic GEMM requires this setting before the first CUDA context.
     import os
     os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
-    torch.set_num_threads(config["train"].get("cpu_threads", 4))
+    torch.set_num_threads(min(config["train"].get("cpu_threads", 4), 4))
     from pokeai.data.w3 import load_split
     root = Path(config["data_root"])
-    train, val = load_split("train", root), load_split("val", root)
+    if config.get("dataset_version") == "w4":
+        from pokeai.data.w4 import load_train_tier
+        train = load_train_tier(config.get("train_tier", "full"), root)
+    else:
+        train = load_split("train", root)
+    val = load_split("val", root)
     stats = json.loads((root / "feature_stats.json").read_text())
     encoder = json.loads((root / "encoder.json").read_text())
     baseline_metrics = baselines(train, val)
     output = Path(config["output_dir"])
-    primary = train_arch(config, "gru", train, val, stats, encoder, output)
-    comparison = train_arch(
-        config, "mlp", train, val, stats, encoder, output.with_name(output.name + "-mlp")
-    )
+    architectures = config.get("architectures", ["gru", "mlp"])
+    results = {}
+    for index, arch in enumerate(architectures):
+        destination = output if index == 0 else output.with_name(output.name + "-" + arch)
+        results[arch] = train_arch(config, arch, train, val, stats, encoder, destination)
+    if architectures != ["gru", "mlp"]:
+        report = {"runs": results, "baselines": baseline_metrics}
+        Path(config["report_path"]).parent.mkdir(parents=True, exist_ok=True)
+        Path(config["report_path"]).write_text(json.dumps(report, indent=2) + "\n")
+        return
+    primary, comparison = results["gru"], results["mlp"]
     report = {
         "policy_version": "pokedecision-v0", "baselines": baseline_metrics,
         "gru": primary, "mlp": comparison,
