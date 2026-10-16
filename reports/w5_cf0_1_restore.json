@@ -1,0 +1,2144 @@
+{
+  "phase": "CF0.1",
+  "end_to_end": {
+    "C_vs_C": {
+      "battles": 5,
+      "with_winner": 5,
+      "error_lines": 0,
+      "turns": [
+        23,
+        19,
+        23,
+        17,
+        48
+      ]
+    },
+    "C_vs_GymLeader": {
+      "battles": 5,
+      "with_winner": 5,
+      "error_lines": 0,
+      "turns": [
+        29,
+        17,
+        41,
+        17,
+        32
+      ]
+    }
+  },
+  "command": "scripts/cf0_restore_check.py",
+  "seed": 20261017,
+  "battles": [
+    {
+      "battle": "battle-gen9ou-1",
+      "p1_team": "hl_05_26-0839.gen9ou_team",
+      "p2_team": "hl_05_26-0089.gen9ou_team",
+      "p2_policy": "neural:models/pokedecision-v1-value",
+      "winner": "p1",
+      "turns": 23,
+      "rounds": 40,
+      "duration_s": 1.143,
+      "checkpoints": [
+        [
+          1,
+          1,
+          [
+            "cramorant"
+          ]
+        ],
+        [
+          4,
+          3,
+          [
+            "forced"
+          ]
+        ],
+        [
+          6,
+          5,
+          [
+            "early"
+          ]
+        ],
+        [
+          9,
+          6,
+          [
+            "mid"
+          ]
+        ],
+        [
+          18,
+          11,
+          [
+            "reviving"
+          ]
+        ],
+        [
+          29,
+          19,
+          [
+            "late"
+          ]
+        ]
+      ],
+      "mechanics": {
+        "cramorant_lines": 11,
+        "revival_blessing_move": 1,
+        "terastallize": 2,
+        "tera_available_requests": 28,
+        "force_switch_requests": 15,
+        "reviving_requests": 1
+      },
+      "error_lines": 0,
+      "expected_trap_retries": 0,
+      "unexpected_error_lines": []
+    },
+    {
+      "battle": "battle-gen9ou-16",
+      "p1_team": "hl_05_26-0666.gen9ou_team",
+      "p2_team": "hl_05_26-0387.gen9ou_team",
+      "p2_policy": "neural:models/pokedecision-v1-value",
+      "winner": "p2",
+      "turns": 19,
+      "rounds": 30,
+      "duration_s": 0.316,
+      "checkpoints": [
+        [
+          2,
+          1,
+          [
+            "forced"
+          ]
+        ],
+        [
+          3,
+          2,
+          [
+            "tera_forced"
+          ]
+        ],
+        [
+          4,
+          3,
+          [
+            "early"
+          ]
+        ],
+        [
+          16,
+          12,
+          [
+            "mid"
+          ]
+        ],
+        [
+          24,
+          16,
+          [
+            "late"
+          ]
+        ]
+      ],
+      "mechanics": {
+        "cramorant_lines": 6,
+        "terastallize": 2,
+        "tera_available_requests": 18,
+        "force_switch_requests": 9
+      },
+      "error_lines": 0,
+      "expected_trap_retries": 0,
+      "unexpected_error_lines": []
+    },
+    {
+      "battle": "battle-gen9ou-27",
+      "p1_team": "hl_05_26-0347.gen9ou_team",
+      "p2_team": "hl_05_26-0497.gen9ou_team",
+      "p2_policy": "neural:models/pokedecision-v1-value",
+      "winner": "p2",
+      "turns": 23,
+      "rounds": 33,
+      "duration_s": 0.345,
+      "checkpoints": [
+        [
+          2,
+          1,
+          [
+            "forced"
+          ]
+        ],
+        [
+          3,
+          2,
+          [
+            "early"
+          ]
+        ],
+        [
+          11,
+          8,
+          [
+            "mid"
+          ]
+        ],
+        [
+          22,
+          16,
+          [
+            "late"
+          ]
+        ]
+      ],
+      "mechanics": {
+        "cramorant_lines": 22,
+        "terastallize": 1,
+        "tera_available_requests": 31,
+        "force_switch_requests": 8
+      },
+      "error_lines": 0,
+      "expected_trap_retries": 0,
+      "unexpected_error_lines": []
+    },
+    {
+      "battle": "battle-gen9ou-36",
+      "p1_team": "hl_05_26-0791.gen9ou_team",
+      "p2_team": "hl_05_26-0791.gen9ou_team",
+      "p2_policy": "neural:models/pokedecision-v1-value",
+      "winner": "p1",
+      "turns": 17,
+      "rounds": 27,
+      "duration_s": 0.281,
+      "checkpoints": [
+        [
+          2,
+          2,
+          [
+            "early",
+            "tera_forced"
+          ]
+        ],
+        [
+          4,
+          3,
+          [
+            "forced"
+          ]
+        ],
+        [
+          13,
+          9,
+          [
+            "reviving"
+          ]
+        ],
+        [
+          18,
+          13,
+          [
+            "mid"
+          ]
+        ]
+      ],
+      "mechanics": {
+        "terastallize": 1,
+        "revival_blessing_move": 1,
+        "tera_available_requests": 19,
+        "force_switch_requests": 8,
+        "reviving_requests": 1
+      },
+      "error_lines": 0,
+      "expected_trap_retries": 0,
+      "unexpected_error_lines": []
+    },
+    {
+      "battle": "battle-gen9ou-45",
+      "p1_team": "hl_05_26-0535.gen9ou_team",
+      "p2_team": "hl_05_26-0772.gen9ou_team",
+      "p2_policy": "neural:models/pokedecision-v1-value",
+      "winner": "p2",
+      "turns": 48,
+      "rounds": 63,
+      "duration_s": 0.604,
+      "checkpoints": [
+        [
+          2,
+          2,
+          [
+            "early"
+          ]
+        ],
+        [
+          4,
+          3,
+          [
+            "forced"
+          ]
+        ],
+        [
+          15,
+          14,
+          [
+            "mid"
+          ]
+        ],
+        [
+          28,
+          22,
+          [
+            "late"
+          ]
+        ]
+      ],
+      "mechanics": {
+        "terastallize": 2,
+        "tera_available_requests": 27,
+        "force_switch_requests": 13
+      },
+      "error_lines": 0,
+      "expected_trap_retries": 0,
+      "unexpected_error_lines": []
+    },
+    {
+      "battle": "battle-gen9ou-54",
+      "p1_team": "hl_05_26-0937.gen9ou_team",
+      "p2_team": "hl_05_26-0965.gen9ou_team",
+      "p2_policy": "GymLeader",
+      "winner": "p1",
+      "turns": 29,
+      "rounds": 40,
+      "duration_s": 0.287,
+      "checkpoints": [
+        [
+          2,
+          2,
+          [
+            "tera_forced"
+          ]
+        ],
+        [
+          3,
+          2,
+          [
+            "forced"
+          ]
+        ],
+        [
+          6,
+          4,
+          [
+            "early"
+          ]
+        ],
+        [
+          15,
+          11,
+          [
+            "mid"
+          ]
+        ],
+        [
+          31,
+          23,
+          [
+            "late"
+          ]
+        ]
+      ],
+      "mechanics": {
+        "cramorant_lines": 18,
+        "terastallize": 2,
+        "tera_available_requests": 22,
+        "force_switch_requests": 9
+      },
+      "error_lines": 0,
+      "expected_trap_retries": 0,
+      "unexpected_error_lines": []
+    },
+    {
+      "battle": "battle-gen9ou-65",
+      "p1_team": "hl_05_26-0791.gen9ou_team",
+      "p2_team": "hl_05_26-0877.gen9ou_team",
+      "p2_policy": "GymLeader",
+      "winner": "p2",
+      "turns": 17,
+      "rounds": 26,
+      "duration_s": 0.19,
+      "checkpoints": [
+        [
+          4,
+          3,
+          [
+            "forced"
+          ]
+        ],
+        [
+          5,
+          4,
+          [
+            "early"
+          ]
+        ],
+        [
+          9,
+          7,
+          [
+            "mid"
+          ]
+        ]
+      ],
+      "mechanics": {
+        "terastallize": 1,
+        "tera_available_requests": 32,
+        "force_switch_requests": 7
+      },
+      "error_lines": 0,
+      "expected_trap_retries": 0,
+      "unexpected_error_lines": []
+    },
+    {
+      "battle": "battle-gen9ou-72",
+      "p1_team": "hl_05_26-0465.gen9ou_team",
+      "p2_team": "hl_05_26-0937.gen9ou_team",
+      "p2_policy": "GymLeader",
+      "winner": "p2",
+      "turns": 41,
+      "rounds": 58,
+      "duration_s": 0.387,
+      "checkpoints": [
+        [
+          2,
+          1,
+          [
+            "forced"
+          ]
+        ],
+        [
+          3,
+          2,
+          [
+            "tera_forced"
+          ]
+        ],
+        [
+          5,
+          4,
+          [
+            "early"
+          ]
+        ],
+        [
+          20,
+          13,
+          [
+            "mid"
+          ]
+        ],
+        [
+          35,
+          24,
+          [
+            "late"
+          ]
+        ]
+      ],
+      "mechanics": {
+        "cramorant_lines": 60,
+        "terastallize": 1,
+        "cramorant_formechange": 9,
+        "tera_available_requests": 43,
+        "force_switch_requests": 15
+      },
+      "error_lines": 0,
+      "expected_trap_retries": 0,
+      "unexpected_error_lines": []
+    },
+    {
+      "battle": "battle-gen9ou-83",
+      "p1_team": "hl_05_26-0387.gen9ou_team",
+      "p2_team": "hl_05_26-0666.gen9ou_team",
+      "p2_policy": "GymLeader",
+      "winner": "p2",
+      "turns": 17,
+      "rounds": 29,
+      "duration_s": 0.2,
+      "checkpoints": [
+        [
+          1,
+          1,
+          [
+            "cramorant"
+          ]
+        ],
+        [
+          4,
+          4,
+          [
+            "early"
+          ]
+        ],
+        [
+          5,
+          4,
+          [
+            "forced"
+          ]
+        ],
+        [
+          15,
+          11,
+          [
+            "mid"
+          ]
+        ]
+      ],
+      "mechanics": {
+        "cramorant_lines": 19,
+        "terastallize": 1,
+        "tera_available_requests": 26,
+        "force_switch_requests": 10
+      },
+      "error_lines": 0,
+      "expected_trap_retries": 0,
+      "unexpected_error_lines": []
+    },
+    {
+      "battle": "battle-gen9ou-92",
+      "p1_team": "hl_05_26-0948.gen9ou_team",
+      "p2_team": "hl_05_26-0526.gen9ou_team",
+      "p2_policy": "GymLeader",
+      "winner": "p2",
+      "turns": 32,
+      "rounds": 48,
+      "duration_s": 0.32,
+      "checkpoints": [
+        [
+          2,
+          2,
+          [
+            "tera_forced"
+          ]
+        ],
+        [
+          4,
+          3,
+          [
+            "forced"
+          ]
+        ],
+        [
+          5,
+          4,
+          [
+            "early"
+          ]
+        ],
+        [
+          20,
+          14,
+          [
+            "mid"
+          ]
+        ],
+        [
+          25,
+          16,
+          [
+            "late"
+          ]
+        ]
+      ],
+      "mechanics": {
+        "terastallize": 1,
+        "tera_available_requests": 34,
+        "force_switch_requests": 14
+      },
+      "error_lines": 0,
+      "expected_trap_retries": 0,
+      "unexpected_error_lines": []
+    }
+  ],
+  "selection_rule": "Per battle a seeded RNG (seed*1000+battle index) draws early (turn 2-5), mid (6-14) and late (15-25) targets; snapshot the first decision round whose upcoming turn >= target. Also the first forced-switch round and up to 2 Revival-Blessing 'reviving' rounds (exempt from the per-battle budget of 5). One extra slot per battle: even battle index = first round with the learner's Cramorant active and Surf/Dive legal; odd index = first round (turn>=2) where p1 can Terastallize, in which the ORIGINAL run is forced to Terastallize (stress). Global cap 50. Decision round = a pending non-wait, non-teampreview request exists. Window = 3 rounds.",
+  "normalisations": [
+    "battle id (frame header '>battle-gen9ou-N' -> '>battle-gen9ou-<TAG>')",
+    "|t:|<unix seconds> protocol lines -> '|t:|' (frames, omniscient channel, sim toJSON log)",
+    "end-event `seed` field is dropped from the end payload comparison",
+    "rqid is NOT normalised (the room-wide counter is part of the checkpoint)"
+  ],
+  "gate_totals": {
+    "channel_mismatch": 0,
+    "sim_state_mismatch": 0,
+    "observation_mismatch": 0,
+    "hidden_mismatch": 0,
+    "choice_mismatch": 0,
+    "other_mismatch": 0,
+    "restore_twice_mismatch": 0,
+    "immediate_state_not_equal": 0,
+    "script_mismatches": 0,
+    "model_decisions_compared": 172,
+    "restore_error_lines": 0
+  },
+  "gate": {
+    "checkpoints": 45,
+    "checkpoints_in_20_50": true,
+    "channel_outputs_identical": true,
+    "sim_state_identical": true,
+    "observation_identical": true,
+    "hidden_identical": true,
+    "choices_recomputed_equal_replayed": true,
+    "restore_twice_identical": true,
+    "zero_unexpected_error_lines": true,
+    "negative_controls_detected": true,
+    "zero_model_illegal_actions": true,
+    "all_battles_completed_with_winner": true,
+    "PASS": true
+  },
+  "mechanics_exercised_all_battles": {
+    "cramorant_lines": 136,
+    "revival_blessing_move": 2,
+    "terastallize": 14,
+    "tera_available_requests": 280,
+    "force_switch_requests": 108,
+    "reviving_requests": 2,
+    "cramorant_formechange": 9
+  },
+  "mechanics_in_verified_windows": {
+    "cramorant_lines": 67,
+    "tera_available_requests": 120,
+    "force_switch_requests": 43,
+    "revival_blessing_move": 2,
+    "reviving_requests": 2,
+    "terastallize": 13,
+    "cramorant_formechange": 2
+  },
+  "neural_fallbacks": {
+    "revival_target": 2
+  },
+  "expected_trap_retry_error_lines": 0,
+  "unexpected_error_lines": [],
+  "unexpected_error_lines_in_restored_windows": [],
+  "negative_controls": {
+    "hidden": {
+      "hidden": 5
+    },
+    "prng": {
+      "sim_state": 3
+    }
+  },
+  "model_illegal_actions": 0,
+  "unknown_token_rate_C": 0.0,
+  "unknown_tokens": 0,
+  "total_tokens": 41934,
+  "framing_differences_vs_real_server": [
+    "Init frames (`|init|battle`, `|title|`, `|j|`) copy what a live local server sent (p1: init+own join, then p2's `|j|`; p2: both joins); real timing relative to the first sim update chunk is not reproduced, only the order.",
+    "Each sim `update` is delivered as one frame per player containing that player's channel (|split| extraction identical to sim/battle.ts); the real server sends room.update() broadcast buffers, which may batch several sim updates or `|inactive|` timer lines; no timer lines are produced offline.",
+    "`sideupdate |request|` is delivered as its own frame AFTER the update frame with an incrementing room-wide `rqid` appended as the last JSON key (room-battle.ts receive).",
+    "Both players receive every frame of a sim output batch before either player's reply is submitted (p1 then p2); in production the arrival order of the two replies is racy.",
+    "RoomBattlePlayer.request.isWait bookkeeping is mirrored: 'There's nothing to choose' and 'too late' errors are produced; the `|rqid` suffix check and the battle timer are not (our players never send an rqid suffix).",
+    "No `|:|` scrollback timestamp, no `|inactive|` lines, no `|uhtml|` open-team-sheet prompts, no `|deinit|`/`|l|` or lobby `|pm|`/`|updatesearch|` frames. Frame kinds/order/request key order were checked against a live capture (reports/w5_cf0_1_frame_parity.json)."
+  ],
+  "checkpoint_rows": [
+    {
+      "battle": "battle-gen9ou-1",
+      "round": 1,
+      "turn": 1,
+      "reasons": [
+        "cramorant"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 6,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "cramorant_lines": 6,
+        "tera_available_requests": 6
+      }
+    },
+    {
+      "battle": "battle-gen9ou-1",
+      "round": 4,
+      "turn": 3,
+      "reasons": [
+        "forced"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 5,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "cramorant_lines": 4,
+        "force_switch_requests": 1,
+        "tera_available_requests": 4
+      }
+    },
+    {
+      "battle": "battle-gen9ou-1",
+      "round": 6,
+      "turn": 5,
+      "reasons": [
+        "early"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 4,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "tera_available_requests": 2,
+        "force_switch_requests": 2
+      }
+    },
+    {
+      "battle": "battle-gen9ou-1",
+      "round": 9,
+      "turn": 6,
+      "reasons": [
+        "mid"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 5,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "tera_available_requests": 4,
+        "force_switch_requests": 1
+      }
+    },
+    {
+      "battle": "battle-gen9ou-1",
+      "round": 18,
+      "turn": 11,
+      "reasons": [
+        "reviving"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 3,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "revival_blessing_move": 1,
+        "force_switch_requests": 2,
+        "reviving_requests": 1,
+        "tera_available_requests": 2
+      }
+    },
+    {
+      "battle": "battle-gen9ou-1",
+      "round": 29,
+      "turn": 19,
+      "reasons": [
+        "late"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 5,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "force_switch_requests": 1
+      }
+    },
+    {
+      "battle": "battle-gen9ou-16",
+      "round": 2,
+      "turn": 1,
+      "reasons": [
+        "forced"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 5,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "cramorant_lines": 4,
+        "terastallize": 1,
+        "force_switch_requests": 1,
+        "tera_available_requests": 3
+      }
+    },
+    {
+      "battle": "battle-gen9ou-16",
+      "round": 3,
+      "turn": 2,
+      "reasons": [
+        "tera_forced"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 6,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "terastallize": 1,
+        "tera_available_requests": 4
+      }
+    },
+    {
+      "battle": "battle-gen9ou-16",
+      "round": 4,
+      "turn": 3,
+      "reasons": [
+        "early"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 6,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "terastallize": 1,
+        "tera_available_requests": 3
+      }
+    },
+    {
+      "battle": "battle-gen9ou-16",
+      "round": 16,
+      "turn": 12,
+      "reasons": [
+        "mid"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 5,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "tera_available_requests": 2,
+        "force_switch_requests": 1
+      }
+    },
+    {
+      "battle": "battle-gen9ou-16",
+      "round": 24,
+      "turn": 16,
+      "reasons": [
+        "late"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 6,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "terastallize": 1,
+        "tera_available_requests": 1
+      }
+    },
+    {
+      "battle": "battle-gen9ou-27",
+      "round": 2,
+      "turn": 1,
+      "reasons": [
+        "forced"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 5,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "cramorant_lines": 5,
+        "force_switch_requests": 1,
+        "tera_available_requests": 4
+      }
+    },
+    {
+      "battle": "battle-gen9ou-27",
+      "round": 3,
+      "turn": 2,
+      "reasons": [
+        "early"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 6,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "tera_available_requests": 6
+      }
+    },
+    {
+      "battle": "battle-gen9ou-27",
+      "round": 11,
+      "turn": 8,
+      "reasons": [
+        "mid"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 5,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "terastallize": 1,
+        "tera_available_requests": 3,
+        "force_switch_requests": 1
+      }
+    },
+    {
+      "battle": "battle-gen9ou-27",
+      "round": 22,
+      "turn": 16,
+      "reasons": [
+        "late"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 5,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "cramorant_lines": 10,
+        "tera_available_requests": 2,
+        "force_switch_requests": 1
+      }
+    },
+    {
+      "battle": "battle-gen9ou-36",
+      "round": 2,
+      "turn": 2,
+      "reasons": [
+        "early",
+        "tera_forced"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 5,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "terastallize": 1,
+        "tera_available_requests": 3,
+        "force_switch_requests": 1
+      }
+    },
+    {
+      "battle": "battle-gen9ou-36",
+      "round": 4,
+      "turn": 3,
+      "reasons": [
+        "forced"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 4,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "force_switch_requests": 2,
+        "tera_available_requests": 1
+      }
+    },
+    {
+      "battle": "battle-gen9ou-36",
+      "round": 13,
+      "turn": 9,
+      "reasons": [
+        "reviving"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 3,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "revival_blessing_move": 1,
+        "force_switch_requests": 2,
+        "reviving_requests": 1,
+        "tera_available_requests": 1
+      }
+    },
+    {
+      "battle": "battle-gen9ou-36",
+      "round": 18,
+      "turn": 13,
+      "reasons": [
+        "mid"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 5,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "tera_available_requests": 2,
+        "force_switch_requests": 1
+      }
+    },
+    {
+      "battle": "battle-gen9ou-45",
+      "round": 2,
+      "turn": 2,
+      "reasons": [
+        "early"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 5,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "terastallize": 1,
+        "tera_available_requests": 4,
+        "force_switch_requests": 1
+      }
+    },
+    {
+      "battle": "battle-gen9ou-45",
+      "round": 4,
+      "turn": 3,
+      "reasons": [
+        "forced"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 5,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "terastallize": 1,
+        "force_switch_requests": 1,
+        "tera_available_requests": 2
+      }
+    },
+    {
+      "battle": "battle-gen9ou-45",
+      "round": 15,
+      "turn": 14,
+      "reasons": [
+        "mid"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 5,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "tera_available_requests": 2,
+        "force_switch_requests": 1
+      }
+    },
+    {
+      "battle": "battle-gen9ou-45",
+      "round": 28,
+      "turn": 22,
+      "reasons": [
+        "late"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 6,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "tera_available_requests": 3
+      }
+    },
+    {
+      "battle": "battle-gen9ou-54",
+      "round": 2,
+      "turn": 2,
+      "reasons": [
+        "tera_forced"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 2,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "terastallize": 1,
+        "tera_available_requests": 3,
+        "force_switch_requests": 1
+      }
+    },
+    {
+      "battle": "battle-gen9ou-54",
+      "round": 3,
+      "turn": 2,
+      "reasons": [
+        "forced"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 2,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "terastallize": 1,
+        "force_switch_requests": 2,
+        "tera_available_requests": 1
+      }
+    },
+    {
+      "battle": "battle-gen9ou-54",
+      "round": 6,
+      "turn": 4,
+      "reasons": [
+        "early"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 2,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "tera_available_requests": 2,
+        "force_switch_requests": 1
+      }
+    },
+    {
+      "battle": "battle-gen9ou-54",
+      "round": 15,
+      "turn": 11,
+      "reasons": [
+        "mid"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 2,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "cramorant_lines": 9,
+        "tera_available_requests": 2,
+        "force_switch_requests": 1
+      }
+    },
+    {
+      "battle": "battle-gen9ou-54",
+      "round": 31,
+      "turn": 23,
+      "reasons": [
+        "late"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 3,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {}
+    },
+    {
+      "battle": "battle-gen9ou-65",
+      "round": 4,
+      "turn": 3,
+      "reasons": [
+        "forced"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 3,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "force_switch_requests": 2,
+        "tera_available_requests": 2
+      }
+    },
+    {
+      "battle": "battle-gen9ou-65",
+      "round": 5,
+      "turn": 4,
+      "reasons": [
+        "early"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 3,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "tera_available_requests": 4,
+        "force_switch_requests": 1
+      }
+    },
+    {
+      "battle": "battle-gen9ou-65",
+      "round": 9,
+      "turn": 7,
+      "reasons": [
+        "mid"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 2,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "tera_available_requests": 4,
+        "force_switch_requests": 1
+      }
+    },
+    {
+      "battle": "battle-gen9ou-72",
+      "round": 2,
+      "turn": 1,
+      "reasons": [
+        "forced"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 3,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "terastallize": 1,
+        "force_switch_requests": 1,
+        "tera_available_requests": 3
+      }
+    },
+    {
+      "battle": "battle-gen9ou-72",
+      "round": 3,
+      "turn": 2,
+      "reasons": [
+        "tera_forced"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 3,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "terastallize": 1,
+        "tera_available_requests": 4
+      }
+    },
+    {
+      "battle": "battle-gen9ou-72",
+      "round": 5,
+      "turn": 4,
+      "reasons": [
+        "early"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 3,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "tera_available_requests": 2,
+        "force_switch_requests": 1
+      }
+    },
+    {
+      "battle": "battle-gen9ou-72",
+      "round": 20,
+      "turn": 13,
+      "reasons": [
+        "mid"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 3,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "tera_available_requests": 2,
+        "force_switch_requests": 1
+      }
+    },
+    {
+      "battle": "battle-gen9ou-72",
+      "round": 35,
+      "turn": 24,
+      "reasons": [
+        "late"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 3,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "cramorant_lines": 8,
+        "cramorant_formechange": 2,
+        "tera_available_requests": 2,
+        "force_switch_requests": 1
+      }
+    },
+    {
+      "battle": "battle-gen9ou-83",
+      "round": 1,
+      "turn": 1,
+      "reasons": [
+        "cramorant"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 3,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "cramorant_lines": 11,
+        "tera_available_requests": 6
+      }
+    },
+    {
+      "battle": "battle-gen9ou-83",
+      "round": 4,
+      "turn": 4,
+      "reasons": [
+        "early"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 3,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "cramorant_lines": 7,
+        "tera_available_requests": 4,
+        "force_switch_requests": 1
+      }
+    },
+    {
+      "battle": "battle-gen9ou-83",
+      "round": 5,
+      "turn": 4,
+      "reasons": [
+        "forced"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 2,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "cramorant_lines": 3,
+        "force_switch_requests": 2,
+        "tera_available_requests": 2
+      }
+    },
+    {
+      "battle": "battle-gen9ou-83",
+      "round": 15,
+      "turn": 11,
+      "reasons": [
+        "mid"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 2,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "tera_available_requests": 2,
+        "force_switch_requests": 1
+      }
+    },
+    {
+      "battle": "battle-gen9ou-92",
+      "round": 2,
+      "turn": 2,
+      "reasons": [
+        "tera_forced"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 3,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "terastallize": 1,
+        "tera_available_requests": 3,
+        "force_switch_requests": 1
+      }
+    },
+    {
+      "battle": "battle-gen9ou-92",
+      "round": 4,
+      "turn": 3,
+      "reasons": [
+        "forced"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 3,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "force_switch_requests": 1,
+        "tera_available_requests": 2
+      }
+    },
+    {
+      "battle": "battle-gen9ou-92",
+      "round": 5,
+      "turn": 4,
+      "reasons": [
+        "early"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 2,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "tera_available_requests": 2,
+        "force_switch_requests": 1
+      }
+    },
+    {
+      "battle": "battle-gen9ou-92",
+      "round": 20,
+      "turn": 14,
+      "reasons": [
+        "mid"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 3,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "tera_available_requests": 2,
+        "force_switch_requests": 1
+      }
+    },
+    {
+      "battle": "battle-gen9ou-92",
+      "round": 25,
+      "turn": 16,
+      "reasons": [
+        "late"
+      ],
+      "window_rounds": 3,
+      "restore_immediate_state_equal": [
+        true,
+        true
+      ],
+      "script_mismatches": [
+        0,
+        0
+      ],
+      "mismatch_detail": [
+        [],
+        []
+      ],
+      "mismatch_vs_original": [
+        {},
+        {}
+      ],
+      "mismatch_restore1_vs_restore2": {},
+      "model_decisions_compared": 2,
+      "error_lines": 0,
+      "error_lines_detail": [],
+      "mechanics": {
+        "tera_available_requests": 2,
+        "force_switch_requests": 1
+      }
+    }
+  ],
+  "wall_time_s": 8.9
+}

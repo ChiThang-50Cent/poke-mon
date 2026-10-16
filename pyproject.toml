@@ -29,4 +29,5 @@ target-version = "py311"
 testpaths = ["tests"]
 markers = [
   "server: requires the local Showdown server on localhost:8000",
+  "sim: requires Node and the pinned Showdown dist build (offline sim sidecar, no server)",
 ]

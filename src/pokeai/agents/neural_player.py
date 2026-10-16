@@ -56,6 +56,10 @@ def switch_by_party_slot(battle: Any, order: Any) -> Any:
 class NeuralPlayer(MetamonPlayer):
     """One recurrent state per battle; no hidden information or unmasked choices."""
 
+    # Optional torch.Generator for sampling (counterfactual branches seed it per
+    # rollout); None keeps the process-global generator used by live play.
+    sampler: torch.Generator | None = None
+
     def __init__(
         self,
         *args: Any,
@@ -288,7 +292,11 @@ class NeuralPlayer(MetamonPlayer):
             if self.sample or self.collector is not None:
                 probabilities = torch.softmax(scores.float() / self.temperature, dim=-1)
             if self.sample:
-                action = int(torch.multinomial(probabilities, 1).item())
+                if self.sampler is None:
+                    draw = torch.multinomial(probabilities, 1)
+                else:
+                    draw = torch.multinomial(probabilities, 1, generator=self.sampler)
+                action = int(draw.item())
             else:
                 action = int(scores.argmax().item())
             if self.collector is not None:

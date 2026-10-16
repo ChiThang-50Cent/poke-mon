@@ -1,0 +1,160 @@
+{
+  "phase": "CF0.1-frame-parity",
+  "sides": {
+    "p1": {
+      "checks": {
+        "first_frames_identical": true,
+        "request_key_order_no_conflict": true,
+        "update_then_request_pattern": true
+      },
+      "live_first_kinds": [
+        "init",
+        "join",
+        "update:t:+gametype",
+        "update:player",
+        "update:player+gen",
+        "request",
+        "update:t:+teamsize",
+        "request",
+        "update:t:+move"
+      ],
+      "offline_first_kinds": [
+        "init",
+        "join",
+        "update:t:+gametype",
+        "update:player",
+        "update:player+gen",
+        "request",
+        "update:t:+teamsize",
+        "request",
+        "update:t:+move"
+      ],
+      "request_key_orders_live": [
+        [
+          "teamPreview",
+          "side",
+          "rqid"
+        ],
+        [
+          "active",
+          "side",
+          "rqid"
+        ],
+        [
+          "wait",
+          "side",
+          "rqid"
+        ],
+        [
+          "forceSwitch",
+          "side",
+          "noCancel",
+          "rqid"
+        ]
+      ],
+      "request_key_orders_offline": [
+        [
+          "teamPreview",
+          "side",
+          "rqid"
+        ],
+        [
+          "active",
+          "side",
+          "rqid"
+        ],
+        [
+          "wait",
+          "side",
+          "rqid"
+        ],
+        [
+          "forceSwitch",
+          "side",
+          "noCancel",
+          "rqid"
+        ]
+      ],
+      "live_frames": 57,
+      "offline_frames": 53
+    },
+    "p2": {
+      "checks": {
+        "first_frames_identical": true,
+        "request_key_order_no_conflict": true,
+        "update_then_request_pattern": true
+      },
+      "live_first_kinds": [
+        "init",
+        "update:t:+gametype",
+        "update:player",
+        "update:player+gen",
+        "request",
+        "update:t:+teamsize",
+        "request",
+        "update:t:+move",
+        "request"
+      ],
+      "offline_first_kinds": [
+        "init",
+        "update:t:+gametype",
+        "update:player",
+        "update:player+gen",
+        "request",
+        "update:t:+teamsize",
+        "request",
+        "update:t:+move",
+        "request"
+      ],
+      "request_key_orders_live": [
+        [
+          "teamPreview",
+          "side",
+          "rqid"
+        ],
+        [
+          "active",
+          "side",
+          "rqid"
+        ],
+        [
+          "forceSwitch",
+          "side",
+          "noCancel",
+          "rqid"
+        ],
+        [
+          "wait",
+          "side",
+          "rqid"
+        ]
+      ],
+      "request_key_orders_offline": [
+        [
+          "teamPreview",
+          "side",
+          "rqid"
+        ],
+        [
+          "active",
+          "side",
+          "rqid"
+        ],
+        [
+          "forceSwitch",
+          "side",
+          "noCancel",
+          "rqid"
+        ],
+        [
+          "wait",
+          "side",
+          "rqid"
+        ]
+      ],
+      "live_frames": 56,
+      "offline_frames": 52
+    }
+  },
+  "PASS": true
+}
