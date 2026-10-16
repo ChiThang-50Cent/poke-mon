@@ -1,0 +1,126 @@
+{
+  "selected_arm": "E1-none-s1",
+  "selected_experiment": "E1",
+  "source": "checkpoints/w5_3/E1-none-s1",
+  "artifact_sha256": {
+    "best.pt": "4898583f206259dd1ac9ebc8fb5c7e68a89e1c0c1e3a878a0a54375bbfc5f2f5",
+    "config.yaml": "57c6cff6510cfe1acd94458653f18ab7abb5f253ec51d8e57024f5ecada5efc2",
+    "tokenizer.json": "801521a3ecce057ffea589a6fbe3228e1f5fce84cc82c4bfbaddaaeb4bf43e1d"
+  },
+  "selection": "highest confirmation mean among E1/E2/E3, median training seed by paired delta",
+  "experiment_mean_deltas": {
+    "E1": 0.01633333333333333,
+    "E2": 0.0045000000000000005,
+    "E3": 0.010833333333333332
+  },
+  "seed_mean_deltas": {
+    "E1-none-s1": 0.018,
+    "E1-none-s2": 0.012499999999999999,
+    "E1-none-s3": 0.0185
+  },
+  "role": "candidate",
+  "production": false,
+  "dev_only": true,
+  "production_promoted": false,
+  "source_run": "runs/w5-selfplay-pilot-20261016-final",
+  "split_ids_sha256": "139710deb7a18a64de5491a367a3337e6f4f4c17ef757612fecee51e1446b3b8",
+  "dataset_sha256": "fbb2db866da2969a4b69544465f6160496d0ca1193bf25f639dceb000fae130c",
+  "C_checkpoint_sha256": "0d987dc4fe7f36ab782b142efade20facab0eb53136b1f5bcb9e33eefd4e51ae",
+  "C_tokenizer_sha256": "801521a3ecce057ffea589a6fbe3228e1f5fce84cc82c4bfbaddaaeb4bf43e1d",
+  "critic_sha256": null,
+  "beta": null,
+  "seed": 1,
+  "hyperparameters": {
+    "epochs": 5,
+    "selected_epoch": 5,
+    "batch_size": 16,
+    "lr": 0.0001,
+    "weight_decay": 0.0001,
+    "gradient_clip": 1.0,
+    "kl_coefficient": 0.1,
+    "maximum_weight": 5.0,
+    "optimizer": "AdamW",
+    "loss_normalization": "weights divided by eligible batch mean; mean over eligible decisions",
+    "deterministic": true
+  },
+  "git_commit": "ba11b48b83cc262bcf63b6331265eb503af619fc",
+  "git_dirty": true,
+  "evidence": {
+    "smoke": {
+      "path": "reports/w5_3_smoke.json",
+      "sha256": "a0eefeb425cfef11ddb045674c86b3a7924999b015f962c3cab278125c794aad"
+    },
+    "screen": {
+      "path": "reports/w5_3_screen.json",
+      "sha256": "981c46ba7275912b146dd1ff434ea6b65a15a3a5acd6f6837333e281a2bbbd7a"
+    },
+    "confirm": {
+      "path": "reports/w5_3_confirm.json",
+      "sha256": "9a6e8d978ad038754cb033674a414feda1a84cc171374ab543780e303b944be0"
+    },
+    "sampling": {
+      "path": "reports/w5_3_sampling.json",
+      "sha256": "65475d7a787d6b88d9650417724adaaf58ba37ea4f030b6b45986b6532dc3e18"
+    },
+    "control": {
+      "path": "reports/w5_3_control.json",
+      "sha256": "f2a04d55e92c87646695382e743039f2d0f8b713763ddd26b70cdb59febf1e18"
+    }
+  },
+  "training_config": {
+    "model": {
+      "arch": "gru",
+      "vocab_size": 2542,
+      "token_len": 87,
+      "d_model": 96,
+      "hidden_size": 384,
+      "numeric_size": 128,
+      "value_head": false
+    },
+    "experiment": "E1",
+    "beta": null,
+    "seed": 1,
+    "control": false,
+    "run_id": "E1-none-s1",
+    "device": "cuda",
+    "deterministic": true,
+    "epochs": 5,
+    "selected_epoch": 5,
+    "selection": "fixed final epoch, no offline selection",
+    "batch_size": 16,
+    "lr": 0.0001,
+    "weight_decay": 0.0001,
+    "gradient_clip": 1.0,
+    "kl_coefficient": 0.1,
+    "maximum_weight": 5.0,
+    "optimizer": "AdamW",
+    "loss_normalization": "weights divided by eligible batch mean; mean over eligible decisions",
+    "team_preview": "unchanged pretrained C preview",
+    "advantage_frozen": true,
+    "value_head_removed": true,
+    "provenance": {
+      "C_sha256": "0d987dc4fe7f36ab782b142efade20facab0eb53136b1f5bcb9e33eefd4e51ae",
+      "C_hashes": {
+        "best.pt": "0d987dc4fe7f36ab782b142efade20facab0eb53136b1f5bcb9e33eefd4e51ae",
+        "config.yaml": "384e1b59fbc9174e08b9eed5159f1fbfbbd77b2412ab345d192013d524fe71d2",
+        "metrics.json": "aa968afd7a75f4e7cdf00aa3684213b09ccd42c2aef73818d004dabe8b7f5d1f",
+        "tokenizer.json": "801521a3ecce057ffea589a6fbe3228e1f5fce84cc82c4bfbaddaaeb4bf43e1d"
+      },
+      "V_sha256": "59c310e5a513ef13c5b7e80860920e784696718afd19e743b13edcf5e771778b",
+      "feature_cache_sha256": "1bca7a2acfc0d14dc6cd516089e61b23e8d6e76de1ba8d2cd7fd279b22281f7f",
+      "split_ids_sha256": "139710deb7a18a64de5491a367a3337e6f4f4c17ef757612fecee51e1446b3b8",
+      "tokenizer_sha256": "801521a3ecce057ffea589a6fbe3228e1f5fce84cc82c4bfbaddaaeb4bf43e1d",
+      "source_run": "runs/w5-selfplay-pilot-20261016-final",
+      "memory_caveat": "Actor observes all states uninterrupted per contract. Frozen critic/reference match serving, which skips fallback updates and rolls back rejected protocol requests.",
+      "fallback_steps_in_actor_sequences": 49,
+      "protocol_retry_steps_in_actor_sequences": 0
+    },
+    "frozen_dataset_sha256": "fbb2db866da2969a4b69544465f6160496d0ca1193bf25f639dceb000fae130c",
+    "source_fingerprint": "f4b05eb16c9c19a56bc75fe87bd6a3a1f0e17d2545f2fdc6ca799f8526d8364e",
+    "checkpoint_sha256": "4898583f206259dd1ac9ebc8fb5c7e68a89e1c0c1e3a878a0a54375bbfc5f2f5",
+    "wall_time_s": 7.37623330502538,
+    "git_commit": "ba11b48b83cc262bcf63b6331265eb503af619fc",
+    "git_dirty": true,
+    "verbatim_contract": "## Advantages (computed once, BEFORE any actor update; `reports/w5_3_advantage_stats.json`)\n- Formula: `A_t = Y_battle(POV) \u2212 V\u0302_C(s_t)`, with V\u0302 computed on C's frozen h_t.\n  - For the W5.2 V and for the probe.\n  - Stored per C decision, keyed by (battle, POV, decision index).\n  - Never feed actor-updated hidden states into a critic.\n- Report mean/std/quantiles of A per critic, by opponent type and phase.\n- Report weight stats and effective sample size `ESS = (\u03a3w)\u00b2/(n\u00b7\u03a3w\u00b2)` per \u03b2.\n- Caveat to state: W5.2 V was fit on the same train decisions (a linear 385-param head, so overfit is minimal but nonzero); the probe was fit on human data.\n\n## Weights and loss\n- `w_t = min(5, exp(A_t/\u03b2))` with \u03b2 \u2208 {0.5, 1.0, 2.0}.\n- Self-normalise per batch over eligible steps: `w\u0303 = w / mean(w)`. This keeps the loss scale equal to E1.\n- Loss: `L = mean_t[ w\u0303_t \u00b7 (\u2212log \u03c0_\u03b8(a_t|s_t)) ] + 0.1 \u00b7 mean_t[ KL(\u03c0_C(\u00b7|s_t) \u2016 \u03c0_\u03b8(\u00b7|s_t)) ]`.\n  - KL is over the legal mask.\n  - \u03c0_C is the logged behavior probs.\n  - The mean runs over eligible C decisions.\n- Non-C and non-model steps stay in the sequence (so the GRU sees them) but get no loss.\n- Train on full C-POV trajectories with one uninterrupted hidden state, as in W3/W4.\n\n## Actor settings\n- Init from C (a trainable copy).\n- Drop the value head in candidates (`value_head: false`). The probe would be stale on a changed trunk.\n- AdamW lr 1e-4, wd 1e-4, grad_clip 1.0, batch 16 trajectories.\n- Exactly 5 epochs, no early stopping, keep the final weights.\n- Training seeds: 1, 2, 3 (data order + any randomness). Deterministic CUDA. Train on cuda, sequentially, one background job.\n- Checkpoints go in gitignored `checkpoints/w5_3/<exp>-<beta>-s<seed>/`.\n\n## Experiments\n|Exp|Weight|Configs|\n|---|---|---|\n|E0|C untouched|1|\n|E1|w=1 (BC on self-play + same KL)|3 seeds|\n|E2|AWBC, W5.2 V|\u03b2\u00d73, 3 seeds = 9|\n|E3|AWBC, probe|\u03b2\u00d73, 3 seeds = 9|\n\n## Offline drift (`reports/w5_3_policy_drift.json`, on the 20% val C decisions)\n- KL(\u03c0_C\u2016\u03c0_\u03b8) mean and p95.\n- Entropy vs C.\n- Greedy action-type frequency (move / switch / tera-move), and greedy action agreement with C.\n- Plus the val weighted and unweighted NLL.\n- Flag as abnormal any of: mean KL > 0.5 nats, entropy change > 30%, or a move/switch/tera frequency shift > 10 pp.\n\n## Dev benchmark (`data/teams_w5/dev` only; `reports/w5_3_dev_ablation.json`)\nUse the existing paired design: team pairs played both directions, alternating challenger, clustered bootstrap with 5,000 resamples.\n\nOpponents:\n- Grunt, GymLeader, EmeraldKaizo;\n- neural `models/pokedecision-v1` greedy;\n- RandomBaseline (regression check).\n\nPreview is the same for all arms.\n\n**Stage 1 \u2014 screen \u03b2 (greedy, seed 1 only, 200 battles per opponent):**\n- Arms: C, E1-s1, E2\u00d7{3 \u03b2}, E3\u00d7{3 \u03b2}.\n- Pick \u03b2 per critic by the highest pooled dev delta vs C.\n\n**Stage 2 \u2014 confirm, with a NEW schedule seed:**\n- Greedy, 400 battles per opponent. Arms: C, E1 \u00d7 3 seeds, E2(\u03b2*) \u00d7 3 seeds, E3(\u03b2*) \u00d7 3 seeds.\n- Shuffled-advantage negative control, run only if E2(\u03b2*) or E3(\u03b2*) has a seed-mean pooled delta > 0 in stage 2 greedy:\n  - Permute A within (opponent type \u00d7 phase bucket) groups.\n  - Use the better critic at its \u03b2*, 3 seeds, added to the same stage-2 schedule.\n  - Plan for it up front. If it's triggered, run it as an addendum on the same schedule seed.\n- Sampling mode (T=1.0), 200 per opponent. Arms: C, plus the same E1/E2/E3 \u03b2* seeds.\n\n**Report:**\n- Per-arm Wilson CIs, and per-candidate paired delta vs C per opponent and pooled.\n- Seed-mean deltas and how many of 3 seeds are positive.\n- Errors / illegal actions / retries.\n- Stage-2 results are dev-selection evidence, not unbiased final estimates. Say so.\n\n## Verdicts (pre-registered)\n- **Validity:** 0 model-illegal actions and 0 runtime errors. Otherwise do one root-cause fix, one rerun, and keep `_run1`.\n- **\"AWBC positive signal\":** for E2 or E3 at \u03b2*, all three of:\n  - seed-mean pooled greedy delta vs C > 0;\n  - \u2265 2 of 3 seeds positive;\n  - no drift flag.\n- **\"Weighting matters\":** the AWBC config beats E1 (seed-mean, paired) and, if the control was run, beats the shuffled control.\n- **Severe single-opponent regression:** a seed-mean delta < \u22125 pp with CI upper bound < 0.\n- **Gate outcome**, from the user plan \u00a73:\n  - clearly negative \u2192 don't collect 5k; check weighting, normalization and baseline;\n  - positive but wide CI \u2192 OK to scale, no strength claim;\n  - otherwise \u2192 describe it.\n- A CI containing 0 is inconclusive. Never claim C is beaten.\n\n## Candidate (`models/pokedecision-v2-candidate/{best.pt,config.yaml,training_manifest.json}`)\n- Config = the highest seed-mean pooled stage-2 greedy delta among E1/E2/E3. Checkpoint = that config's MEDIAN-delta seed (to avoid winner's curse).\n- `training_manifest.json` records:\n  - data run + split hash, C hashes, critic hash, \u03b2, seed;\n  - all hyperparameters, git commit/dirty;\n  - `role: candidate`, `production: false`, and the selection rule.\n- Save the candidate even if it doesn't beat C, and say so.\n\n## Reports (exact names)\n- `w5_3_dataset_validation.json`: C-only provenance counts, alignment proof reuse, split hash equal to W5.2.\n- `w5_3_advantage_stats.json`, `w5_3_training_metrics.json`, `w5_3_policy_drift.json`, `w5_3_dev_ablation.json`.\n- `w5_3_final_report.md`: English, concise, numbers from the JSONs. It must answer the question, state the gate decision, and list limitations:\n  - noisy Monte Carlo advantage;\n  - the greedy/sampling mismatch;\n  - the pilot's size;\n  - dev selection bias;\n  - the critic fit on the same data.\n"
+  }
+}
