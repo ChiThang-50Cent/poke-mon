@@ -1,0 +1,16 @@
+{
+  "lambda1_real_max_abs_diff_vs_MC": 0.0,
+  "lambda1_shuffled_max_abs_diff_vs_MC": 0.0,
+  "value_path_parity_max_abs_diff": 0.00027692317962646484,
+  "trajectories": 1400,
+  "fallback_steps_in_chain": 49,
+  "trajectories_ending_in_fallback_step": 7,
+  "terminal_rule": "r_T = outcome at the last stored step, next value 0",
+  "provenance": {
+    "C_sha256": "0d987dc4fe7f36ab782b142efade20facab0eb53136b1f5bcb9e33eefd4e51ae",
+    "feature_cache_sha256": "1bca7a2acfc0d14dc6cd516089e61b23e8d6e76de1ba8d2cd7fd279b22281f7f",
+    "split_ids_sha256": "139710deb7a18a64de5491a367a3337e6f4f4c17ef757612fecee51e1446b3b8"
+  },
+  "pov_outcome_checks": "inherited from A2.1 load_inputs (records == W5.2 cache)",
+  "pass": true
+}

@@ -143,15 +143,17 @@ def fresh_actor():
 
 
 # ------------------------------------------------------------- training --------
-def train(frozen, meta, variant: str, seed: int) -> dict:
+def train(frozen, meta, variant: str, seed: int, weights: np.ndarray | None = None,
+          out_root: Path = OUT) -> dict:
     seed_everything(seed)
-    weights = weights_for(variant, meta, seed)
+    if weights is None:
+        weights = weights_for(variant, meta, seed)
     data = loaders(frozen, weights, seed)
     model = fresh_actor()
     optimizer = torch.optim.AdamW(
         [p for p in model.parameters() if p.requires_grad], lr=LR, weight_decay=1e-4
     )
-    out = OUT / f"{variant}-s{seed}"
+    out = out_root / f"{variant}-s{seed}"
     out.mkdir(parents=True, exist_ok=True)
     history, matched, started = [], {}, time.perf_counter()
     for epoch in range(1, MAX_EPOCHS + 1):
