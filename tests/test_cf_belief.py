@@ -80,3 +80,38 @@ def test_cluster_bootstrap_and_split() -> None:
     split = M.assign_split([f"p{i}" for i in range(10)] * 2, 1)
     assert sorted(split.values()).count("val") == 2
     assert M.assign_split([f"p{i}" for i in range(10)], 1) == split
+
+
+def test_consumed_item_not_resurrected_by_later_item_effect() -> None:
+    """Sitrus heal / Weakness Policy boost are logged AFTER the `-enditem` line."""
+    lines = [
+        "|switch|p2a: Garchomp|Garchomp, M|100/100",
+        "|-enditem|p2a: Garchomp|Sitrus Berry|[eat]",
+        "|-heal|p2a: Garchomp|100/100|[from] item: Sitrus Berry",
+        "|-enditem|p2a: Gholdengo|Custap Berry|[eat]",
+        "|-activate|p2a: Gholdengo|item: Custap Berry|consumed",
+    ]
+    know = parse_knowledge(lines, ROSTER)
+    assert know["Garchomp"].item_state == "gone"
+    assert know["Gholdengo"].item_state == "gone"
+    # a genuinely re-acquired item (Harvest / Trick) still counts as known
+    again = parse_knowledge(
+        [*lines[:3], "|-item|p2a: Garchomp|Sitrus Berry|[from] ability: Harvest"], ROSTER
+    )
+    assert again["Garchomp"].item_state == "known"
+
+
+def test_of_naming_attacker_is_not_the_ability_owner() -> None:
+    """Water Absorb heal on a p1 mon logs `[of]` = the p2 attacker (not the owner)."""
+    roster = [
+        {"name": "Suicune", "legal_abilities": ["Pressure", "Inner Focus"]},
+        {"name": "Garchomp", "legal_abilities": ["Rough Skin", "Sand Veil"]},
+    ]
+    absorb = "|-heal|p1a: Ogerpon|211/301|[from] ability: Water Absorb|[of] p2a: Suicune"
+    assert parse_knowledge([absorb], roster)["Suicune"].ability is None
+    # contact effect: `[of]` really is the owner and the dex allows it
+    rough = "|-damage|p1a: X|90/100|[from] ability: Rough Skin|[of] p2a: Garchomp"
+    assert parse_knowledge([rough], roster)["Garchomp"].ability == "Rough Skin"
+    # same-side / no `[of]`: the subject owns the ability
+    own = "|-heal|p2a: Suicune|100/100|[from] ability: Water Absorb"
+    assert parse_knowledge([own], roster)["Suicune"].ability == "Water Absorb"
