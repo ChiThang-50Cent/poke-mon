@@ -73,7 +73,7 @@ def fit_sem(
     seed: int, train: SemData, val: SemData | None, mean: np.ndarray, std: np.ndarray,
     device: str, shuffle_labels: bool = False, max_epochs: int = 60, patience: int = 10,
     lr: float = 1e-3, weight_decay: float = 1e-2, batch: int = 128,
-    fixed_epochs: int | None = None, use_x: bool = True,
+    fixed_epochs: int | None = None, use_x: bool = True, perm_seed: int | None = None,
 ) -> dict[str, Any]:
     """Train; with `val`, keep the epoch with the best mean per-root val Spearman;
     with `fixed_epochs` (and no val) train exactly that many epochs."""
@@ -83,7 +83,9 @@ def fit_sem(
     dim_x = train.x.shape[2] if use_x else 0
     head = SemHead(a.h.shape[1], dim_x).to(device)
     opt = torch.optim.AdamW(head.parameters(), lr=lr, weight_decay=weight_decay)
-    labels = permute_labels(a.d, a.valid, seed + 10_000) if shuffle_labels else a.d
+    labels = permute_labels(
+        a.d, a.valid, seed + 10_000 if perm_seed is None else perm_seed
+    ) if shuffle_labels else a.d
     h = torch.as_tensor((a.h - mean) / std, dtype=torch.float32, device=device)
     slots = torch.as_tensor(a.slots, device=device)
     logp = torch.as_tensor(a.logp, device=device)
