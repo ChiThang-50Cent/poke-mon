@@ -36,7 +36,8 @@ def claim_pool(pool: Path, final: bool, config: dict) -> None:
 
 
 def run_config(arm: dict, opponent: dict, *, pool: Path, battles: int,
-               concurrent: int, seed: int) -> RunConfig:
+               concurrent: int, seed: int, lane: list[int] | None = None,
+               pair_window: list[int] | None = None) -> RunConfig:
     """Create independent neural players using the runner's per-side options."""
     return RunConfig(
         player="neural:" + arm["model_dir"],
@@ -54,6 +55,7 @@ def run_config(arm: dict, opponent: dict, *, pool: Path, battles: int,
         opponent_team_preview_argmax=opponent.get("preview_argmax", True),
         schedule_seed=seed, swap_team_pairs=True, alternate_challenger=True,
         search=arm.get("search"), timeout_s=arm.get("battle_timeout_s", 120.0),
+        lane=lane, pair_window=pair_window,
     )
 
 
@@ -68,6 +70,8 @@ async def evaluate(args):
     arms = config["arms"]
     if args.arm:
         arms = {name: arms[name] for name in args.arm}
+    lane = [args.lane, args.lanes] if args.lanes > 1 else None
+    pair_window = list(args.pairs) if args.pairs else None
     reference = config["reference_arm"]
     if reference not in arms:
         raise ValueError("The reference arm must be included")
@@ -119,11 +123,27 @@ async def evaluate(args):
             torch.manual_seed(seed)
             summary = await run_battles(run_config(
                 arm, opponent, pool=pool, battles=battles,
-                concurrent=args.concurrent, seed=seed,
+                concurrent=args.concurrent, seed=seed, lane=lane,
+                pair_window=pair_window,
             ))
             log = Path(summary["config"]["out"]) / summary["run_id"] / "battles.jsonl"
             rows = [json.loads(line) for line in log.read_text().splitlines()]
             rows_by_arm[arm_name] = rows
+            if lane is not None or pair_window is not None:  # BS1.2: partial schedule; coverage is validated after merging
+                result[arm_name] = {
+                    "battles_path": str(log), "lane": lane, "completed": len(rows),
+                    "valid": all(r["error"] is None for r in rows)}
+                neural_stats = summary.get("neural", {})
+                result[arm_name]["model_illegal_by_side"] = {
+                    role: stats["illegal_actions"] for role, stats in neural_stats.items()}
+                result[arm_name]["valid"] = result[arm_name]["valid"] and all(
+                    stats["illegal_actions"] == 0 for stats in neural_stats.values())
+                save()
+                print(json.dumps({"opponent": name, "arm": arm_name,
+                                  "valid": result[arm_name]["valid"]}), flush=True)
+                if not result[arm_name]["valid"]:
+                    raise RuntimeError(f"Invalid benchmark arm {arm_name} vs {name}")
+                continue
             result[arm_name] = arm_report(summary, rows, battles)
             neural_stats = summary.get("neural", {})
             result[arm_name]["model_illegal_by_side"] = {
@@ -142,7 +162,7 @@ async def evaluate(args):
                               "valid": result[arm_name]["valid"]}), flush=True)
             if not result[arm_name]["valid"]:
                 raise RuntimeError(f"Invalid benchmark arm {arm_name} vs {name}")
-        if not args.smoke:
+        if not args.smoke and lane is None and pair_window is None:
             for name_arm in arms:
                 if name_arm != reference:
                     clusters = cluster_differences(rows_by_arm[reference],
@@ -168,6 +188,9 @@ def main():
     parser.add_argument("--seed", type=int, default=20261017)
     parser.add_argument("--out", default="reports/w5_benchmark.json")
     parser.add_argument("--final", action="store_true")
+    parser.add_argument("--pairs", type=int, nargs=2, metavar=("START", "STOP"))
+    parser.add_argument("--lane", type=int, default=0)
+    parser.add_argument("--lanes", type=int, default=1)
     parser.add_argument("--smoke", action="store_true")
     args = parser.parse_args()
     if args.smoke and (args.final or args.battles != 20):

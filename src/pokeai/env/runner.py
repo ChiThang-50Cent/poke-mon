@@ -43,6 +43,11 @@ class RunConfig:
     opponent_type: str | None = None
     # BS1.1: live belief-search settings for the PLAYER only (None = exact baseline behaviour).
     search: dict[str, Any] | None = None
+    # BS1.2: [lane, lanes] runs only the schedule pairs with (index // 2) % lanes == lane, so
+    # several independent processes can split one paired schedule (None = every battle).
+    lane: list[int] | None = None
+    # BS1.2: [start, stop) in team pairs: run only that slice of the full seeded schedule.
+    pair_window: list[int] | None = None
 
     def __post_init__(self) -> None:
         if self.battles < 1 or self.concurrent < 1:
@@ -343,11 +348,27 @@ def _counted_baseline(name: str) -> type:
     return CountedBaseline
 
 
+def lane_indices(
+    battles: int, lane: list[int] | None, window: list[int] | None = None
+) -> list[int]:
+    """Schedule indices of one lane: whole swapped pairs (2k, 2k+1), dealt round-robin.
+
+    Without lane and window every battle runs (odd counts included), as before BS1.2."""
+    if lane is None and window is None:
+        return list(range(battles))
+    start, stop = (0, battles // 2) if window is None else window
+    return [
+        i for i in range(2 * start, 2 * stop)
+        if lane is None or (i // 2) % lane[1] == lane[0]
+    ]
+
+
 def _config_dict(config: RunConfig) -> dict[str, Any]:
     """asdict(config), without the BS1.1 `search` key when search is off (identical bytes)."""
     out = asdict(config)
-    if out.get("search") is None:
-        out.pop("search", None)
+    for key in ("search", "lane", "pair_window"):
+        if out.get(key) is None:
+            out.pop(key, None)
     return out
 
 
@@ -459,7 +480,7 @@ async def _run_on_poke_loop(
         )
     opponent_type = _player_type(config.opponent, opponent_config, opponent_preview)
     records: list[dict[str, Any]] = []
-    next_index = iter(range(config.battles))
+    next_index = iter(lane_indices(config.battles, config.lane, config.pair_window))
     started = time.perf_counter()
     neural_players: dict[str, list[Any]] = {"player": [], "opponent": []}
     manifest: dict[str, Any] | None = None

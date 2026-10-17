@@ -1,0 +1,148 @@
+{
+ "setup": "2 lanes (processes) x 4 workers, 1 battle each at a time; lane A Grunt 2 battles, lane B GymLeader 2 battles; seed 20261199; wrapper CPUQuota=1000% MemoryMax=14G",
+ "calibration": {
+  "per_arm": {
+   "C+search": {
+    "battles": 4,
+    "wall_s_per_battle": {
+     "n": 4,
+     "p50": 152.42412676700042,
+     "p95": 204.4621250248907,
+     "max": 209.28844557498815,
+     "mean": 146.0184076462465
+    },
+    "decisions_per_battle": {
+     "n": 4,
+     "p50": 38.5,
+     "p95": 50.5,
+     "max": 52,
+     "mean": 36.5
+    }
+   }
+  },
+  "errors": {
+   "battles": 4,
+   "timeouts": [],
+   "battle_errors": [],
+   "protocol_retries": 0
+  },
+  "latency": {
+   "decisions": 146,
+   "with_t_send": 146,
+   "missing_t_send": 0,
+   "deadline_s": 5.0,
+   "decisions_over_deadline": 0,
+   "end_to_end_s": {
+    "n": 146,
+    "p50": 4.510739684104919,
+    "p95": 4.701956868171692,
+    "max": 4.703638076782227,
+    "mean": 3.9805060592416215
+   },
+   "phases_s": {
+    "c_inference_and_state": {
+     "n": 146,
+     "p50": 0.0031549930572509766,
+     "p95": 0.004643917083740234,
+     "max": 0.005786418914794922,
+     "mean": 0.00324607058747174
+    },
+    "c_done_to_search_start": {
+     "n": 143,
+     "p50": 5.245208740234375e-06,
+     "p95": 9.775161743164062e-06,
+     "max": 2.384185791015625e-05,
+     "mean": 5.997144258939303e-06
+    },
+    "search": {
+     "n": 143,
+     "p50": 4.508512020111084,
+     "p95": 4.698390030860901,
+     "max": 4.69988751411438,
+     "mean": 4.060179882116251
+    },
+    "search_end_to_send": {
+     "n": 143,
+     "p50": 0.0004875659942626953,
+     "p95": 0.0006494283676147461,
+     "max": 0.002841949462890625,
+     "mean": 0.0005030448620135968
+    },
+    "non_search_choice_to_send": {
+     "n": 3,
+     "p50": 0.00022935867309570312,
+     "p95": 0.0002478122711181641,
+     "max": 0.0002498626708984375,
+     "mean": 0.00023134549458821615
+    }
+   }
+  },
+  "search": {
+   "category_counts": {
+    "search_override": 26,
+    "search_fallback_no_signal": 105,
+    "search_fallback_unsupported": 12,
+    "not_searched_single_legal": 3
+   },
+   "decisions": 146,
+   "searched_decisions": 143,
+   "complete_pairs": {
+    "n": 143,
+    "p50": 20.0,
+    "p95": 64.0,
+    "max": 64,
+    "mean": 28.685314685314687
+   },
+   "rollouts": {
+    "n": 143,
+    "p50": 86.0,
+    "p95": 256.0,
+    "max": 256,
+    "mean": 115.58041958041959
+   },
+   "frac_searched_with_ge4_pairs": 0.916083916083916,
+   "decisions_with_pairs": 131,
+   "unsupported_reasons": {
+    "pivot_switch_request": 8,
+    "p2:move_state:outrage": 4
+   },
+   "decisions_with_unsupported_reason": 12,
+   "reconstruction_support_rate": 0.916083916083916,
+   "hard_deadline_hit": 15,
+   "override_rate_of_searched": 0.18181818181818182,
+   "search_errors": [],
+   "illegal_in_rollouts": 0,
+   "protocol_retries_in_rollouts": 0,
+   "rollout_errors": [],
+   "by_learner_role": {
+    "p1": 91,
+    "p2": 52
+   },
+   "worker_restarts_max": 0
+  },
+  "state_integrity": {
+   "battles": 4,
+   "per_decision_forward_violations": [],
+   "hidden_changed_by_search": [],
+   "cross_battle_state": [],
+   "cumulative_forward_counter_mismatch": [],
+   "pass": true,
+   "offline_replay_parity": "not run: live Showdown RNG is not seedable, so there is no offline replay of the logged observations; verified by per-decision forward counters, pre/post-search hidden-state digests and unit tests (tests/test_bs1_1_live.py)"
+  }
+ },
+ "pilot_reference": {
+  "p50_pairs": 20.0,
+  "frac_ge4_pairs": 0.8974987739087789,
+  "end_to_end_max_s": 4.718664169311523
+ },
+ "p50_pairs_ratio_to_pilot": 1.0,
+ "resources": "run-p1836044-i1853791.scope: Consumed 41min 38.192s CPU time over 5min 21.800s wall clock time, 11G memory peak.",
+ "peak_scope_memory_gb": 11.0,
+ "rule": {
+  "p50_pairs_ge_80pct_of_pilot": true,
+  "coverage_ge_85pct": true,
+  "zero_deadline_violations": true,
+  "peak_scope_memory_le_12gb": true,
+  "use_2_lanes_x_4_workers": true
+ }
+}

@@ -1,0 +1,503 @@
+{
+ "label": "DEV benchmark; fixed heuristic opponents + C (greedy); no promotion claim; heldout untouched; Showdown RNG unseeded (paired by team and side)",
+ "status": "COMPLETE",
+ "blocks": [
+  "runs/w5-bs1-2-b1",
+  "runs/w5-bs1-2-b2",
+  "runs/w5-bs1-2-b3",
+  "runs/w5-bs1-2-b4"
+ ],
+ "pairs_per_block": [
+  {
+   "Grunt": 12,
+   "GymLeader": 12,
+   "C": 12
+  },
+  {
+   "Grunt": 13,
+   "GymLeader": 13,
+   "C": 13
+  },
+  {
+   "Grunt": 12,
+   "GymLeader": 12,
+   "C": 12
+  },
+  {
+   "Grunt": 13,
+   "GymLeader": 13,
+   "C": 13
+  }
+ ],
+ "config_sha256": "e0d6af36d838f8d0dbddf22315379ff12e030187bddc7f88d80842f3c0bf26db",
+ "projections": [
+  {
+   "block": 1,
+   "pairs": [
+    0,
+    12
+   ],
+   "exit_codes": [
+    0,
+    0
+   ],
+   "block_wall_s": 4221.210655927658,
+   "elapsed_s": 4221.210657835007,
+   "projected_total_s": 17588.377740979195,
+   "budget_s": 57600,
+   "continue": true
+  },
+  {
+   "block": 2,
+   "pairs": [
+    12,
+    25
+   ],
+   "exit_codes": [
+    0,
+    0
+   ],
+   "block_wall_s": 6206.378735303879,
+   "elapsed_s": 10427.589557886124,
+   "projected_total_s": 20855.179115772247,
+   "budget_s": 57600,
+   "continue": true
+  },
+  {
+   "block": 3,
+   "pairs": [
+    25,
+    37
+   ],
+   "exit_codes": [
+    0,
+    0
+   ],
+   "block_wall_s": 5486.91646361351,
+   "elapsed_s": 15914.506158590317,
+   "projected_total_s": 21506.089403500428,
+   "budget_s": 57600,
+   "continue": true
+  },
+  {
+   "block": 4,
+   "pairs": [
+    37,
+    50
+   ],
+   "exit_codes": [
+    0,
+    0
+   ],
+   "block_wall_s": 6130.674729824066,
+   "elapsed_s": 22045.181086063385,
+   "projected_total_s": 22045.181086063385,
+   "budget_s": 57600,
+   "continue": true
+  }
+ ],
+ "wlt": {
+  "Grunt": {
+   "C": {
+    "player": 64,
+    "opponent": 36
+   },
+   "C+search": {
+    "player": 96,
+    "opponent": 4
+   }
+  },
+  "GymLeader": {
+   "C": {
+    "player": 65,
+    "opponent": 35
+   },
+   "C+search": {
+    "player": 95,
+    "opponent": 5
+   }
+  },
+  "C": {
+   "C": {
+    "opponent": 46,
+    "player": 54
+   },
+   "C+search": {
+    "player": 72,
+    "opponent": 28
+   }
+  }
+ },
+ "paired_difference_C+search_minus_C": {
+  "PRIMARY_all_three_stratified": {
+   "win_rate_difference": 0.26666666666666666,
+   "bootstrap_95": [
+    0.21,
+    0.3233333333333333
+   ],
+   "verdict": "positive",
+   "clusters": 150,
+   "strata": {
+    "Grunt": 50,
+    "GymLeader": 50,
+    "C": 50
+   },
+   "seed": 20261201,
+   "resamples": 10000
+  },
+  "heuristics_Grunt+GymLeader_stratified": {
+   "win_rate_difference": 0.31,
+   "bootstrap_95": [
+    0.245,
+    0.375
+   ],
+   "verdict": "positive",
+   "clusters": 100,
+   "strata": {
+    "Grunt": 50,
+    "GymLeader": 50
+   },
+   "seed": 20261202,
+   "resamples": 10000
+  },
+  "Grunt": {
+   "win_rate_difference": 0.32,
+   "bootstrap_95": [
+    0.22,
+    0.41
+   ],
+   "verdict": "positive",
+   "clusters": 50,
+   "seed": 20261203,
+   "resamples": 10000
+  },
+  "GymLeader": {
+   "win_rate_difference": 0.3,
+   "bootstrap_95": [
+    0.21,
+    0.39
+   ],
+   "verdict": "positive",
+   "clusters": 50,
+   "seed": 20261203,
+   "resamples": 10000
+  },
+  "C": {
+   "win_rate_difference": 0.18,
+   "bootstrap_95": [
+    0.07,
+    0.29
+   ],
+   "verdict": "positive",
+   "clusters": 50,
+   "seed": 20261203,
+   "resamples": 10000
+  }
+ },
+ "gates": {
+  "B1_reliability": true,
+  "B2_deadline": true,
+  "B3_search_benefit": true,
+  "B4_no_clear_regression": true,
+  "B5_reproducibility": true
+ },
+ "team_pair_overlap_new_schedule_vs_bs1_1_runs (per opponent Grunt,GymLeader,C)": {
+  "w5-bs1-1a": [
+   0,
+   0,
+   0
+  ],
+  "w5-bs1-1b-aborted1": [
+   0,
+   0,
+   0
+  ],
+  "w5-bs1-1b-block1": [
+   0,
+   0,
+   0
+  ],
+  "w5-bs1-1b-block2": [
+   0,
+   0,
+   1
+  ]
+ },
+ "delta_by_learner_seat": {
+  "p1": {
+   "n": 150,
+   "c_wins": 95,
+   "search_wins": 136,
+   "delta": 0.2733333333333333
+  },
+  "p2": {
+   "n": 150,
+   "c_wins": 88,
+   "search_wins": 127,
+   "delta": 0.26
+  }
+ },
+ "diagnostics": {
+  "override_by_opponent": {
+   "C": {
+    "decisions": 3470,
+    "override_rate": 0.24610951008645532
+   },
+   "Grunt": {
+    "decisions": 2601,
+    "override_rate": 0.18608227604767397
+   },
+   "GymLeader": {
+    "decisions": 2819,
+    "override_rate": 0.15750266051791414
+   }
+  },
+  "override_by_phase": {
+   "turn<10": {
+    "decisions": 2765,
+    "override_rate": 0.2571428571428571
+   },
+   "turn10-24": {
+    "decisions": 3622,
+    "override_rate": 0.18774157923799006
+   },
+   "turn25+": {
+    "decisions": 2503,
+    "override_rate": 0.15621254494606474
+   }
+  },
+  "override_by_opponent_and_phase": {
+   "C/turn<10": {
+    "decisions": 874,
+    "override_rate": 0.26887871853546913
+   },
+   "C/turn10-24": {
+    "decisions": 1273,
+    "override_rate": 0.2702278083267871
+   },
+   "C/turn25+": {
+    "decisions": 1323,
+    "override_rate": 0.20786092214663643
+   },
+   "Grunt/turn<10": {
+    "decisions": 961,
+    "override_rate": 0.24141519250780438
+   },
+   "Grunt/turn10-24": {
+    "decisions": 1208,
+    "override_rate": 0.1605960264900662
+   },
+   "Grunt/turn25+": {
+    "decisions": 432,
+    "override_rate": 0.13425925925925927
+   },
+   "GymLeader/turn<10": {
+    "decisions": 930,
+    "override_rate": 0.2623655913978495
+   },
+   "GymLeader/turn10-24": {
+    "decisions": 1141,
+    "override_rate": 0.12445223488168274
+   },
+   "GymLeader/turn25+": {
+    "decisions": 748,
+    "override_rate": 0.07754010695187166
+   }
+  },
+  "override_vs_no_override_battles": {
+   "with_override": {
+    "battles": 283,
+    "wins": 246
+   },
+   "without_override": {
+    "battles": 17,
+    "wins": 17
+   },
+   "note": "descriptive, selection-confounded, not causal"
+  },
+  "search_exceptions_by_cause": {
+   "RuntimeError: forced action 1 outside mask": 1,
+   "RuntimeError: forced action 3 outside mask": 3,
+   "RuntimeError: forced action 0 outside mask": 1,
+   "RuntimeError: forced action 2 outside mask": 2,
+   "metamon.backend.replay_parser.exceptions.CalledForeignConsecutive: Exception on Replay Forward-Fill: Message `move p1a: Pawmot Fire Spin p2a: Weezing [from] mov": 1
+  },
+  "search_exception_fallback_outcome": "C's own legal action sent (category search_error)"
+ },
+ "engineering": {
+  "per_arm": {
+   "C": {
+    "battles": 300,
+    "wall_s_per_battle": {
+     "n": 300,
+     "p50": 0.2940045525028836,
+     "p95": 0.9036307386035334,
+     "max": 2.9073235250252765,
+     "mean": 0.3950369068998649
+    },
+    "decisions_per_battle": {
+     "n": 300,
+     "p50": 30.0,
+     "p95": 89.10000000000002,
+     "max": 204,
+     "mean": 39.84
+    }
+   },
+   "C+search": {
+    "battles": 300,
+    "wall_s_per_battle": {
+     "n": 300,
+     "p50": 111.0819046365068,
+     "p95": 304.58748847031546,
+     "max": 619.8960893160256,
+     "mean": 137.63081276265197
+    },
+    "decisions_per_battle": {
+     "n": 300,
+     "p50": 30.0,
+     "p95": 89.05000000000001,
+     "max": 158,
+     "mean": 37.43
+    }
+   }
+  },
+  "errors": {
+   "battles": 600,
+   "timeouts": [],
+   "battle_errors": [],
+   "protocol_retries": 0
+  },
+  "latency": {
+   "decisions": 11229,
+   "with_t_send": 11229,
+   "missing_t_send": 0,
+   "deadline_s": 5.0,
+   "decisions_over_deadline": 0,
+   "end_to_end_s": {
+    "n": 11229,
+    "p50": 4.511467695236206,
+    "p95": 4.702176570892334,
+    "max": 4.714292526245117,
+    "mean": 3.660444426869909
+   },
+   "phases_s": {
+    "c_inference_and_state": {
+     "n": 11218,
+     "p50": 0.0035997629165649414,
+     "p95": 0.005175256729125976,
+     "max": 0.024621009826660156,
+     "mean": 0.0036519426014955127
+    },
+    "c_done_to_search_start": {
+     "n": 11076,
+     "p50": 6.67572021484375e-06,
+     "p95": 1.0251998901367188e-05,
+     "max": 4.5299530029296875e-05,
+     "mean": 6.846634219725152e-06
+    },
+    "search": {
+     "n": 11076,
+     "p50": 4.509586811065674,
+     "p95": 4.6980308294296265,
+     "max": 4.702349424362183,
+     "mean": 3.706733106253766
+    },
+    "search_end_to_send": {
+     "n": 11076,
+     "p50": 0.0005605220794677734,
+     "p95": 0.0007374286651611328,
+     "max": 0.013409852981567383,
+     "mean": 0.000563509953327668
+    },
+    "non_search_choice_to_send": {
+     "n": 153,
+     "p50": 0.00020360946655273438,
+     "p95": 0.0003000736236572266,
+     "max": 0.0007569789886474609,
+     "mean": 0.00021389418957280177
+    }
+   }
+  },
+  "search": {
+   "category_counts": {
+    "search_fallback_no_signal": 7108,
+    "search_fallback_unsupported": 2178,
+    "search_override": 1782,
+    "not_searched_single_legal": 142,
+    "not_represented": 11,
+    "search_error": 8
+   },
+   "decisions": 11229,
+   "searched_decisions": 11068,
+   "complete_pairs": {
+    "n": 11068,
+    "p50": 17.0,
+    "p95": 64.0,
+    "max": 64,
+    "mean": 22.024033249006145
+   },
+   "rollouts": {
+    "n": 11068,
+    "p50": 73.0,
+    "p95": 256.0,
+    "max": 256,
+    "mean": 89.27846042645464
+   },
+   "frac_searched_with_ge4_pairs": 0.7970726418503795,
+   "decisions_with_pairs": 8889,
+   "unsupported_reasons": {
+    "pivot_switch_request": 546,
+    "p1:move_state:futuresight": 123,
+    "pending_move:futuresight": 128,
+    "p2:move_state:futuresight": 130,
+    "p1:lockedmove": 18,
+    "p1:twoturnmove": 26,
+    "p1:move_state:wish": 424,
+    "pending_move:wish": 111,
+    "pending_move:healingwish": 7,
+    "p2:move_state:wish": 121,
+    "courtchange": 434,
+    "p2:twoturnmove": 21,
+    "p2:lockedmove": 30,
+    "p2:move_state:lunardance": 5,
+    "side_condition_duration_exhausted:auroraveil": 4,
+    "p2:move_state:outrage": 3,
+    "p1:move_state:healingwish": 2,
+    "side_condition_duration_exhausted:lightscreen": 6,
+    "pending_move:lunardance": 16,
+    "p1:volatile:attract": 3,
+    "side_condition_duration_exhausted:reflect": 5,
+    "p2:move_state:doomdesire": 18,
+    "p1:move_state:doomdesire": 12
+   },
+   "decisions_with_unsupported_reason": 2193,
+   "reconstruction_support_rate": 0.8032164799421756,
+   "hard_deadline_hit": 1284,
+   "override_rate_of_searched": 0.16100469822912902,
+   "search_errors": [
+    "player.py\", line 415, in choose_move\n    action = self.select_action(\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/home/thangnc/code/en-tutor/src/pokeai/cf/offline.py\", line 422, in select_action\n    raise RuntimeError(f\"forced action {wanted} outside mask\")\nRuntimeError: forced action 1 outside mask\n\n",
+    "player.py\", line 415, in choose_move\n    action = self.select_action(\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/home/thangnc/code/en-tutor/src/pokeai/cf/offline.py\", line 422, in select_action\n    raise RuntimeError(f\"forced action {wanted} outside mask\")\nRuntimeError: forced action 3 outside mask\n\n",
+    "player.py\", line 415, in choose_move\n    action = self.select_action(\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/home/thangnc/code/en-tutor/src/pokeai/cf/offline.py\", line 422, in select_action\n    raise RuntimeError(f\"forced action {wanted} outside mask\")\nRuntimeError: forced action 3 outside mask\n\n",
+    "player.py\", line 415, in choose_move\n    action = self.select_action(\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/home/thangnc/code/en-tutor/src/pokeai/cf/offline.py\", line 422, in select_action\n    raise RuntimeError(f\"forced action {wanted} outside mask\")\nRuntimeError: forced action 3 outside mask\n\n",
+    "player.py\", line 415, in choose_move\n    action = self.select_action(\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/home/thangnc/code/en-tutor/src/pokeai/cf/offline.py\", line 422, in select_action\n    raise RuntimeError(f\"forced action {wanted} outside mask\")\nRuntimeError: forced action 0 outside mask\n\n"
+   ],
+   "illegal_in_rollouts": 0,
+   "protocol_retries_in_rollouts": 27,
+   "rollout_errors": [],
+   "by_learner_role": {
+    "p1": 5427,
+    "p2": 5641
+   },
+   "worker_restarts_max": 0
+  },
+  "state_integrity": {
+   "battles": 300,
+   "per_decision_forward_violations": [],
+   "hidden_changed_by_search": [],
+   "cross_battle_state": [],
+   "cumulative_forward_counter_mismatch": [],
+   "pass": true,
+   "offline_replay_parity": "not run: live Showdown RNG is not seedable, so there is no offline replay of the logged observations; verified by per-decision forward counters, pre/post-search hidden-state digests and unit tests (tests/test_bs1_1_live.py)"
+  }
+ }
+}

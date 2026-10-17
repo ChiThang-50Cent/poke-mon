@@ -259,6 +259,18 @@ def test_search_exception_keeps_c_action_and_is_categorised():
     assert action == 1 and row["category"] == "search_error" and "boom" in row["error"]
 
 
+def test_candidate_legal_live_but_outside_reconstructed_mask_falls_back_to_c():
+    # BS1.1b saw 2 decisions where a world's mask excluded a candidate that is legal live:
+    # the pool re-raises the worker error; the live choice must stay C's legal action.
+    cause = "forced action 2 outside mask"
+    pool = StubPool(raises=RuntimeError(cause))
+    mask = (0, 1, 1, 1, 0, 0, 0, 0, 0)
+    layer, action, row, _ = run_layer(pool, mask=mask)
+    assert action == 1 and mask[action] == 1
+    assert row["category"] == "search_error" and row["error_cause"] == f"RuntimeError: {cause}"
+    assert layer.counts == {"search_error": 1}
+
+
 def test_missing_snapshot_and_unsupported_and_no_signal_categories():
     pool = StubPool(result=decision_result())
     assert run_layer(pool, snapshot=False)[2]["category"] in (

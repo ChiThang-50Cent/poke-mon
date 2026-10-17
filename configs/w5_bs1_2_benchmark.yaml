@@ -1,0 +1,34 @@
+reference_arm: C
+pool: data/teams_w5/dev
+battles: 100
+arms:
+  C:
+    model_dir: models/pokedecision-v1-value
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+  C+search:
+    model_dir: models/pokedecision-v1-value
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+    battle_timeout_s: 3600  # 5 s/decision x up to ~700 decisions; the default 120 s is infeasible for search
+    search:
+      deadline_s: 5.0
+      margin_s: 0.3
+      min_budget_s: 0.5
+      opp_model: mixture
+      n_worlds: 8
+      n_seeds: 8
+      workers: 4
+      seed: 20261101
+opponents:
+  Grunt:
+    baseline: Grunt
+  GymLeader:
+    baseline: GymLeader
+  C:
+    model_dir: models/pokedecision-v1-value
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true

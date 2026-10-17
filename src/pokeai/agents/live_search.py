@@ -135,8 +135,9 @@ class LiveSearch:
                     return self._search(
                         player, battle, tag, c_action, mask, probs, t_request, snapshot,
                         pending_start, decision_no, budget, t_start, row)
-        except Exception:  # noqa: BLE001 - fail-safe: C's action
+        except Exception as exc:  # noqa: BLE001 - fail-safe: C's action
             row["category"] = "search_error"
+            row["error_cause"] = f"{type(exc).__name__}: {exc}"[:300]
             row["error"] = traceback.format_exc()[-1500:]
         row["t_search_end"] = time.time()
         self._count(row["category"])
