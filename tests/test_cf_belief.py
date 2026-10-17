@@ -11,7 +11,10 @@ from pokeai.cf.belief import parse_knowledge
 from pokeai.cf.cf1 import choose_candidates
 from pokeai.cf.offline import hp_for_pct, public_pct, rewrite_p2_hp
 
-ROSTER = [{"name": "Gholdengo"}, {"name": "Garchomp"}]
+ROSTER = [
+    {"name": "Gholdengo", "legal_abilities": ["Good as Gold"]},
+    {"name": "Garchomp", "legal_abilities": ["Rough Skin", "Sand Veil"]},
+]
 
 
 def test_hp_round_trip_same_public_percent() -> None:

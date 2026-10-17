@@ -1,0 +1,270 @@
+{
+ "run_dir": "runs/w5-cf1-4-20261017-104148",
+ "seeds": {
+  "new_roots": 20261010,
+  "pilot_regeneration": 20260602,
+  "team_partition": 20261009
+ },
+ "groups": {
+  "train_sampled": {
+   "split": "train",
+   "greedy": false,
+   "n": 900,
+   "offset": 1000
+  },
+  "train_greedy": {
+   "split": "train",
+   "greedy": true,
+   "n": 300,
+   "offset": 2000
+  },
+  "val_sampled": {
+   "split": "val",
+   "greedy": false,
+   "n": 300,
+   "offset": 3000
+  },
+  "val_greedy": {
+   "split": "val",
+   "greedy": true,
+   "n": 100,
+   "offset": 4000
+  }
+ },
+ "roots_total": 2000,
+ "roots_by_split_source": {
+  "train/pilot": {
+   "roots": 400,
+   "opponent": {
+    "C": 134,
+    "GymLeader": 133,
+    "Grunt": 133
+   },
+   "phase": {
+    "31+": 36,
+    "6-15": 171,
+    "0-5": 82,
+    "16-30": 111
+   },
+   "forced_switch": {
+    "False": 330,
+    "True": 70
+   },
+   "candidates": {
+    "4": 361,
+    "3": 19,
+    "2": 20
+   }
+  },
+  "train/sampled": {
+   "roots": 900,
+   "opponent": {
+    "GymLeader": 300,
+    "Grunt": 300,
+    "C": 300
+   },
+   "phase": {
+    "0-5": 203,
+    "16-30": 252,
+    "6-15": 375,
+    "31+": 70
+   },
+   "forced_switch": {
+    "False": 760,
+    "True": 140
+   },
+   "candidates": {
+    "4": 830,
+    "2": 33,
+    "3": 37
+   }
+  },
+  "train/greedy": {
+   "roots": 300,
+   "opponent": {
+    "Grunt": 100,
+    "C": 100,
+    "GymLeader": 100
+   },
+   "phase": {
+    "6-15": 134,
+    "16-30": 76,
+    "0-5": 59,
+    "31+": 31
+   },
+   "forced_switch": {
+    "False": 245,
+    "True": 55
+   },
+   "candidates": {
+    "4": 280,
+    "3": 13,
+    "2": 7
+   }
+  },
+  "val/sampled": {
+   "roots": 300,
+   "opponent": {
+    "C": 100,
+    "GymLeader": 100,
+    "Grunt": 100
+   },
+   "phase": {
+    "31+": 22,
+    "6-15": 133,
+    "0-5": 65,
+    "16-30": 80
+   },
+   "forced_switch": {
+    "False": 243,
+    "True": 57
+   },
+   "candidates": {
+    "4": 276,
+    "2": 8,
+    "3": 16
+   }
+  },
+  "val/greedy": {
+   "roots": 100,
+   "opponent": {
+    "GymLeader": 34,
+    "Grunt": 33,
+    "C": 33
+   },
+   "phase": {
+    "6-15": 38,
+    "16-30": 30,
+    "0-5": 22,
+    "31+": 10
+   },
+   "forced_switch": {
+    "False": 84,
+    "True": 16
+   },
+   "candidates": {
+    "4": 94,
+    "2": 2,
+    "3": 4
+   }
+  }
+ },
+ "root_failures": [
+  {
+   "group": "train_sampled",
+   "root": 1722,
+   "error": "/replay_parser/forward.py\", line 1366, in interpret_message\n    self._parse_sethp(data)\n  File \"/home/thangnc/code/en-tutor/third_party/metamon/metamon/backend/replay_parser/forward.py\", line 713, in _parse_sethp\n    assert max_hp == pokemon.max_hp\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+  },
+  {
+   "group": "train_greedy",
+   "root": 2166,
+   "error": "\n  File \"/home/thangnc/code/en-tutor/src/pokeai/cf/branching.py\", line 115, in rollout\n    match.play(max_rounds=max_rounds)\n  File \"/home/thangnc/code/en-tutor/src/pokeai/cf/offline.py\", line 669, in play\n    raise RuntimeError(\"battle exceeded max_rounds\")\nRuntimeError: battle exceeded max_rounds\n"
+  }
+ ],
+ "pilot_regeneration": {
+  "regenerated": 400,
+  "mismatch_with_cf1_2_record": []
+ },
+ "team_split": {
+  "val_reserved_teams": 250,
+  "pilot_teams": 566,
+  "train_teams_used": 743,
+  "val_teams_used": 240,
+  "team_overlap_train_val": 0,
+  "pair_overlap_train_val": 0
+ },
+ "belief_qa_new_roots": {
+  "legal": {
+   "ok": 12800,
+   "total": 12800
+  },
+  "public_view_equal": {
+   "ok": 12800,
+   "total": 12800
+  },
+  "learner_state_equal": {
+   "ok": 12800,
+   "total": 12800
+  },
+  "prng_unchanged": {
+   "ok": 12800,
+   "total": 12800
+  },
+  "root_inputs_identical": {
+   "ok": 12800,
+   "total": 12800
+  },
+  "turn_leak_free": {
+   "ok": 12800,
+   "total": 12800
+  },
+  "facts_violations": 8,
+  "world_step_errors": 0,
+  "roots_with_violations": 1,
+  "negative_control_detected": 1550,
+  "negative_control_total": 1550,
+  "true_team_legal": 1600
+ },
+ "determinism": {
+  "pairs": 10066,
+  "identical": 10066
+ },
+ "unexpected_errors": 44,
+ "unexpected_examples": [
+  "|error|[Unavailable choice] Can't move: Clefable's Calm Mind is disabled",
+  "policy-illegal:p1",
+  "|error|[Unavailable choice] Can't move: Clefable's Calm Mind is disabled",
+  "policy-illegal:p1",
+  "|error|[Unavailable choice] Can't move: Clefable's Calm Mind is disabled"
+ ],
+ "illegal_actions": 20,
+ "sampler_rejections": {
+  "worlds": 12800,
+  "mon_attempts": 80745,
+  "mon_rejections": 3945,
+  "team_attempts": 12800,
+  "team_rejections": 0
+ },
+ "timing": {
+  "rollouts": 99680,
+  "rollout_mean_s": 0.19470755063337325,
+  "rollout_p95_s": 0.5062689295999001,
+  "root_wall_mean_s": 14.615787338669397,
+  "collection_wall_s": 6176.154932267993
+ },
+ "descriptive_by_source": {
+  "sampled": {
+   "roots": 1200,
+   "c_greedy_best_fraction": 0.5316666666666666,
+   "G4_style_select": {
+    "roots": 1200,
+    "delta": 0.021822916666666668,
+    "ci95": [
+     0.014270833333333333,
+     0.02937760416666665
+    ],
+    "pass": true,
+    "fraction_a_star_ne_a_c": 0.4125
+   }
+  },
+  "greedy": {
+   "roots": 400,
+   "c_greedy_best_fraction": 0.53,
+   "G4_style_select": {
+    "roots": 400,
+    "delta": 0.0396875,
+    "ci95": [
+     0.023966165413533833,
+     0.05607849502184388
+    ],
+    "pass": true,
+    "fraction_a_star_ne_a_c": 0.39625
+   }
+  }
+ },
+ "dataset": {
+  "path": "runs/w5-cf1-4-20261017-104148/dataset.npz",
+  "feature_dim": 384,
+  "all_finite": true
+ }
+}

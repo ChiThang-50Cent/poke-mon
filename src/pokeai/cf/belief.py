@@ -98,6 +98,23 @@ def parse_knowledge(lines: list[str], roster: list[dict[str, Any]]) -> dict[str,
                 return mon(tail[5:])
         return mon(subject)
 
+    legal = {m["name"]: set(m["legal_abilities"]) for m in roster}
+
+    def ability_owner(tags: list[str], subject: str, ability: str) -> MonKnowledge | None:
+        """Owner of `[from] ability: X`. `[of]` is the owner for contact effects (Rough
+        Skin) but the *source* for absorb effects (Water Absorb): when subject and `[of]`
+        are on opposite sides the p2 candidate owns it only if the dex allows it."""
+        of = next((t[5:] for t in tags if t.startswith("[of] ")), None)
+        if of is None:
+            return mon(subject)
+        a, b = _ident(subject), _ident(of)
+        if a is None or b is None or a[0] == b[0]:
+            return mon(of)
+        candidate = mon(subject) or mon(of)
+        if candidate is not None and ability in legal.get(candidate.name, set()):
+            return candidate
+        return None
+
     def item_event(k: MonKnowledge, state: str, item: str | None) -> None:
         k.item_state, k.stint_item_event = state, True
         if item:
@@ -156,7 +173,9 @@ def parse_knowledge(lines: list[str], roster: list[dict[str, Any]]) -> dict[str,
         elif kind == "-activate" and len(args) >= 2:
             k = mon(args[0])
             detail = args[1]
-            if k and detail.startswith("item: "):
+            if k and detail.startswith("item: ") and not (
+                k.item_state == "gone" and k.item == detail[6:]
+            ):
                 k.item_state, k.item = "known", detail[6:]
             elif k and detail.startswith("ability: "):
                 k.ability = detail[9:]
@@ -168,8 +187,11 @@ def parse_knowledge(lines: list[str], roster: list[dict[str, Any]]) -> dict[str,
         if frm and args:
             if frm.startswith("item:") and kind != "-enditem":
                 k = owner_of(tags, args[0])
-                if k:
-                    k.item_state, k.item = "known", frm.split(":", 1)[1].strip()
+                name = frm.split(":", 1)[1].strip()
+                # effects of an item logged after its `-enditem` (Sitrus heal, Weakness
+                # Policy boost, ...) do not bring the consumed item back
+                if k and not (k.item_state == "gone" and k.item == name):
+                    k.item_state, k.item = "known", name
             elif frm.startswith("ability:"):
                 name = frm.split(":", 1)[1].strip()
                 if name in AMBIGUOUS_ABILITIES:
@@ -178,7 +200,7 @@ def parse_knowledge(lines: list[str], roster: list[dict[str, Any]]) -> dict[str,
                         if kk:
                             kk.freeze_ability = True
                 else:
-                    k = owner_of(tags, args[0])
+                    k = ability_owner(tags, args[0], name)
                     if k:
                         k.ability = name
     return know
@@ -358,7 +380,8 @@ class BeliefSampler:
 
 
 def check_public_facts(
-    know: dict[str, MonKnowledge], full: list[dict[str, Any]]
+    know: dict[str, MonKnowledge], full: list[dict[str, Any]],
+    legal: dict[str, list[str]] | None = None,
 ) -> list[str]:
     """Violations of observed facts by a world's true-state dump (empty = consistent)."""
     bad = []
@@ -372,7 +395,13 @@ def check_public_facts(
             bad.append(f"{mon['name']}: item {k.item} != {mon['item']}")
         if k.item_state == "gone" and mon["item"] != "":
             bad.append(f"{mon['name']}: item should be gone, has {mon['item']}")
-        if k.ability and not k.freeze_ability and to_id(k.ability) != mon["ability"]:
+        names = legal.get(mon["name"]) if legal else None
+        # a forme change (Tera Ogerpon) replaces the set ability: nothing to compare
+        legal_known = names is None or (
+            k.ability in names and mon["ability"] in {to_id(a) for a in names}
+        )
+        if (k.ability and not k.freeze_ability and legal_known
+                and to_id(k.ability) != mon["ability"]):
             bad.append(f"{mon['name']}: ability {k.ability} != {mon['ability']}")
         if k.tera and mon["tera_type"] != k.tera:
             bad.append(f"{mon['name']}: tera {k.tera} != {mon['tera_type']}")

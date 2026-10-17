@@ -110,7 +110,7 @@ class RootCtx:
 
 def build_root(
     sim: Sim, sampler: BeliefSampler, pool: dict[str, tuple[str, str]], seed: int,
-    root_id: int, n_worlds: int = N_WORLDS,
+    root_id: int, n_worlds: int = N_WORLDS, greedy_prefix: bool = False,
 ) -> RootCtx:
     names = sorted(pool)
     opponent = OPPONENTS[root_id % 3]
@@ -120,7 +120,8 @@ def build_root(
         name1, name2 = rng.choice(names), rng.choice(names)
         seeds = {"sim": seed + index, "p1": seed + 1000 + index, "p2": seed + 2000 + index}
         picked = pick_root(
-            sim, {"p1": pool[name1][0], "p2": pool[name2][0]}, opponent, seeds, rng
+            sim, {"p1": pool[name1][0], "p2": pool[name2][0]}, opponent, seeds, rng,
+            greedy_prefix=greedy_prefix,
         )
         if picked is not None:
             break
@@ -229,6 +230,7 @@ def qa_root(sim: Sim, ctx: RootCtx, sampler: BeliefSampler) -> dict[str, Any]:
     }
     candidate = ctx.candidates[0]["slot"]
     seeds = seed_triple(ctx.root_id, 0)
+    ability_legal = {m["name"]: m["legal_abilities"] for m in ctx.roster}
 
     def probe(world: dict[str, Any] | None) -> dict[str, Any]:
         match = OfflineMatch.restore(sim, players, root.checkpoint, new_tag())
@@ -277,7 +279,7 @@ def qa_root(sim: Sim, ctx: RootCtx, sampler: BeliefSampler) -> dict[str, Any]:
         legal = not sim.validate(team)
         view_equal = res["view"] == true_view
         p1_equal = res["p1_state"] == ref_lines_state
-        facts = check_public_facts(ctx.know, res["full"])
+        facts = check_public_facts(ctx.know, res["full"], ability_legal)
         c_ok = (
             res["root_frames_p1"] == reference["root_frames_p1"]
             and res["root_model"] == reference["root_model"]
@@ -289,13 +291,23 @@ def qa_root(sim: Sim, ctx: RootCtx, sampler: BeliefSampler) -> dict[str, Any]:
         )
         firsts = [x for x in (_first_p2_subject(a), _first_p2_subject(b)) if x is not None]
         gate = min(firsts) if firsts else None
-        leak_free = diff is None or (gate is not None and diff >= gate)
+        # a learner move that fails/redirects (Sucker Punch, Thunderclap, accuracy) depends
+        # on the opponent's chosen action or hidden item/ability: a legitimate outcome
+        same_move = (
+            diff is not None and diff < min(len(a), len(b))
+            and a[diff].startswith("|move|p1") and b[diff].startswith("|move|p1")
+            and a[diff].split("|")[2:4] == b[diff].split("|")[2:4]
+        )
+        leak_free = diff is None or same_move or (gate is not None and diff >= gate)
         out["worlds"].append({
             "world": w, "legal": legal, "public_view_equal": view_equal,
             "learner_state_equal": p1_equal, "prng_unchanged": res["prng"] == true_prng,
             "facts_violations": facts, "root_inputs_identical": c_ok,
             "turn_first_diff": diff, "turn_first_p2_subject": gate,
             "turn_leak_free": leak_free, "errors": res["errors"],
+            "turn_diff_lines": None if diff is None else {
+                "true": a[diff] if diff < len(a) else None,
+                "world": b[diff] if diff < len(b) else None},
         })
         if not (legal and view_equal and p1_equal and not facts and c_ok and leak_free):
             out["violations"].append(w)
@@ -310,7 +322,9 @@ def qa_root(sim: Sim, ctx: RootCtx, sampler: BeliefSampler) -> dict[str, Any]:
         neg = OfflineMatch.restore(sim, players, root.checkpoint, new_tag())
         try:
             neg.apply_world(bad)
-            found = check_public_facts(ctx.know, sim.p2_full(neg.tag))
+            found = check_public_facts(
+                ctx.know, sim.p2_full(neg.tag), ability_legal
+            )
         finally:
             neg.close()
         out["negative_control"] = {"mon": target["name"], "violations_detected": len(found)}
@@ -388,9 +402,12 @@ def _ability_name(mon: dict[str, Any], truth: dict[str, Any]) -> str:
 def process_root(
     sim: Sim, sampler: BeliefSampler, pool: dict[str, tuple[str, str]], seed: int,
     root_id: int, variants: list[str], qa: bool, repeat_frac: float,
+    greedy_prefix: bool = False, n_worlds: int = N_WORLDS,
 ) -> dict[str, Any]:
     started = time.perf_counter()
-    ctx = build_root(sim, sampler, pool, seed, root_id)
+    ctx = build_root(
+        sim, sampler, pool, seed, root_id, n_worlds=n_worlds, greedy_prefix=greedy_prefix
+    )
     result: dict[str, Any] = {
         "root": root_id, "opponent": ctx.opponent, "p1_team": ctx.names[0],
         "p2_team": ctx.names[1], "pair": f"{ctx.names[0]}|{ctx.names[1]}",
@@ -401,6 +418,7 @@ def process_root(
         "probe_value": ctx.info["value"],
         "a_c": ctx.candidates[0]["slot"], "candidates": ctx.candidates,
         "public_log_lines": ctx.public_lines, "variants": {},
+        "greedy_prefix": greedy_prefix, "features": ctx.info["features"],
         "pass1_unexpected_errors": _unexpected(ctx.picked["pass1_errors"]),
     }
     if qa:

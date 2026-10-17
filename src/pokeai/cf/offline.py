@@ -271,6 +271,7 @@ class ModelDecision:
     value: float | None
     probs: list[float] | None = None
     sampled_action: int | None = None
+    features: list[float] | None = None
 
 
 @dataclass
@@ -364,12 +365,16 @@ class OfflineMatch:
                 return None
             sampled = action
             probs = None
+            features = None
             if owner.record_probs:
                 before = player._hidden_before.get(tag)
                 with torch.inference_mode():
                     tokens = torch.as_tensor(encoded["tokens"]).long()[None, None]
                     numbers = torch.as_tensor(encoded["numbers"]).float()[None, None]
-                    out = player.model(tokens, numbers, before)[0]
+                    # features = the memory output feeding the policy/value heads
+                    feats = player.model._forward_features(tokens, numbers, before)[0]
+                    out = player.model.policy(feats)
+                    features = feats[0, 0].float().tolist()
                     scores = out[0, 0].masked_fill(
                         ~torch.as_tensor(mask), -torch.inf
                     )
@@ -396,6 +401,7 @@ class OfflineMatch:
                 value=(player.decision_values.get(tag) or [None])[-1],
                 probs=probs,
                 sampled_action=int(sampled),
+                features=features,
             ))
             return action
 

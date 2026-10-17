@@ -64,6 +64,7 @@ def candidate_actions(
     return {
         "mask": model["mask"], "probs": model["probs"], "value": model["value"],
         "sampled_action": model["sampled_action"], "candidates": picks,
+        "features": model["features"],
     }
 
 

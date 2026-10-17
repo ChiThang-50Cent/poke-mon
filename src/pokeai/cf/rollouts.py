@@ -30,8 +30,10 @@ def phase_bucket(turn: int) -> str:
     return "31+"
 
 
-def make_players(opponent: str) -> dict[str, Any]:
-    c_spec = PlayerSpec(C_POLICY, sample=True, temperature=1.0, preview=PREVIEW)
+def make_players(opponent: str, greedy_prefix: bool = False) -> dict[str, Any]:
+    c_spec = PlayerSpec(
+        C_POLICY, sample=not greedy_prefix, temperature=1.0, preview=PREVIEW
+    )
     if opponent == "C":
         o_spec = PlayerSpec(C_POLICY, sample=True, temperature=1.0, preview=PREVIEW)
     else:
@@ -53,7 +55,7 @@ def eligible_rounds(match: OfflineMatch) -> list[tuple[int, list[int]]]:
 
 def pick_root(
     sim: Sim, teams: dict[str, str], opponent: str, seeds: dict[str, int],
-    rng: random.Random,
+    rng: random.Random, greedy_prefix: bool = False,
 ) -> dict[str, Any] | None:
     """Pass 1 plays the battle; pass 2 replays it (identical seeds) to the chosen round.
 
@@ -61,7 +63,7 @@ def pick_root(
     """
 
     def play(stop_at: int | None) -> tuple[OfflineMatch, Any, dict[str, Any]]:
-        players = make_players(opponent)
+        players = make_players(opponent, greedy_prefix)
         match = OfflineMatch(sim, players, new_tag())
         match.start(seeds["sim"], teams, {"p1": seeds["p1"], "p2": seeds["p2"]})
         captured: dict[str, Any] = {}
