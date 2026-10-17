@@ -1,0 +1,721 @@
+{
+ "split": {
+  "internal_train_roots": 1279,
+  "internal_val_roots": 321,
+  "pair_overlap": 0,
+  "team_overlap": 425,
+  "val_teams": 434,
+  "train_teams": 734,
+  "by_source_opponent_val": {
+   "greedy|C": 20,
+   "greedy|Grunt": 20,
+   "greedy|GymLeader": 20,
+   "pilot|C": 27,
+   "pilot|Grunt": 27,
+   "pilot|GymLeader": 27,
+   "sampled|C": 60,
+   "sampled|Grunt": 60,
+   "sampled|GymLeader": 60
+  },
+  "seed": 20261022
+ },
+ "embedding_coverage": {
+  "move": {
+   "candidates": 4210,
+   "unknown": 0,
+   "unknown_rate": 0.0
+  },
+  "species": {
+   "candidates": 2001,
+   "unknown": 0,
+   "unknown_rate": 0.0
+  },
+  "unknown_names": {},
+  "d_model": 96,
+  "vocab_unknown_id": 2541
+ },
+ "feature_dim": 115,
+ "feature_names": [
+  "kind_move",
+  "kind_switch",
+  "kind_tera",
+  "weather_sun",
+  "weather_rain",
+  "weather_sand",
+  "weather_snow",
+  "weather_other",
+  "weather_none",
+  "terrain_electric_terrain",
+  "terrain_grassy_terrain",
+  "terrain_misty_terrain",
+  "terrain_psychic_terrain",
+  "terrain_none",
+  "own_hz_stealth_rock",
+  "own_hz_spikes",
+  "own_hz_toxic_spikes",
+  "own_hz_sticky_web",
+  "opp_hz_stealth_rock",
+  "opp_hz_spikes",
+  "opp_hz_toxic_spikes",
+  "opp_hz_sticky_web",
+  "own_active_hp",
+  "opp_active_hp",
+  "move_type_bug",
+  "move_type_dark",
+  "move_type_dragon",
+  "move_type_electric",
+  "move_type_fairy",
+  "move_type_fighting",
+  "move_type_fire",
+  "move_type_flying",
+  "move_type_ghost",
+  "move_type_grass",
+  "move_type_ground",
+  "move_type_ice",
+  "move_type_normal",
+  "move_type_poison",
+  "move_type_psychic",
+  "move_type_rock",
+  "move_type_steel",
+  "move_type_water",
+  "cat_physical",
+  "cat_special",
+  "cat_status",
+  "bp",
+  "dynamic_bp",
+  "accuracy",
+  "priority",
+  "pp_frac",
+  "recovery",
+  "setup",
+  "hazard_set",
+  "hazard_removal",
+  "pivot",
+  "status_inflict",
+  "protect",
+  "priority_move",
+  "stab",
+  "eff",
+  "eff_valid",
+  "disabled",
+  "maybe_disabled",
+  "sw_type_bug",
+  "sw_type_dark",
+  "sw_type_dragon",
+  "sw_type_electric",
+  "sw_type_fairy",
+  "sw_type_fighting",
+  "sw_type_fire",
+  "sw_type_flying",
+  "sw_type_ghost",
+  "sw_type_grass",
+  "sw_type_ground",
+  "sw_type_ice",
+  "sw_type_normal",
+  "sw_type_poison",
+  "sw_type_psychic",
+  "sw_type_rock",
+  "sw_type_steel",
+  "sw_type_water",
+  "sw_hp",
+  "sw_status_brn",
+  "sw_status_frz",
+  "sw_status_par",
+  "sw_status_psn",
+  "sw_status_slp",
+  "sw_status_tox",
+  "sw_status_none",
+  "sw_hazard_dmg",
+  "sw_def_eff",
+  "sw_off_eff",
+  "sw_known_moves",
+  "tera_type_bug",
+  "tera_type_dark",
+  "tera_type_dragon",
+  "tera_type_electric",
+  "tera_type_fairy",
+  "tera_type_fighting",
+  "tera_type_fire",
+  "tera_type_flying",
+  "tera_type_ghost",
+  "tera_type_grass",
+  "tera_type_ground",
+  "tera_type_ice",
+  "tera_type_normal",
+  "tera_type_poison",
+  "tera_type_psychic",
+  "tera_type_rock",
+  "tera_type_steel",
+  "tera_type_water",
+  "tera_stab_after",
+  "tera_stab_mult_before",
+  "tera_stab_mult_after",
+  "tera_d_def_eff"
+ ],
+ "seeds": [
+  1,
+  2,
+  3
+ ],
+ "variants": {
+  "F0": {
+   "seed_best_epochs": [
+    3,
+    1,
+    6
+   ],
+   "seed_val_spearman_selected": [
+    0.12631416163068984,
+    0.1378549598488713,
+    0.12517883615530515
+   ],
+   "per_seed_mean_spearman": [
+    0.12631416163068984,
+    0.1378549598488713,
+    0.12517883615530515
+   ],
+   "gain": {
+    "0.0": {
+     "per_seed": [
+      {
+       "delta": 0.0021417445968836546,
+       "switch_rate": 0.27102803738317754
+      },
+      {
+       "delta": 0.0013629283057525754,
+       "switch_rate": 0.205607476635514
+      },
+      {
+       "delta": 0.007982865907251835,
+       "switch_rate": 0.3956386292834891
+      }
+     ],
+     "ensemble": {
+      "mean": 0.0021417445968836546,
+      "ci95": [
+       -0.007593457943925234,
+       0.012655763239875389
+      ],
+      "n": 321,
+      "switch_rate": 0.3146417445482866
+     }
+    },
+    "0.01": {
+     "per_seed": [
+      {
+       "delta": 0.0009735202766023576,
+       "switch_rate": 0.21806853582554517
+      },
+      {
+       "delta": -0.004672897048294544,
+       "switch_rate": 0.1277258566978193
+      },
+      {
+       "delta": 0.007982865907251835,
+       "switch_rate": 0.3862928348909657
+      }
+     ],
+     "ensemble": {
+      "mean": 0.002920560771599412,
+      "ci95": [
+       -0.006425233644859813,
+       0.012850467289719626
+      ],
+      "n": 321,
+      "switch_rate": 0.2803738317757009
+     }
+    },
+    "0.02": {
+     "per_seed": [
+      {
+       "delta": 0.001752336393110454,
+       "switch_rate": 0.17445482866043613
+      },
+      {
+       "delta": -0.0009735202766023576,
+       "switch_rate": 0.07165109034267912
+      },
+      {
+       "delta": 0.009151089936494827,
+       "switch_rate": 0.37383177570093457
+      }
+     ],
+     "ensemble": {
+      "mean": 0.002725856611505151,
+      "ci95": [
+       -0.006425233644859813,
+       0.012655763239875389
+      ],
+      "n": 321,
+      "switch_rate": 0.26791277258566976
+     }
+    },
+    "0.05": {
+     "per_seed": [
+      {
+       "delta": -0.0007788161747157574,
+       "switch_rate": 0.102803738317757
+      },
+      {
+       "delta": 0.0,
+       "switch_rate": 0.0
+      },
+      {
+       "delta": 0.007009345572441816,
+       "switch_rate": 0.3395638629283489
+      }
+     ],
+     "ensemble": {
+      "mean": -0.0015576323494315147,
+      "ci95": [
+       -0.008566978193146417,
+       0.005257009345794392
+      ],
+      "n": 321,
+      "switch_rate": 0.14953271028037382
+     }
+    }
+   }
+  },
+  "F1": {
+   "seed_best_epochs": [
+    3,
+    3,
+    3
+   ],
+   "seed_val_spearman_selected": [
+    0.16164062943750163,
+    0.15130150924520677,
+    0.1648025313503222
+   ],
+   "per_seed_mean_spearman": [
+    0.16164062943750163,
+    0.15130150924520677,
+    0.1648025313503222
+   ],
+   "gain": {
+    "0.0": {
+     "per_seed": [
+      {
+       "delta": 0.006619937717914581,
+       "switch_rate": 0.367601246105919
+      },
+      {
+       "delta": 0.007398753892630339,
+       "switch_rate": 0.367601246105919
+      },
+      {
+       "delta": 0.00447819335386157,
+       "switch_rate": 0.40186915887850466
+      }
+     ],
+     "ensemble": {
+      "mean": 0.005646417383104563,
+      "ci95": [
+       -0.006035825545171339,
+       0.017523364485981307
+      ],
+      "n": 321,
+      "switch_rate": 0.35202492211838005
+     }
+    },
+    "0.01": {
+     "per_seed": [
+      {
+       "delta": 0.005841121543198824,
+       "switch_rate": 0.3395638629283489
+      },
+      {
+       "delta": 0.00642523355782032,
+       "switch_rate": 0.3395638629283489
+      },
+      {
+       "delta": 0.0019470405532047153,
+       "switch_rate": 0.3582554517133956
+      }
+     ],
+     "ensemble": {
+      "mean": 0.007788162212818861,
+      "ci95": [
+       -0.003115264797507788,
+       0.018691588785046728
+      ],
+      "n": 321,
+      "switch_rate": 0.3302180685358255
+     }
+    },
+    "0.02": {
+     "per_seed": [
+      {
+       "delta": 0.005451713223010302,
+       "switch_rate": 0.308411214953271
+      },
+      {
+       "delta": 0.0072040497325360775,
+       "switch_rate": 0.3146417445482866
+      },
+      {
+       "delta": 0.0019470405532047153,
+       "switch_rate": 0.34890965732087226
+      }
+     ],
+     "ensemble": {
+      "mean": 0.0068146418780088425,
+      "ci95": [
+       -0.0036993769470404984,
+       0.017523364485981307
+      ],
+      "n": 321,
+      "switch_rate": 0.3177570093457944
+     }
+    },
+    "0.05": {
+     "per_seed": [
+      {
+       "delta": 0.0068146418780088425,
+       "switch_rate": 0.24610591900311526
+      },
+      {
+       "delta": 0.005257009528577328,
+       "switch_rate": 0.24299065420560748
+      },
+      {
+       "delta": 0.005257009528577328,
+       "switch_rate": 0.2897196261682243
+      }
+     ],
+     "ensemble": {
+      "mean": 0.005257009528577328,
+      "ci95": [
+       -0.0035046728971962616,
+       0.01440809968847352
+      ],
+      "n": 321,
+      "switch_rate": 0.2554517133956386
+     }
+    }
+   }
+  },
+  "F2": {
+   "seed_best_epochs": [
+    4,
+    3,
+    4
+   ],
+   "seed_val_spearman_selected": [
+    0.2050878248551098,
+    0.17657390513367602,
+    0.17134328559955223
+   ],
+   "per_seed_mean_spearman": [
+    0.2050878248551098,
+    0.17657390513367602,
+    0.17134328559955223
+   ],
+   "gain": {
+    "0.0": {
+     "per_seed": [
+      {
+       "delta": 0.009345794096589088,
+       "switch_rate": 0.5389408099688473
+      },
+      {
+       "delta": 0.007009345572441816,
+       "switch_rate": 0.573208722741433
+      },
+      {
+       "delta": 0.00447819335386157,
+       "switch_rate": 0.5638629283489096
+      }
+     ],
+     "ensemble": {
+      "mean": 0.008177570067346096,
+      "ci95": [
+       -0.00720404984423676,
+       0.023169781931464174
+      ],
+      "n": 321,
+      "switch_rate": 0.5482866043613707
+     }
+    },
+    "0.01": {
+     "per_seed": [
+      {
+       "delta": 0.009345794096589088,
+       "switch_rate": 0.5358255451713395
+      },
+      {
+       "delta": 0.006035825703293085,
+       "switch_rate": 0.5669781931464174
+      },
+      {
+       "delta": 0.005257009528577328,
+       "switch_rate": 0.5607476635514018
+      }
+     ],
+     "ensemble": {
+      "mean": 0.0072040497325360775,
+      "ci95": [
+       -0.00837227414330218,
+       0.022006425233644787
+      ],
+      "n": 321,
+      "switch_rate": 0.5389408099688473
+     }
+    },
+    "0.02": {
+     "per_seed": [
+      {
+       "delta": 0.009345794096589088,
+       "switch_rate": 0.5264797507788161
+      },
+      {
+       "delta": 0.006619937717914581,
+       "switch_rate": 0.557632398753894
+      },
+      {
+       "delta": 0.005257009528577328,
+       "switch_rate": 0.5545171339563862
+      }
+     ],
+     "ensemble": {
+      "mean": 0.0068146418780088425,
+      "ci95": [
+       -0.00837227414330218,
+       0.02161214953271028
+      ],
+      "n": 321,
+      "switch_rate": 0.5264797507788161
+     }
+    },
+    "0.05": {
+     "per_seed": [
+      {
+       "delta": 0.010708722285926342,
+       "switch_rate": 0.48909657320872274
+      },
+      {
+       "delta": 0.004088785033673048,
+       "switch_rate": 0.5109034267912772
+      },
+      {
+       "delta": 0.002920560771599412,
+       "switch_rate": 0.5015576323987538
+      }
+     ],
+     "ensemble": {
+      "mean": 0.007788162212818861,
+      "ci95": [
+       -0.00720404984423676,
+       0.022390965732087226
+      ],
+      "n": 321,
+      "switch_rate": 0.4766355140186916
+     }
+    }
+   }
+  },
+  "F1_shuffled": {
+   "seed_best_epochs": [
+    3,
+    2,
+    2
+   ],
+   "seed_val_spearman_selected": [
+    0.1776818666736053,
+    0.14393916336505774,
+    0.17407845978446732
+   ],
+   "per_seed_mean_spearman": [
+    0.1776818666736053,
+    0.14393916336505774,
+    0.17407845978446732
+   ],
+   "gain": {
+    "0.0": {
+     "per_seed": [
+      {
+       "delta": 0.00642523355782032,
+       "switch_rate": 0.40809968847352024
+      },
+      {
+       "delta": 0.0025311526842415333,
+       "switch_rate": 0.3707165109034268
+      },
+      {
+       "delta": 0.0038940811064094305,
+       "switch_rate": 0.40809968847352024
+      }
+     ],
+     "ensemble": {
+      "mean": 0.008372274227440357,
+      "ci95": [
+       -0.0035095404984423657,
+       0.020838200934579366
+      ],
+      "n": 321,
+      "switch_rate": 0.3707165109034268
+     }
+    },
+    "0.01": {
+     "per_seed": [
+      {
+       "delta": 0.0068146418780088425,
+       "switch_rate": 0.3707165109034268
+      },
+      {
+       "delta": -0.0003894080873578787,
+       "switch_rate": 0.3302180685358255
+      },
+      {
+       "delta": 0.0033099688589572906,
+       "switch_rate": 0.367601246105919
+      }
+     ],
+     "ensemble": {
+      "mean": 0.005841121543198824,
+      "ci95": [
+       -0.005646417445482866,
+       0.018107476635514017
+      ],
+      "n": 321,
+      "switch_rate": 0.32710280373831774
+     }
+    },
+    "0.02": {
+     "per_seed": [
+      {
+       "delta": 0.0050623053684830666,
+       "switch_rate": 0.3302180685358255
+      },
+      {
+       "delta": -0.0003894080873578787,
+       "switch_rate": 0.29283489096573206
+      },
+      {
+       "delta": 0.0036993769463151693,
+       "switch_rate": 0.32087227414330216
+      }
+     ],
+     "ensemble": {
+      "mean": 0.0036993769463151693,
+      "ci95": [
+       -0.0068146417445482865,
+       0.015191783489096502
+      ],
+      "n": 321,
+      "switch_rate": 0.2803738317757009
+     }
+    },
+    "0.05": {
+     "per_seed": [
+      {
+       "delta": 0.006230529397726059,
+       "switch_rate": 0.24299065420560748
+      },
+      {
+       "delta": -0.0013629283057525754,
+       "switch_rate": 0.21806853582554517
+      },
+      {
+       "delta": 0.004283489193767309,
+       "switch_rate": 0.2087227414330218
+      }
+     ],
+     "ensemble": {
+      "mean": 0.004088785033673048,
+      "ci95": [
+       -0.0025311526479750777,
+       0.011098130841121495
+      ],
+      "n": 321,
+      "switch_rate": 0.16822429906542055
+     }
+    }
+   }
+  }
+ },
+ "gates": {
+  "selected_variant": "F2",
+  "mean_per_root_spearman": {
+   "F0": 0.12978265254495544,
+   "F1": 0.15924822334434352,
+   "F2": 0.18433500519611268,
+   "F1_shuffled": 0.16523316327437682,
+   "logp_only": 0.1395891151275085
+  },
+  "F-G1_vs_F0": {
+   "mean_diff": 0.05455235265115726,
+   "ci95": [
+    -0.01191230342356385,
+    0.1200187616575895
+   ],
+   "n_roots": 271,
+   "gt0_ci_excl0": false
+  },
+  "F-G1_vs_logp_only": {
+   "mean_diff": 0.044745890068604195,
+   "ci95": [
+    -0.027295566006717262,
+    0.11299163898055287
+   ],
+   "n_roots": 271,
+   "gt0_ci_excl0": false
+  },
+  "F-G2_vs_shuffled_control": {
+   "mean_diff": 0.019101841921735887,
+   "ci95": [
+    -0.04173546237653907,
+    0.078540253354239
+   ],
+   "n_roots": 271,
+   "gt0_ci_excl0": false
+  },
+  "also_F1_vs_F0": {
+   "mean_diff": 0.029465570799388104,
+   "ci95": [
+    -0.017054693548791112,
+    0.07515700018274994
+   ],
+   "n_roots": 271,
+   "gt0_ci_excl0": false
+  },
+  "also_F1_vs_shuffled": {
+   "mean_diff": -0.0059849399300332595,
+   "ci95": [
+    -0.04824596403735147,
+    0.03587012987865162
+   ],
+   "n_roots": 271,
+   "gt0_ci_excl0": false
+  },
+  "also_F2_vs_F1": {
+   "mean_diff": 0.025086781851769144,
+   "ci95": [
+    -0.03186274429515699,
+    0.08059584001136108
+   ],
+   "n_roots": 271,
+   "gt0_ci_excl0": false
+  },
+  "roots_with_defined_spearman": 271,
+  "F-G1": false,
+  "F-G2": false
+ },
+ "lock": {
+  "variant": "F2",
+  "tau": 0.0,
+  "epochs": 4,
+  "tau_grid_ensemble_delta": {
+   "0.0": 0.008177570067346096,
+   "0.01": 0.0072040497325360775,
+   "0.02": 0.0068146418780088425,
+   "0.05": 0.007788162212818861
+  }
+ },
+ "internal_val_label_stats": {
+  "roots": 321,
+  "oracle_dQ_best_nongreedy_mean": 0.10514018684625626
+ },
+ "wall_s": 132.73481250199256
+}

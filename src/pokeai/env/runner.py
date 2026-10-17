@@ -184,6 +184,10 @@ def _protocol_choice_evidence(battle: Any, order: Any) -> dict[str, Any]:
         "order": order if isinstance(order, str) else order.message,
         "trapped": bool(active[0].get("trapped", False)),
         "maybeTrapped": bool(active[0].get("maybeTrapped", False)),
+        "maybeDisabled": bool(active[0].get("maybeDisabled", False)),
+        "disabled_moves": sorted(
+            m["id"] for m in active[0].get("moves", []) if m.get("disabled")
+        ),
         "rqid": request.get("rqid"),
         "turn": battle.turn,
         "active_species": getattr(pokemon, "species", None),
@@ -211,6 +215,37 @@ def _is_expected_trapped_retry(
             "[Invalid choice] Can't switch: The active Pokémon is trapped",
         ))
     )
+
+
+def _is_expected_disabled_retry(
+    error_message: str, evidence: dict[str, Any] | None
+) -> bool:
+    """Recognize hidden-disable discovery (e.g. an Imprison the learner cannot see).
+
+    The request flagged `maybeDisabled`, the chosen move was not marked disabled in it, and
+    the server answers "[Unavailable choice] Can't move: ... is disabled" and sends a revised
+    request that marks the move. Like the hidden trap this is information revealed by the
+    server, not a model-illegal action.
+    """
+    if not (
+        evidence
+        and evidence.get("maybeDisabled")
+        and evidence["order"].startswith("/choose move ")
+        and error_message.startswith("[Unavailable choice] Can't move: ")
+        and error_message.endswith(" is disabled")
+    ):
+        return False
+    chosen = evidence["order"].split()[2]
+    return chosen not in evidence.get("disabled_moves", [])
+
+
+def expected_retry_reason(error_message: str, evidence: dict[str, Any] | None) -> str | None:
+    """Reason a rejected choice is an expected protocol retry, else None."""
+    if _is_expected_trapped_retry(error_message, evidence):
+        return "hidden_trap"
+    if _is_expected_disabled_retry(error_message, evidence):
+        return "hidden_disable"
+    return None
 
 
 def _counted_baseline(name: str) -> type:
@@ -242,11 +277,13 @@ def _counted_baseline(name: str) -> type:
                     self.collector.events.append(message)
                 if len(message) > 1 and message[1] == "error":
                     evidence = self._protocol_choices.get(tag)
-                    if len(message) > 2 and _is_expected_trapped_retry(
-                        message[2], evidence
-                    ):
+                    reason = (
+                        expected_retry_reason(message[2], evidence)
+                        if len(message) > 2 else None
+                    )
+                    if reason is not None:
                         self.protocol_retries.setdefault(tag, []).append({
-                            **evidence, "error": "|".join(message),
+                            **evidence, "error": "|".join(message), "reason": reason,
                         })
                         # One rejected choice can account for only one retry.
                         self._protocol_choices.pop(tag, None)

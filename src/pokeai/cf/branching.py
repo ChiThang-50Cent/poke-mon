@@ -40,6 +40,8 @@ def candidate_actions(
     (revival target, Struggle, forced pass, wait request) or fewer than 2 legal slots.
     """
     probe = OfflineMatch.restore(sim, players, root.checkpoint, new_tag(), record_probs=True)
+    describing = getattr(players[learner], "describe", False)
+    players[learner].describe = True  # public action descriptor of the root's legal slots
     try:
         probe.step()
         model = next(
@@ -50,6 +52,7 @@ def candidate_actions(
             None,
         )
     finally:
+        players[learner].describe = describing
         probe.close()
     if model is None or sum(model["mask"]) < 2:
         return None
@@ -64,7 +67,7 @@ def candidate_actions(
     return {
         "mask": model["mask"], "probs": model["probs"], "value": model["value"],
         "sampled_action": model["sampled_action"], "candidates": picks,
-        "features": model["features"],
+        "features": model["features"], "descriptor": model.get("descriptor"),
     }
 
 

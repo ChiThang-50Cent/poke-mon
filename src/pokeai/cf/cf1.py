@@ -154,7 +154,10 @@ def build_root(
 
 
 def _unexpected(errors: list[str]) -> list[str]:
-    return [e for e in errors if not e.startswith(TRAP_PREFIXES)]
+    return [
+        e for e in errors
+        if not e.startswith((*TRAP_PREFIXES, "protocol-retry:"))
+    ]
 
 
 def run_variant(
@@ -164,6 +167,7 @@ def run_variant(
     spec = VARIANTS[variant]
     outcomes, walls = [], []
     unexpected: list[str] = []
+    retries: dict[str, int] = {}
     illegal = 0
     determinism = {"pairs": 0, "identical": 0}
     mech: dict[str, int] = {}
@@ -181,6 +185,9 @@ def run_variant(
                          else 1.0 if result.winner == "p1" else 0.0)
             row_w.append(result.wall_s)
             unexpected += _unexpected(result.errors)
+            for e in result.errors:
+                if e.startswith("protocol-retry:"):
+                    retries[e] = retries.get(e, 0) + 1
             illegal += result.illegal_actions
             if result.signature:
                 for key, value in signature_mechanics(result.signature).items():
@@ -201,6 +208,7 @@ def run_variant(
     return {
         "outcomes": outcomes, "wall_s": walls, "unexpected_errors": unexpected,
         "illegal": illegal, "determinism": determinism, "mechanics": mech,
+        "protocol_retries": retries,
     }
 
 

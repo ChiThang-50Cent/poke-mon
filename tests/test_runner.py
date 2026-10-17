@@ -401,10 +401,11 @@ def test_hidden_trap_retry_keeps_protocol_evidence(
     assert player.protocol_retries[tag] == [{
         "order": "/choose switch 2",
         "trapped": False, "maybeTrapped": True,
+        "maybeDisabled": False, "disabled_moves": [],
         "rqid": 9, "turn": 4,
         "active_species": "corviknight", "active_ability": "pressure",
         "opponent_species": "magnezone", "opponent_ability": None,
-        "error": "|error|" + error,
+        "error": "|error|" + error, "reason": "hidden_trap",
     }]
     # Duplicate or unrelated errors cannot reuse an accepted retry's evidence.
     asyncio.run(player._handle_battle_message([
@@ -433,6 +434,78 @@ def test_trap_retry_rejects_illegal_or_unrelated_choices(
         "maybeTrapped": maybe_trapped, "trapped": trapped, "order": order,
     })
     assert not _is_expected_trapped_retry(payload, None)
+
+
+@pytest.mark.parametrize(
+    "evidence,order,expected",
+    [
+        ({"maybeDisabled": True, "disabled_moves": []}, "/choose move calmmind", True),
+        ({"maybeDisabled": False, "disabled_moves": []}, "/choose move calmmind", False),
+        # the move was already marked disabled in the request: a model-illegal choice
+        ({"maybeDisabled": True, "disabled_moves": ["calmmind"]}, "/choose move calmmind",
+         False),
+        ({"maybeDisabled": True, "disabled_moves": []}, "/choose switch 2", False),
+    ],
+)
+def test_hidden_disable_retry_is_recognised_only_with_maybe_disabled(
+    evidence, order, expected
+):
+    from pokeai.env.runner import expected_retry_reason
+
+    error = "[Unavailable choice] Can't move: Clefable's Calm Mind is disabled"
+    reason = expected_retry_reason(
+        error, {"maybeTrapped": False, "trapped": False, **evidence, "order": order}
+    )
+    assert reason == ("hidden_disable" if expected else None)
+    assert expected_retry_reason(error, None) is None
+
+
+def test_hidden_disable_retry_keeps_protocol_evidence(monkeypatch):
+    import metamon.baselines
+
+    from pokeai.env.runner import _counted_baseline
+
+    tag = "battle-gen9ou-imprison"
+    battle = SimpleNamespace(
+        battle_tag=tag, turn=7,
+        active_pokemon=SimpleNamespace(species="clefable", ability="magicguard"),
+        opponent_active_pokemon=SimpleNamespace(species="gengar", ability=None),
+    )
+
+    class Baseline:
+        def __init__(self):
+            self.sent = []
+
+        def choose_move(self, battle):
+            return SimpleNamespace(message=battle._last_request["choice"])
+
+        async def _handle_battle_message(self, messages):
+            for message in messages[1:]:
+                if message[1] == "request":
+                    battle._last_request = json.loads(message[2])
+                    self.sent.append(self.choose_move(battle).message)
+
+    monkeypatch.setattr(metamon.baselines, "get_baseline", lambda name: Baseline)
+    player = _counted_baseline("unused")()
+    original = {
+        "rqid": 3, "choice": "/choose move calmmind",
+        "active": [{"maybeDisabled": True, "moves": [{"id": "calmmind", "disabled": False}]}],
+    }
+    revised = {
+        "rqid": 3, "choice": "/choose move moonblast",
+        "active": [{"moves": [{"id": "calmmind", "disabled": True}]}],
+    }
+    error = "[Unavailable choice] Can't move: Clefable's Calm Mind is disabled"
+    asyncio.run(player._handle_battle_message([
+        [">" + tag],
+        ["", "request", json.dumps(original)],
+        ["", "error", error],
+        ["", "request", json.dumps(revised)],
+    ]))
+    assert player.last_server_error is None
+    assert player.sent == ["/choose move calmmind", "/choose move moonblast"]
+    assert [r["reason"] for r in player.protocol_retries[tag]] == ["hidden_disable"]
+    assert player.protocol_retries[tag][0]["maybeDisabled"] is True
 
 
 def test_summary_counts_protocol_retries_without_discarding_failed_attempts():

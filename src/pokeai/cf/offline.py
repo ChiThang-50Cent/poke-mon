@@ -272,6 +272,7 @@ class ModelDecision:
     probs: list[float] | None = None
     sampled_action: int | None = None
     features: list[float] | None = None
+    descriptor: Any = None
 
 
 @dataclass
@@ -402,6 +403,9 @@ class OfflineMatch:
                 probs=probs,
                 sampled_action=int(sampled),
                 features=features,
+                descriptor=(
+                    getattr(player, "last_descriptor", None) if owner.record_probs else None
+                ),
             ))
             return action
 
@@ -615,11 +619,23 @@ class OfflineMatch:
                 delivered[side].append(raw)
                 await self._deliver(side, raw)
 
+        def retries(side: str) -> list[dict[str, Any]]:
+            found = getattr(self.players[side], "protocol_retries", {})
+            return [r for v in found.values() for r in v]
+
+        retries_before = {s: len(retries(s)) for s in SIDES}
         _run(deliver_all())
         errors = [
             line for side in SIDES for raw in delivered[side]
             for line in raw.split("\n") if line.startswith("|error|")
         ]
+        # Hidden-disable discoveries (Imprison) are server-revealed information the player
+        # re-chooses from, counted under their own reason, not as unexpected errors.
+        for side in SIDES:
+            for retry in retries(side)[retries_before[side]:]:
+                if retry.get("reason") == "hidden_disable":
+                    errors.remove(retry["error"])
+                    errors.append(f"protocol-retry:hidden_disable:{side}")
         submitted: list[tuple[str, str]] = []
         decisions: dict[str, list[dict[str, Any]]] = {s: [] for s in SIDES}
         new_events: list[dict[str, Any]] = []

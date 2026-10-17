@@ -59,6 +59,10 @@ class NeuralPlayer(MetamonPlayer):
     # Optional torch.Generator for sampling (counterfactual branches seed it per
     # rollout); None keeps the process-global generator used by live play.
     sampler: torch.Generator | None = None
+    # When True, `choose_move` stores the public ActionDescriptor of the legal slots
+    # (pokeai.cf.descriptors; built from the battle object only) in `last_descriptor`.
+    describe: bool = False
+    last_descriptor: Any = None
 
     def __init__(
         self,
@@ -124,7 +128,7 @@ class NeuralPlayer(MetamonPlayer):
         super()._battle_finished_callback(battle)
 
     async def _handle_battle_message(self, split_messages: list[list[str]]) -> None:
-        from pokeai.env.runner import _is_expected_trapped_retry
+        from pokeai.env.runner import expected_retry_reason
 
         tag = split_messages[0][0].removeprefix(">")
         public_log = self._public_log.setdefault(tag, deque(maxlen=40))
@@ -136,9 +140,11 @@ class NeuralPlayer(MetamonPlayer):
             if len(message) > 2 and message[1] == "error":
                 error = "|".join(message)
                 previous = self._pending_choice.get(tag)
-                if _is_expected_trapped_retry(message[2], previous):
+                reason = expected_retry_reason(message[2], previous)
+                if reason is not None:
                     self.protocol_retries.setdefault(tag, []).append({
                         **previous, "error": error, "public_log": list(public_log),
+                        "reason": reason,
                     })
                     # Showdown sends a corrected request; the vendor owns retry
                     # scheduling. Restore memory so that request is not a new turn.
@@ -328,6 +334,7 @@ class NeuralPlayer(MetamonPlayer):
         from pokeai.env.runner import _protocol_choice_evidence
 
         self.decisions += 1
+        self.last_descriptor = None
         if battle.reviving:
             order = self._fallback(battle, "revival_target")
         elif {move.id for move in battle.available_moves} in (
@@ -341,6 +348,10 @@ class NeuralPlayer(MetamonPlayer):
             mask = np.array([UniversalAction(i) in legal for i in range(13)])
             if battle.trapped and not battle.force_switch:
                 mask[4:9] = False
+            if self.describe:
+                from pokeai.cf.descriptors import describe_battle
+
+                self.last_descriptor = describe_battle(battle, mask)
             action = self.select_action(
                 battle.battle_tag, self.encoder.encode(state), mask
             )
@@ -364,6 +375,9 @@ class NeuralPlayer(MetamonPlayer):
             "fallbacks": dict(self.fallbacks),
             "lead_sources": dict(self.lead_sources),
             "protocol_retries": sum(map(len, self.protocol_retries.values())),
+            "protocol_retry_reasons": dict(Counter(
+                r["reason"] for v in self.protocol_retries.values() for r in v
+            )),
             "illegal_actions": self.illegal_actions,
             "inference_ms": self.latencies_ms.copy(),
             "unknown_tokens": self.unknown_tokens,
