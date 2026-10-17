@@ -1,0 +1,205 @@
+{
+  "arch": "gru",
+  "parameters": 1299789,
+  "best_epoch": 7,
+  "stopping_epoch": 10,
+  "train_valid_decisions": 2512343,
+  "gpu": "NVIDIA GeForce RTX 3060",
+  "best_val": {
+    "loss": 1.4838078435419004,
+    "accuracy": 0.43198833533967207,
+    "accuracy_nonforced": 0.42372864751542144,
+    "valid_decisions": 310682,
+    "nonforced_decisions": 306229
+  },
+  "epochs": [
+    {
+      "epoch": 1,
+      "train": {
+        "loss": 1.691344525293609,
+        "accuracy": 0.3241141834534536,
+        "accuracy_nonforced": 0.3144844413780742,
+        "valid_decisions": 2512343,
+        "nonforced_decisions": 2477051
+      },
+      "val": {
+        "loss": 1.6206560992941184,
+        "accuracy": 0.36398954558036833,
+        "accuracy_nonforced": 0.35474105979512066,
+        "valid_decisions": 310682,
+        "nonforced_decisions": 306229
+      },
+      "elapsed_s": 69.10688339199987
+    },
+    {
+      "epoch": 2,
+      "train": {
+        "loss": 1.5719064421727338,
+        "accuracy": 0.38865552991769037,
+        "accuracy_nonforced": 0.37994534630090376,
+        "valid_decisions": 2512343,
+        "nonforced_decisions": 2477051
+      },
+      "val": {
+        "loss": 1.5541733099069461,
+        "accuracy": 0.3968656053456589,
+        "accuracy_nonforced": 0.38809518366973733,
+        "valid_decisions": 310682,
+        "nonforced_decisions": 306229
+      },
+      "elapsed_s": 138.18209183900035
+    },
+    {
+      "epoch": 3,
+      "train": {
+        "loss": 1.5179711227338002,
+        "accuracy": 0.414021493084344,
+        "accuracy_nonforced": 0.4056727132384436,
+        "valid_decisions": 2512343,
+        "nonforced_decisions": 2477051
+      },
+      "val": {
+        "loss": 1.5203330250890548,
+        "accuracy": 0.41205476982895695,
+        "accuracy_nonforced": 0.4035052199497762,
+        "valid_decisions": 310682,
+        "nonforced_decisions": 306229
+      },
+      "elapsed_s": 207.2274514400051
+    },
+    {
+      "epoch": 4,
+      "train": {
+        "loss": 1.4792155099057647,
+        "accuracy": 0.43158477962603037,
+        "accuracy_nonforced": 0.42348623423579085,
+        "valid_decisions": 2512343,
+        "nonforced_decisions": 2477051
+      },
+      "val": {
+        "loss": 1.499499718392055,
+        "accuracy": 0.4211315750510168,
+        "accuracy_nonforced": 0.412714014675292,
+        "valid_decisions": 310682,
+        "nonforced_decisions": 306229
+      },
+      "elapsed_s": 276.2505060490075
+    },
+    {
+      "epoch": 5,
+      "train": {
+        "loss": 1.4485484120962182,
+        "accuracy": 0.44520990963415424,
+        "accuracy_nonforced": 0.4373054894711494,
+        "valid_decisions": 2512343,
+        "nonforced_decisions": 2477051
+      },
+      "val": {
+        "loss": 1.4898197343026978,
+        "accuracy": 0.42693493668767424,
+        "accuracy_nonforced": 0.41860176534554205,
+        "valid_decisions": 310682,
+        "nonforced_decisions": 306229
+      },
+      "elapsed_s": 345.6121141420008
+    },
+    {
+      "epoch": 6,
+      "train": {
+        "loss": 1.423073360280906,
+        "accuracy": 0.4562171646148635,
+        "accuracy_nonforced": 0.4484695712764897,
+        "valid_decisions": 2512343,
+        "nonforced_decisions": 2477051
+      },
+      "val": {
+        "loss": 1.4850235059632424,
+        "accuracy": 0.42947451091469735,
+        "accuracy_nonforced": 0.4211782685506598,
+        "valid_decisions": 310682,
+        "nonforced_decisions": 306229
+      },
+      "elapsed_s": 414.6471094340086
+    },
+    {
+      "epoch": 7,
+      "train": {
+        "loss": 1.4008507296892492,
+        "accuracy": 0.4662886397279352,
+        "accuracy_nonforced": 0.4586845406089741,
+        "valid_decisions": 2512343,
+        "nonforced_decisions": 2477051
+      },
+      "val": {
+        "loss": 1.4838078435419004,
+        "accuracy": 0.43198833533967207,
+        "accuracy_nonforced": 0.42372864751542144,
+        "valid_decisions": 310682,
+        "nonforced_decisions": 306229
+      },
+      "elapsed_s": 484.15576254800544
+    },
+    {
+      "epoch": 8,
+      "train": {
+        "loss": 1.380695844436445,
+        "accuracy": 0.47509754838411794,
+        "accuracy_nonforced": 0.46761895495894107,
+        "valid_decisions": 2512343,
+        "nonforced_decisions": 2477051
+      },
+      "val": {
+        "loss": 1.488706779801446,
+        "accuracy": 0.4319046484830148,
+        "accuracy_nonforced": 0.4236437437342642,
+        "valid_decisions": 310682,
+        "nonforced_decisions": 306229
+      },
+      "elapsed_s": 553.4622587230115
+    },
+    {
+      "epoch": 9,
+      "train": {
+        "loss": 1.3630123407526367,
+        "accuracy": 0.48280827896509354,
+        "accuracy_nonforced": 0.47543954484586715,
+        "valid_decisions": 2512343,
+        "nonforced_decisions": 2477051
+      },
+      "val": {
+        "loss": 1.4930796345364539,
+        "accuracy": 0.43159565085843404,
+        "accuracy_nonforced": 0.4233302528499914,
+        "valid_decisions": 310682,
+        "nonforced_decisions": 306229
+      },
+      "elapsed_s": 621.9433084360062
+    },
+    {
+      "epoch": 10,
+      "train": {
+        "loss": 1.346510565535865,
+        "accuracy": 0.4899175789293102,
+        "accuracy_nonforced": 0.48265013518090666,
+        "valid_decisions": 2512343,
+        "nonforced_decisions": 2477051
+      },
+      "val": {
+        "loss": 1.5002949453613628,
+        "accuracy": 0.4287792662593906,
+        "accuracy_nonforced": 0.4204729140610458,
+        "valid_decisions": 310682,
+        "nonforced_decisions": 306229
+      },
+      "elapsed_s": 689.3997940070112
+    }
+  ],
+  "wall_time_s": 689.3998784610012,
+  "source_sha256": "204072cd53b32ad91bd4032a38451be5f28e2e94f01270dd9c132b3499e9da98",
+  "arm": "scratch",
+  "train_tier": "full",
+  "w3_val_loss_diagnostic": 1.524525166322741,
+  "checkpoint_dir": "checkpoints/w4/scratch-full",
+  "selected_from": "checkpoints/w4/scratch-full",
+  "selection_reason": "Lowest W4 validation loss among the eight fixed runs; no test evaluation"
+}

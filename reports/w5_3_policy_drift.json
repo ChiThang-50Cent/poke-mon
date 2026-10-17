@@ -1,0 +1,1876 @@
+{
+  "runs": {
+    "E1-none-s1": {
+      "train": {
+        "unweighted_NLL": 1.2194721428398125,
+        "greedy_action_agreement": 0.887488908606921,
+        "loss": 1.220948711582381,
+        "weighted_bc": 1.21947216816782,
+        "KL_C_to_actor": 0.01476545990064588,
+        "entropy": 1.2997426964692977,
+        "reference_entropy": 1.3264550751463544,
+        "eligible_decisions": 45080,
+        "greedy_action_frequency": {
+          "move": 0.7324977817213842,
+          "switch": 0.26133540372670805,
+          "tera": 0.00616681455190772
+        },
+        "sampled_action_frequency": {
+          "move": 0.6521117832349694,
+          "switch": 0.3269445773025689,
+          "tera": 0.020943639800944155
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.734871339840284,
+          "switch": 0.26015971606033717,
+          "tera": 0.004968944099378882
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6514314890119388,
+          "switch": 0.3290665021488491,
+          "tera": 0.019502008892099944
+        },
+        "KL_C_to_actor_p95": 0.04483660832047459,
+        "weighted_NLL": 1.21947216816782,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      },
+      "val": {
+        "unweighted_NLL": 1.343796562258065,
+        "greedy_action_agreement": 0.9028592716773773,
+        "loss": 1.344917075509875,
+        "weighted_bc": 1.3437966021388295,
+        "KL_C_to_actor": 0.011204587030662103,
+        "entropy": 1.3175317423741355,
+        "reference_entropy": 1.3387450944492467,
+        "eligible_decisions": 10737,
+        "greedy_action_frequency": {
+          "move": 0.739871472478346,
+          "switch": 0.25407469497997576,
+          "tera": 0.006053832541678308
+        },
+        "sampled_action_frequency": {
+          "move": 0.6516126810510676,
+          "switch": 0.3259816538791278,
+          "tera": 0.022405677771250763
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.744155723200149,
+          "switch": 0.2509080748812517,
+          "tera": 0.004936201918599236
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6518538003306688,
+          "switch": 0.3274399063779709,
+          "tera": 0.02070629608923134
+        },
+        "KL_C_to_actor_p95": 0.03280574530363081,
+        "weighted_NLL": 1.3437966021388295,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      }
+    },
+    "E1-none-s2": {
+      "train": {
+        "unweighted_NLL": 1.2196829754373302,
+        "greedy_action_agreement": 0.8865794143744454,
+        "loss": 1.221181231657805,
+        "weighted_bc": 1.2196830028861418,
+        "KL_C_to_actor": 0.014982369242416993,
+        "entropy": 1.3049024674991854,
+        "reference_entropy": 1.3264550886856525,
+        "eligible_decisions": 45080,
+        "greedy_action_frequency": {
+          "move": 0.7283274179236913,
+          "switch": 0.26535048802129546,
+          "tera": 0.006322094055013309
+        },
+        "sampled_action_frequency": {
+          "move": 0.6477709461337396,
+          "switch": 0.3310697259369844,
+          "tera": 0.021159322978970004
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.734871339840284,
+          "switch": 0.26015971606033717,
+          "tera": 0.004968944099378882
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6514314910428336,
+          "switch": 0.3290665021488491,
+          "tera": 0.01950200871228114
+        },
+        "KL_C_to_actor_p95": 0.04483099523931741,
+        "weighted_NLL": 1.2196830028861418,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      },
+      "val": {
+        "unweighted_NLL": 1.3444697623525106,
+        "greedy_action_agreement": 0.899972059234423,
+        "loss": 1.3456024526939097,
+        "weighted_bc": 1.3444697865896234,
+        "KL_C_to_actor": 0.011326622563637456,
+        "entropy": 1.32279499711588,
+        "reference_entropy": 1.3387450944492467,
+        "eligible_decisions": 10737,
+        "greedy_action_frequency": {
+          "move": 0.7364254447238521,
+          "switch": 0.25724131507869985,
+          "tera": 0.0063332401974480765
+        },
+        "sampled_action_frequency": {
+          "move": 0.647336159914224,
+          "switch": 0.32997974368394994,
+          "tera": 0.022684108481523076
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.744155723200149,
+          "switch": 0.2509080748812517,
+          "tera": 0.004936201918599236
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6518538003306688,
+          "switch": 0.3274399063779709,
+          "tera": 0.02070629608923134
+        },
+        "KL_C_to_actor_p95": 0.033255703747272485,
+        "weighted_NLL": 1.3444697865896234,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      }
+    },
+    "E1-none-s3": {
+      "train": {
+        "unweighted_NLL": 1.2196609930327855,
+        "greedy_action_agreement": 0.8889973380656611,
+        "loss": 1.221133329792687,
+        "weighted_bc": 1.2196610027430008,
+        "KL_C_to_actor": 0.01472320426796739,
+        "entropy": 1.3017807264082604,
+        "reference_entropy": 1.3264550805620736,
+        "eligible_decisions": 45080,
+        "greedy_action_frequency": {
+          "move": 0.732187222715173,
+          "switch": 0.26157941437444543,
+          "tera": 0.006233362910381544
+        },
+        "sampled_action_frequency": {
+          "move": 0.6518134359987626,
+          "switch": 0.3272123274172738,
+          "tera": 0.020974239080271684
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.734871339840284,
+          "switch": 0.26015971606033717,
+          "tera": 0.004968944099378882
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6514314917197985,
+          "switch": 0.32906650350277894,
+          "tera": 0.019502008701703565
+        },
+        "KL_C_to_actor_p95": 0.04414658546447752,
+        "weighted_NLL": 1.2196610027430008,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      },
+      "val": {
+        "unweighted_NLL": 1.343517396196236,
+        "greedy_action_agreement": 0.9016485051690416,
+        "loss": 1.3446196466226357,
+        "weighted_bc": 1.3435174234643754,
+        "KL_C_to_actor": 0.011022365962118646,
+        "entropy": 1.3193203674810963,
+        "reference_entropy": 1.3387450944492467,
+        "eligible_decisions": 10737,
+        "greedy_action_frequency": {
+          "move": 0.7396852007078327,
+          "switch": 0.254260966750489,
+          "tera": 0.006053832541678308
+        },
+        "sampled_action_frequency": {
+          "move": 0.650956487748902,
+          "switch": 0.32658310910004906,
+          "tera": 0.02246039622298741
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.744155723200149,
+          "switch": 0.2509080748812517,
+          "tera": 0.004936201918599236
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6518538003306688,
+          "switch": 0.3274399063779709,
+          "tera": 0.02070629608923134
+        },
+        "KL_C_to_actor_p95": 0.032143015414476256,
+        "weighted_NLL": 1.3435174234643754,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      }
+    },
+    "E2-0.5-s1": {
+      "train": {
+        "unweighted_NLL": 1.2434446238371368,
+        "greedy_action_agreement": 0.8822537710736469,
+        "loss": 1.1965060870205289,
+        "weighted_bc": 1.1947490202952193,
+        "KL_C_to_actor": 0.017570709812222668,
+        "entropy": 1.2899828825360817,
+        "reference_entropy": 1.3264550751463544,
+        "eligible_decisions": 45080,
+        "greedy_action_frequency": {
+          "move": 0.7285048802129548,
+          "switch": 0.2650399290150843,
+          "tera": 0.006455190771960958
+        },
+        "sampled_action_frequency": {
+          "move": 0.6507708653582867,
+          "switch": 0.32810739248118365,
+          "tera": 0.02112173887090336
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.734871339840284,
+          "switch": 0.26015971606033717,
+          "tera": 0.004968944099378882
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6514314890119388,
+          "switch": 0.3290665021488491,
+          "tera": 0.019502008892099944
+        },
+        "KL_C_to_actor_p95": 0.05360240712761878,
+        "weighted_NLL": 1.1947490202952193,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      },
+      "val": {
+        "unweighted_NLL": 1.3473150994598482,
+        "greedy_action_agreement": 0.8958740802831331,
+        "loss": 1.3617851785011572,
+        "weighted_bc": 1.3603965567512153,
+        "KL_C_to_actor": 0.013886247461081755,
+        "entropy": 1.307228735708553,
+        "reference_entropy": 1.3387450944492467,
+        "eligible_decisions": 10737,
+        "greedy_action_frequency": {
+          "move": 0.7365185806091087,
+          "switch": 0.25714817919344324,
+          "tera": 0.0063332401974480765
+        },
+        "sampled_action_frequency": {
+          "move": 0.6513736082142576,
+          "switch": 0.3262512002386971,
+          "tera": 0.022375185551607397
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.744155723200149,
+          "switch": 0.2509080748812517,
+          "tera": 0.004936201918599236
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6518538003306688,
+          "switch": 0.3274399063779709,
+          "tera": 0.02070629608923134
+        },
+        "KL_C_to_actor_p95": 0.04015786126255988,
+        "weighted_NLL": 1.3603965567512153,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      }
+    },
+    "E2-0.5-s2": {
+      "train": {
+        "unweighted_NLL": 1.244066133135277,
+        "greedy_action_agreement": 0.8818544809228039,
+        "loss": 1.2011115944850943,
+        "weighted_bc": 1.1993438470226108,
+        "KL_C_to_actor": 0.017677482331858348,
+        "entropy": 1.2928775750120445,
+        "reference_entropy": 1.3264550886856525,
+        "eligible_decisions": 45080,
+        "greedy_action_frequency": {
+          "move": 0.7277284826974268,
+          "switch": 0.2660603371783496,
+          "tera": 0.006211180124223602
+        },
+        "sampled_action_frequency": {
+          "move": 0.6491616128076995,
+          "switch": 0.3298444945937041,
+          "tera": 0.020993894185232925
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.734871339840284,
+          "switch": 0.26015971606033717,
+          "tera": 0.004968944099378882
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6514314910428336,
+          "switch": 0.3290665021488491,
+          "tera": 0.01950200871228114
+        },
+        "KL_C_to_actor_p95": 0.053995293006300876,
+        "weighted_NLL": 1.1993438470226108,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      },
+      "val": {
+        "unweighted_NLL": 1.3477136868276753,
+        "greedy_action_agreement": 0.8950358573158238,
+        "loss": 1.3626419014911628,
+        "weighted_bc": 1.361241262685412,
+        "KL_C_to_actor": 0.014006243796707382,
+        "entropy": 1.309221422426903,
+        "reference_entropy": 1.3387450944492467,
+        "eligible_decisions": 10737,
+        "greedy_action_frequency": {
+          "move": 0.7344695911334638,
+          "switch": 0.2593834404396014,
+          "tera": 0.006146968426934898
+        },
+        "sampled_action_frequency": {
+          "move": 0.6492810067689051,
+          "switch": 0.32846223956059506,
+          "tera": 0.022256765927839425
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.744155723200149,
+          "switch": 0.2509080748812517,
+          "tera": 0.004936201918599236
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6518538003306688,
+          "switch": 0.3274399063779709,
+          "tera": 0.02070629608923134
+        },
+        "KL_C_to_actor_p95": 0.04080310240387916,
+        "weighted_NLL": 1.361241262685412,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      }
+    },
+    "E2-0.5-s3": {
+      "train": {
+        "unweighted_NLL": 1.2437437678610421,
+        "greedy_action_agreement": 0.8823203194321206,
+        "loss": 1.2002962368219006,
+        "weighted_bc": 1.1985747650093808,
+        "KL_C_to_actor": 0.017214642852353065,
+        "entropy": 1.2921122932603324,
+        "reference_entropy": 1.3264550805620736,
+        "eligible_decisions": 45080,
+        "greedy_action_frequency": {
+          "move": 0.7305013309671695,
+          "switch": 0.26308784383318545,
+          "tera": 0.006410825199645076
+        },
+        "sampled_action_frequency": {
+          "move": 0.6520370138146334,
+          "switch": 0.32680602594086205,
+          "tera": 0.02115695956753965
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.734871339840284,
+          "switch": 0.26015971606033717,
+          "tera": 0.004968944099378882
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6514314917197985,
+          "switch": 0.32906650350277894,
+          "tera": 0.019502008701703565
+        },
+        "KL_C_to_actor_p95": 0.05243729799985885,
+        "weighted_NLL": 1.1985747650093808,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      },
+      "val": {
+        "unweighted_NLL": 1.3467905109039928,
+        "greedy_action_agreement": 0.8962466238241594,
+        "loss": 1.3608767332239746,
+        "weighted_bc": 1.3595187515478355,
+        "KL_C_to_actor": 0.013579789181596837,
+        "entropy": 1.3081767986504027,
+        "reference_entropy": 1.3387450944492467,
+        "eligible_decisions": 10737,
+        "greedy_action_frequency": {
+          "move": 0.7367979882648784,
+          "switch": 0.2566824997671603,
+          "tera": 0.006519511967961256
+        },
+        "sampled_action_frequency": {
+          "move": 0.652011339475936,
+          "switch": 0.32558280644252935,
+          "tera": 0.02240585337096423
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.744155723200149,
+          "switch": 0.2509080748812517,
+          "tera": 0.004936201918599236
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6518538003306688,
+          "switch": 0.3274399063779709,
+          "tera": 0.02070629608923134
+        },
+        "KL_C_to_actor_p95": 0.03967517912387847,
+        "weighted_NLL": 1.3595187515478355,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      }
+    },
+    "E2-1.0-s1": {
+      "train": {
+        "unweighted_NLL": 1.2281610118253314,
+        "greedy_action_agreement": 0.8866237799467613,
+        "loss": 1.2127617023931527,
+        "weighted_bc": 1.2111891566675748,
+        "KL_C_to_actor": 0.01572542183151586,
+        "entropy": 1.2950334361092433,
+        "reference_entropy": 1.3264550751463544,
+        "eligible_decisions": 45080,
+        "greedy_action_frequency": {
+          "move": 0.7303460514640638,
+          "switch": 0.26357586512866016,
+          "tera": 0.006078083407275954
+        },
+        "sampled_action_frequency": {
+          "move": 0.651468019392391,
+          "switch": 0.327568771105058,
+          "tera": 0.020963210317024427
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.734871339840284,
+          "switch": 0.26015971606033717,
+          "tera": 0.004968944099378882
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6514314890119388,
+          "switch": 0.3290665021488491,
+          "tera": 0.019502008892099944
+        },
+        "KL_C_to_actor_p95": 0.047279676981270266,
+        "weighted_NLL": 1.2111891566675748,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      },
+      "val": {
+        "unweighted_NLL": 1.3451184335562774,
+        "greedy_action_agreement": 0.9012759616280153,
+        "loss": 1.351454730494413,
+        "weighted_bc": 1.3502461829531445,
+        "KL_C_to_actor": 0.01208553435758854,
+        "entropy": 1.3125027058521352,
+        "reference_entropy": 1.3387450944492467,
+        "eligible_decisions": 10737,
+        "greedy_action_frequency": {
+          "move": 0.7375430753469312,
+          "switch": 0.25630995622613395,
+          "tera": 0.006146968426934898
+        },
+        "sampled_action_frequency": {
+          "move": 0.6515663220161408,
+          "switch": 0.326128916755073,
+          "tera": 0.02230475860855772
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.744155723200149,
+          "switch": 0.2509080748812517,
+          "tera": 0.004936201918599236
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6518538003306688,
+          "switch": 0.3274399063779709,
+          "tera": 0.02070629608923134
+        },
+        "KL_C_to_actor_p95": 0.0353772103786468,
+        "weighted_NLL": 1.3502461829531445,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      }
+    },
+    "E2-1.0-s2": {
+      "train": {
+        "unweighted_NLL": 1.2284032136228302,
+        "greedy_action_agreement": 0.8859361135758651,
+        "loss": 1.214964803029926,
+        "weighted_bc": 1.2133766326659954,
+        "KL_C_to_actor": 0.015881702463830943,
+        "entropy": 1.2985271761876456,
+        "reference_entropy": 1.3264550886856525,
+        "eligible_decisions": 45080,
+        "greedy_action_frequency": {
+          "move": 0.7283274179236913,
+          "switch": 0.2654614019520852,
+          "tera": 0.006211180124223602
+        },
+        "sampled_action_frequency": {
+          "move": 0.6487791445578953,
+          "switch": 0.33024463907426294,
+          "tera": 0.02097622286247382
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.734871339840284,
+          "switch": 0.26015971606033717,
+          "tera": 0.004968944099378882
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6514314910428336,
+          "switch": 0.3290665021488491,
+          "tera": 0.01950200871228114
+        },
+        "KL_C_to_actor_p95": 0.04831191580742594,
+        "weighted_NLL": 1.2133766326659954,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      },
+      "val": {
+        "unweighted_NLL": 1.3456586148692895,
+        "greedy_action_agreement": 0.8996926515786533,
+        "loss": 1.352287067285161,
+        "weighted_bc": 1.351066058748115,
+        "KL_C_to_actor": 0.012210086062900973,
+        "entropy": 1.315601463634075,
+        "reference_entropy": 1.3387450944492467,
+        "eligible_decisions": 10737,
+        "greedy_action_frequency": {
+          "move": 0.7356803576417994,
+          "switch": 0.25807953804600914,
+          "tera": 0.006240104312191488
+        },
+        "sampled_action_frequency": {
+          "move": 0.6485975289839966,
+          "switch": 0.32904928867695016,
+          "tera": 0.022353180695859103
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.744155723200149,
+          "switch": 0.2509080748812517,
+          "tera": 0.004936201918599236
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6518538003306688,
+          "switch": 0.3274399063779709,
+          "tera": 0.02070629608923134
+        },
+        "KL_C_to_actor_p95": 0.03530569523572913,
+        "weighted_NLL": 1.351066058748115,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      }
+    },
+    "E2-1.0-s3": {
+      "train": {
+        "unweighted_NLL": 1.228435072945406,
+        "greedy_action_agreement": 0.8869121561668145,
+        "loss": 1.214703677818113,
+        "weighted_bc": 1.2131558791054173,
+        "KL_C_to_actor": 0.015477961897742608,
+        "entropy": 1.297529933763587,
+        "reference_entropy": 1.3264550805620736,
+        "eligible_decisions": 45080,
+        "greedy_action_frequency": {
+          "move": 0.731433007985803,
+          "switch": 0.2624667258207631,
+          "tera": 0.006100266193433896
+        },
+        "sampled_action_frequency": {
+          "move": 0.651916114651427,
+          "switch": 0.3270756146922615,
+          "tera": 0.021008268435020412
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.734871339840284,
+          "switch": 0.26015971606033717,
+          "tera": 0.004968944099378882
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6514314917197985,
+          "switch": 0.32906650350277894,
+          "tera": 0.019502008701703565
+        },
+        "KL_C_to_actor_p95": 0.04669947959482666,
+        "weighted_NLL": 1.2131558791054173,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      },
+      "val": {
+        "unweighted_NLL": 1.3446578929752258,
+        "greedy_action_agreement": 0.8989475644966005,
+        "loss": 1.3509225583869207,
+        "weighted_bc": 1.3497416479600657,
+        "KL_C_to_actor": 0.011809171505148871,
+        "entropy": 1.3142131113679625,
+        "reference_entropy": 1.3387450944492467,
+        "eligible_decisions": 10737,
+        "greedy_action_frequency": {
+          "move": 0.7372636676911614,
+          "switch": 0.2565893638819037,
+          "tera": 0.006146968426934898
+        },
+        "sampled_action_frequency": {
+          "move": 0.6514614219271161,
+          "switch": 0.32618491254594945,
+          "tera": 0.022353663173169967
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.744155723200149,
+          "switch": 0.2509080748812517,
+          "tera": 0.004936201918599236
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6518538003306688,
+          "switch": 0.3274399063779709,
+          "tera": 0.02070629608923134
+        },
+        "KL_C_to_actor_p95": 0.03448589742183683,
+        "weighted_NLL": 1.3497416479600657,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      }
+    },
+    "E2-2.0-s1": {
+      "train": {
+        "unweighted_NLL": 1.221854990271202,
+        "greedy_action_agreement": 0.8876220053238687,
+        "loss": 1.2182805369756025,
+        "weighted_bc": 1.216769125703276,
+        "KL_C_to_actor": 0.015114052853313173,
+        "entropy": 1.2974776964433021,
+        "reference_entropy": 1.3264550751463544,
+        "eligible_decisions": 45080,
+        "greedy_action_frequency": {
+          "move": 0.7315439219165927,
+          "switch": 0.2623779946761313,
+          "tera": 0.006078083407275954
+        },
+        "sampled_action_frequency": {
+          "move": 0.651820255743262,
+          "switch": 0.32724936145961864,
+          "tera": 0.020930385896349334
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.734871339840284,
+          "switch": 0.26015971606033717,
+          "tera": 0.004968944099378882
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6514314890119388,
+          "switch": 0.3290665021488491,
+          "tera": 0.019502008892099944
+        },
+        "KL_C_to_actor_p95": 0.04547217339277263,
+        "weighted_NLL": 1.216769125703276,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      },
+      "val": {
+        "unweighted_NLL": 1.3443038128958276,
+        "greedy_action_agreement": 0.9019279128248114,
+        "loss": 1.3473220070924818,
+        "weighted_bc": 1.3461728789036507,
+        "KL_C_to_actor": 0.01149123622262565,
+        "entropy": 1.3151187674675262,
+        "reference_entropy": 1.3387450944492467,
+        "eligible_decisions": 10737,
+        "greedy_action_frequency": {
+          "move": 0.7393126571668064,
+          "switch": 0.25472664617677193,
+          "tera": 0.00596069665642172
+        },
+        "sampled_action_frequency": {
+          "move": 0.6516225238724374,
+          "switch": 0.32604402988174835,
+          "tera": 0.022333447933419074
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.744155723200149,
+          "switch": 0.2509080748812517,
+          "tera": 0.004936201918599236
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6518538003306688,
+          "switch": 0.3274399063779709,
+          "tera": 0.02070629608923134
+        },
+        "KL_C_to_actor_p95": 0.03351414948701858,
+        "weighted_NLL": 1.3461728789036507,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      }
+    },
+    "E2-2.0-s2": {
+      "train": {
+        "unweighted_NLL": 1.2220713658573994,
+        "greedy_action_agreement": 0.8871561668145519,
+        "loss": 1.2193414933219249,
+        "weighted_bc": 1.2178126232515105,
+        "KL_C_to_actor": 0.015288678482141818,
+        "entropy": 1.3017662799770893,
+        "reference_entropy": 1.3264550886856525,
+        "eligible_decisions": 45080,
+        "greedy_action_frequency": {
+          "move": 0.7286601597160604,
+          "switch": 0.26521739130434785,
+          "tera": 0.006122448979591836
+        },
+        "sampled_action_frequency": {
+          "move": 0.6482978441700432,
+          "switch": 0.3306541632421268,
+          "tera": 0.021047990176142478
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.734871339840284,
+          "switch": 0.26015971606033717,
+          "tera": 0.004968944099378882
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6514314910428336,
+          "switch": 0.3290665021488491,
+          "tera": 0.01950200871228114
+        },
+        "KL_C_to_actor_p95": 0.04593300390988585,
+        "weighted_NLL": 1.2178126232515105,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      },
+      "val": {
+        "unweighted_NLL": 1.344938440385939,
+        "greedy_action_agreement": 0.9017416410542982,
+        "loss": 1.3481228598183157,
+        "weighted_bc": 1.3469621241953138,
+        "KL_C_to_actor": 0.011607386656778617,
+        "entropy": 1.3192871980541876,
+        "reference_entropy": 1.3387450944492467,
+        "eligible_decisions": 10737,
+        "greedy_action_frequency": {
+          "move": 0.7366117164943653,
+          "switch": 0.25724131507869985,
+          "tera": 0.006146968426934898
+        },
+        "sampled_action_frequency": {
+          "move": 0.6479636802790584,
+          "switch": 0.32953355094069064,
+          "tera": 0.02250276349538352
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.744155723200149,
+          "switch": 0.2509080748812517,
+          "tera": 0.004936201918599236
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6518538003306688,
+          "switch": 0.3274399063779709,
+          "tera": 0.02070629608923134
+        },
+        "KL_C_to_actor_p95": 0.03336043059825887,
+        "weighted_NLL": 1.3469621241953138,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      }
+    },
+    "E2-2.0-s3": {
+      "train": {
+        "unweighted_NLL": 1.22211097642819,
+        "greedy_action_agreement": 0.8887089618456078,
+        "loss": 1.2191691708226275,
+        "weighted_bc": 1.2176725551076135,
+        "KL_C_to_actor": 0.014966102219236306,
+        "entropy": 1.2997985948158135,
+        "reference_entropy": 1.3264550805620736,
+        "eligible_decisions": 45080,
+        "greedy_action_frequency": {
+          "move": 0.7320097604259095,
+          "switch": 0.26200088731144633,
+          "tera": 0.005989352262644188
+        },
+        "sampled_action_frequency": {
+          "move": 0.6519218878081761,
+          "switch": 0.32711301158779793,
+          "tera": 0.02096510354459233
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.734871339840284,
+          "switch": 0.26015971606033717,
+          "tera": 0.004968944099378882
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6514314917197985,
+          "switch": 0.32906650350277894,
+          "tera": 0.019502008701703565
+        },
+        "KL_C_to_actor_p95": 0.04490308500826357,
+        "weighted_NLL": 1.2176725551076135,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      },
+      "val": {
+        "unweighted_NLL": 1.3439021700752218,
+        "greedy_action_agreement": 0.9016485051690416,
+        "loss": 1.3469305811641579,
+        "weighted_bc": 1.3458046964441275,
+        "KL_C_to_actor": 0.011258767364440661,
+        "entropy": 1.3169091292085777,
+        "reference_entropy": 1.3387450944492467,
+        "eligible_decisions": 10737,
+        "greedy_action_frequency": {
+          "move": 0.73894011362578,
+          "switch": 0.25509918971779827,
+          "tera": 0.00596069665642172
+        },
+        "sampled_action_frequency": {
+          "move": 0.6512345623745758,
+          "switch": 0.3263868857908928,
+          "tera": 0.022378558496128995
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.744155723200149,
+          "switch": 0.2509080748812517,
+          "tera": 0.004936201918599236
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6518538003306688,
+          "switch": 0.3274399063779709,
+          "tera": 0.02070629608923134
+        },
+        "KL_C_to_actor_p95": 0.032550526410341216,
+        "weighted_NLL": 1.3458046964441275,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      }
+    },
+    "E3-0.5-s1": {
+      "train": {
+        "unweighted_NLL": 1.244000103331924,
+        "greedy_action_agreement": 0.8835403726708074,
+        "loss": 1.191613063139522,
+        "weighted_bc": 1.1898705589210659,
+        "KL_C_to_actor": 0.017424956658283232,
+        "entropy": 1.2894160787722868,
+        "reference_entropy": 1.3264550751463544,
+        "eligible_decisions": 45080,
+        "greedy_action_frequency": {
+          "move": 0.7290594498669033,
+          "switch": 0.26430789707187224,
+          "tera": 0.0066326530612244895
+        },
+        "sampled_action_frequency": {
+          "move": 0.651105275869158,
+          "switch": 0.32784248155730955,
+          "tera": 0.021052244900599346
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.734871339840284,
+          "switch": 0.26015971606033717,
+          "tera": 0.004968944099378882
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6514314890119388,
+          "switch": 0.3290665021488491,
+          "tera": 0.019502008892099944
+        },
+        "KL_C_to_actor_p95": 0.05333499982953064,
+        "weighted_NLL": 1.1898705589210659,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      },
+      "val": {
+        "unweighted_NLL": 1.3468845506348157,
+        "greedy_action_agreement": 0.8975505262177517,
+        "loss": 1.357685059977941,
+        "weighted_bc": 1.3563216137377545,
+        "KL_C_to_actor": 0.013634400096238548,
+        "entropy": 1.3072792515803995,
+        "reference_entropy": 1.3387450944492467,
+        "eligible_decisions": 10737,
+        "greedy_action_frequency": {
+          "move": 0.7366117164943653,
+          "switch": 0.2567756356524169,
+          "tera": 0.006612647853217845
+        },
+        "sampled_action_frequency": {
+          "move": 0.6519138733745787,
+          "switch": 0.325804380772333,
+          "tera": 0.02228174754069306
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.744155723200149,
+          "switch": 0.2509080748812517,
+          "tera": 0.004936201918599236
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6518538003306688,
+          "switch": 0.3274399063779709,
+          "tera": 0.02070629608923134
+        },
+        "KL_C_to_actor_p95": 0.03969047218561161,
+        "weighted_NLL": 1.3563216137377545,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      }
+    },
+    "E3-0.5-s2": {
+      "train": {
+        "unweighted_NLL": 1.244313770961,
+        "greedy_action_agreement": 0.8824090505767525,
+        "loss": 1.1964221238693307,
+        "weighted_bc": 1.1946879666334989,
+        "KL_C_to_actor": 0.01734161703298224,
+        "entropy": 1.293652875844419,
+        "reference_entropy": 1.3264550886856525,
+        "eligible_decisions": 45080,
+        "greedy_action_frequency": {
+          "move": 0.7269964507542147,
+          "switch": 0.2664374445430346,
+          "tera": 0.0065661047027506655
+        },
+        "sampled_action_frequency": {
+          "move": 0.6489581814675386,
+          "switch": 0.32993845901556956,
+          "tera": 0.021103354439655022
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.734871339840284,
+          "switch": 0.26015971606033717,
+          "tera": 0.004968944099378882
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6514314910428336,
+          "switch": 0.3290665021488491,
+          "tera": 0.01950200871228114
+        },
+        "KL_C_to_actor_p95": 0.053006350994110024,
+        "weighted_NLL": 1.1946879666334989,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      },
+      "val": {
+        "unweighted_NLL": 1.3471233335588968,
+        "greedy_action_agreement": 0.8953152649715935,
+        "loss": 1.3582861103846773,
+        "weighted_bc": 1.3569164931957334,
+        "KL_C_to_actor": 0.013696125621086944,
+        "entropy": 1.3103877640729777,
+        "reference_entropy": 1.3387450944492467,
+        "eligible_decisions": 10737,
+        "greedy_action_frequency": {
+          "move": 0.7343764552482072,
+          "switch": 0.25901089689857504,
+          "tera": 0.006612647853217845
+        },
+        "sampled_action_frequency": {
+          "move": 0.6491211511640894,
+          "switch": 0.32853564787945777,
+          "tera": 0.022343212103526154
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.744155723200149,
+          "switch": 0.2509080748812517,
+          "tera": 0.004936201918599236
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6518538003306688,
+          "switch": 0.3274399063779709,
+          "tera": 0.02070629608923134
+        },
+        "KL_C_to_actor_p95": 0.04006753265857694,
+        "weighted_NLL": 1.3569164931957334,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      }
+    },
+    "E3-0.5-s3": {
+      "train": {
+        "unweighted_NLL": 1.244156061153869,
+        "greedy_action_agreement": 0.8843611357586513,
+        "loss": 1.1950668277656915,
+        "weighted_bc": 1.193380830799888,
+        "KL_C_to_actor": 0.0168599700578757,
+        "entropy": 1.2922516857509394,
+        "reference_entropy": 1.3264550805620736,
+        "eligible_decisions": 45080,
+        "greedy_action_frequency": {
+          "move": 0.7312333629103815,
+          "switch": 0.2622670807453416,
+          "tera": 0.0064995563442768415
+        },
+        "sampled_action_frequency": {
+          "move": 0.652499041688474,
+          "switch": 0.3263473723986134,
+          "tera": 0.02115358379739729
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.734871339840284,
+          "switch": 0.26015971606033717,
+          "tera": 0.004968944099378882
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6514314917197985,
+          "switch": 0.32906650350277894,
+          "tera": 0.019502008701703565
+        },
+        "KL_C_to_actor_p95": 0.05147899538278573,
+        "weighted_NLL": 1.193380830799888,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      },
+      "val": {
+        "unweighted_NLL": 1.3461511936491513,
+        "greedy_action_agreement": 0.896805439135699,
+        "loss": 1.3565735454564656,
+        "weighted_bc": 1.3552509640430488,
+        "KL_C_to_actor": 0.013225797799722858,
+        "entropy": 1.3085112954092013,
+        "reference_entropy": 1.3387450944492467,
+        "eligible_decisions": 10737,
+        "greedy_action_frequency": {
+          "move": 0.7364254447238521,
+          "switch": 0.25696190742293007,
+          "tera": 0.006612647853217845
+        },
+        "sampled_action_frequency": {
+          "move": 0.6523593029652137,
+          "switch": 0.3252663965430397,
+          "tera": 0.0223742972053584
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.744155723200149,
+          "switch": 0.2509080748812517,
+          "tera": 0.004936201918599236
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6518538003306688,
+          "switch": 0.3274399063779709,
+          "tera": 0.02070629608923134
+        },
+        "KL_C_to_actor_p95": 0.038865368068218234,
+        "weighted_NLL": 1.3552509640430488,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      }
+    },
+    "E3-1.0-s1": {
+      "train": {
+        "unweighted_NLL": 1.2287032309314692,
+        "greedy_action_agreement": 0.8866681455190772,
+        "loss": 1.2102024411271923,
+        "weighted_bc": 1.208637234724615,
+        "KL_C_to_actor": 0.015651976155032863,
+        "entropy": 1.2949706895857018,
+        "reference_entropy": 1.3264550751463544,
+        "eligible_decisions": 45080,
+        "greedy_action_frequency": {
+          "move": 0.730700976042591,
+          "switch": 0.2632209405501331,
+          "tera": 0.006078083407275954
+        },
+        "sampled_action_frequency": {
+          "move": 0.6516132987698519,
+          "switch": 0.32743035208999105,
+          "tera": 0.02095635293750712
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.734871339840284,
+          "switch": 0.26015971606033717,
+          "tera": 0.004968944099378882
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6514314890119388,
+          "switch": 0.3290665021488491,
+          "tera": 0.019502008892099944
+        },
+        "KL_C_to_actor_p95": 0.04730985332280396,
+        "weighted_NLL": 1.208637234724615,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      },
+      "val": {
+        "unweighted_NLL": 1.3449844427145181,
+        "greedy_action_agreement": 0.9013690975132719,
+        "loss": 1.3492965050512844,
+        "weighted_bc": 1.3480946296662761,
+        "KL_C_to_actor": 0.0120187185443969,
+        "entropy": 1.3126060057365885,
+        "reference_entropy": 1.3387450944492467,
+        "eligible_decisions": 10737,
+        "greedy_action_frequency": {
+          "move": 0.7382881624289839,
+          "switch": 0.2554717332588246,
+          "tera": 0.006240104312191488
+        },
+        "sampled_action_frequency": {
+          "move": 0.6517851748612603,
+          "switch": 0.3259328341388587,
+          "tera": 0.02228198620353074
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.744155723200149,
+          "switch": 0.2509080748812517,
+          "tera": 0.004936201918599236
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6518538003306688,
+          "switch": 0.3274399063779709,
+          "tera": 0.02070629608923134
+        },
+        "KL_C_to_actor_p95": 0.035414165258407584,
+        "weighted_NLL": 1.3480946296662761,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      }
+    },
+    "E3-1.0-s2": {
+      "train": {
+        "unweighted_NLL": 1.2289272832997413,
+        "greedy_action_agreement": 0.8860248447204969,
+        "loss": 1.212623392253083,
+        "weighted_bc": 1.2110409052554971,
+        "KL_C_to_actor": 0.015824874839001725,
+        "entropy": 1.2992525522118663,
+        "reference_entropy": 1.3264550886856525,
+        "eligible_decisions": 45080,
+        "greedy_action_frequency": {
+          "move": 0.7282830523513754,
+          "switch": 0.26555013309671693,
+          "tera": 0.00616681455190772
+        },
+        "sampled_action_frequency": {
+          "move": 0.6487564811266516,
+          "switch": 0.33019169500261253,
+          "tera": 0.02105182177637569
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.734871339840284,
+          "switch": 0.26015971606033717,
+          "tera": 0.004968944099378882
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6514314910428336,
+          "switch": 0.3290665021488491,
+          "tera": 0.01950200871228114
+        },
+        "KL_C_to_actor_p95": 0.04832885935902571,
+        "weighted_NLL": 1.2110409052554971,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      },
+      "val": {
+        "unweighted_NLL": 1.3454282081492444,
+        "greedy_action_agreement": 0.8995995156933967,
+        "loss": 1.3500310108849731,
+        "weighted_bc": 1.3488187542771721,
+        "KL_C_to_actor": 0.012122552176349194,
+        "entropy": 1.3163160018729045,
+        "reference_entropy": 1.3387450944492467,
+        "eligible_decisions": 10737,
+        "greedy_action_frequency": {
+          "move": 0.7363323088385955,
+          "switch": 0.2573344509639564,
+          "tera": 0.0063332401974480765
+        },
+        "sampled_action_frequency": {
+          "move": 0.6484775648022026,
+          "switch": 0.32910652441319843,
+          "tera": 0.022415905899427296
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.744155723200149,
+          "switch": 0.2509080748812517,
+          "tera": 0.004936201918599236
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6518538003306688,
+          "switch": 0.3274399063779709,
+          "tera": 0.02070629608923134
+        },
+        "KL_C_to_actor_p95": 0.03503358960151672,
+        "weighted_NLL": 1.3488187542771721,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      }
+    },
+    "E3-1.0-s3": {
+      "train": {
+        "unweighted_NLL": 1.229016465303003,
+        "greedy_action_agreement": 0.8873558118899734,
+        "loss": 1.2122454963274094,
+        "weighted_bc": 1.2107073512929885,
+        "KL_C_to_actor": 0.015381379657922464,
+        "entropy": 1.2972815296135862,
+        "reference_entropy": 1.3264550805620736,
+        "eligible_decisions": 45080,
+        "greedy_action_frequency": {
+          "move": 0.7324977817213842,
+          "switch": 0.26131322094055015,
+          "tera": 0.006188997338065661
+        },
+        "sampled_action_frequency": {
+          "move": 0.6524676393172121,
+          "switch": 0.3265218526574501,
+          "tera": 0.021010505655960583
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.734871339840284,
+          "switch": 0.26015971606033717,
+          "tera": 0.004968944099378882
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6514314917197985,
+          "switch": 0.32906650350277894,
+          "tera": 0.019502008701703565
+        },
+        "KL_C_to_actor_p95": 0.046581509336829155,
+        "weighted_NLL": 1.2107073512929885,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      },
+      "val": {
+        "unweighted_NLL": 1.3444558181187134,
+        "greedy_action_agreement": 0.8992269721523704,
+        "loss": 1.3487385988701786,
+        "weighted_bc": 1.3475656498407778,
+        "KL_C_to_actor": 0.011729598839536464,
+        "entropy": 1.3139599493409908,
+        "reference_entropy": 1.3387450944492467,
+        "eligible_decisions": 10737,
+        "greedy_action_frequency": {
+          "move": 0.7377293471174443,
+          "switch": 0.25603054857036417,
+          "tera": 0.006240104312191488
+        },
+        "sampled_action_frequency": {
+          "move": 0.6518715816446997,
+          "switch": 0.3257863265992632,
+          "tera": 0.022342090157253667
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.744155723200149,
+          "switch": 0.2509080748812517,
+          "tera": 0.004936201918599236
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6518538003306688,
+          "switch": 0.3274399063779709,
+          "tera": 0.02070629608923134
+        },
+        "KL_C_to_actor_p95": 0.034347784519195554,
+        "weighted_NLL": 1.3475656498407778,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      }
+    },
+    "E3-2.0-s1": {
+      "train": {
+        "unweighted_NLL": 1.222068387211797,
+        "greedy_action_agreement": 0.8877107364685004,
+        "loss": 1.217119009331358,
+        "weighted_bc": 1.2156105485471245,
+        "KL_C_to_actor": 0.015084544565783155,
+        "entropy": 1.297521230702709,
+        "reference_entropy": 1.3264550751463544,
+        "eligible_decisions": 45080,
+        "greedy_action_frequency": {
+          "move": 0.7317435669920141,
+          "switch": 0.26224489795918365,
+          "tera": 0.006011535048802129
+        },
+        "sampled_action_frequency": {
+          "move": 0.6518957623783846,
+          "switch": 0.32717210656261697,
+          "tera": 0.020932126478907697
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.734871339840284,
+          "switch": 0.26015971606033717,
+          "tera": 0.004968944099378882
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6514314890119388,
+          "switch": 0.3290665021488491,
+          "tera": 0.019502008892099944
+        },
+        "KL_C_to_actor_p95": 0.04532760828733443,
+        "weighted_NLL": 1.2156105485471245,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      },
+      "val": {
+        "unweighted_NLL": 1.344236848740046,
+        "greedy_action_agreement": 0.9021141845953246,
+        "loss": 1.3461881866887637,
+        "weighted_bc": 1.3450409760852204,
+        "KL_C_to_actor": 0.011472118215487442,
+        "entropy": 1.3152082510208567,
+        "reference_entropy": 1.3387450944492467,
+        "eligible_decisions": 10737,
+        "greedy_action_frequency": {
+          "move": 0.7387538418552668,
+          "switch": 0.25509918971779827,
+          "tera": 0.006146968426934898
+        },
+        "sampled_action_frequency": {
+          "move": 0.6517207289670248,
+          "switch": 0.32595384357427876,
+          "tera": 0.022325429057479848
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.744155723200149,
+          "switch": 0.2509080748812517,
+          "tera": 0.004936201918599236
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6518538003306688,
+          "switch": 0.3274399063779709,
+          "tera": 0.02070629608923134
+        },
+        "KL_C_to_actor_p95": 0.03338825404644012,
+        "weighted_NLL": 1.3450409760852204,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      }
+    },
+    "E3-2.0-s2": {
+      "train": {
+        "unweighted_NLL": 1.222289687040747,
+        "greedy_action_agreement": 0.8875110913930789,
+        "loss": 1.2182544465073464,
+        "weighted_bc": 1.2167278330915252,
+        "KL_C_to_actor": 0.015266099405171683,
+        "entropy": 1.3020791948211858,
+        "reference_entropy": 1.3264550886856525,
+        "eligible_decisions": 45080,
+        "greedy_action_frequency": {
+          "move": 0.72877107364685,
+          "switch": 0.26506211180124223,
+          "tera": 0.00616681455190772
+        },
+        "sampled_action_frequency": {
+          "move": 0.6483370641320811,
+          "switch": 0.3305859048702914,
+          "tera": 0.021077034657469025
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.734871339840284,
+          "switch": 0.26015971606033717,
+          "tera": 0.004968944099378882
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6514314910428336,
+          "switch": 0.3290665021488491,
+          "tera": 0.01950200871228114
+        },
+        "KL_C_to_actor_p95": 0.0461255520582198,
+        "weighted_NLL": 1.2167278330915252,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      },
+      "val": {
+        "unweighted_NLL": 1.3448463419334864,
+        "greedy_action_agreement": 0.9018347769395548,
+        "loss": 1.3469638315738885,
+        "weighted_bc": 1.3458068545463977,
+        "KL_C_to_actor": 0.011569794705364001,
+        "entropy": 1.319561739723765,
+        "reference_entropy": 1.3387450944492467,
+        "eligible_decisions": 10737,
+        "greedy_action_frequency": {
+          "move": 0.7369842600353916,
+          "switch": 0.2567756356524169,
+          "tera": 0.006240104312191488
+        },
+        "sampled_action_frequency": {
+          "move": 0.6479583666335051,
+          "switch": 0.3295153312047145,
+          "tera": 0.02252631113273178
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.744155723200149,
+          "switch": 0.2509080748812517,
+          "tera": 0.004936201918599236
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6518538003306688,
+          "switch": 0.3274399063779709,
+          "tera": 0.02070629608923134
+        },
+        "KL_C_to_actor_p95": 0.03332355469465254,
+        "weighted_NLL": 1.3458068545463977,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      }
+    },
+    "E3-2.0-s3": {
+      "train": {
+        "unweighted_NLL": 1.2223588308826843,
+        "greedy_action_agreement": 0.8887755102040816,
+        "loss": 1.218069481947513,
+        "weighted_bc": 1.2165759766191746,
+        "KL_C_to_actor": 0.014935125413965583,
+        "entropy": 1.2996388338050064,
+        "reference_entropy": 1.3264550805620736,
+        "eligible_decisions": 45080,
+        "greedy_action_frequency": {
+          "move": 0.7323646850044365,
+          "switch": 0.26157941437444543,
+          "tera": 0.006055900621118012
+        },
+        "sampled_action_frequency": {
+          "move": 0.6522629786087754,
+          "switch": 0.32677061356795817,
+          "tera": 0.020966405580820188
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.734871339840284,
+          "switch": 0.26015971606033717,
+          "tera": 0.004968944099378882
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6514314917197985,
+          "switch": 0.32906650350277894,
+          "tera": 0.019502008701703565
+        },
+        "KL_C_to_actor_p95": 0.04482173826545472,
+        "weighted_NLL": 1.2165759766191746,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      },
+      "val": {
+        "unweighted_NLL": 1.3438051317372535,
+        "greedy_action_agreement": 0.9012759616280153,
+        "loss": 1.3457765222717133,
+        "weighted_bc": 1.3446528961552557,
+        "KL_C_to_actor": 0.01123635166975135,
+        "entropy": 1.3167207996261467,
+        "reference_entropy": 1.3387450944492467,
+        "eligible_decisions": 10737,
+        "greedy_action_frequency": {
+          "move": 0.7393126571668064,
+          "switch": 0.2546335102915153,
+          "tera": 0.006053832541678308
+        },
+        "sampled_action_frequency": {
+          "move": 0.6514668151565556,
+          "switch": 0.32616273990676226,
+          "tera": 0.022370462967406395
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.744155723200149,
+          "switch": 0.2509080748812517,
+          "tera": 0.004936201918599236
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6518538003306688,
+          "switch": 0.3274399063779709,
+          "tera": 0.02070629608923134
+        },
+        "KL_C_to_actor_p95": 0.03262746334075927,
+        "weighted_NLL": 1.3446528961552557,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      }
+    },
+    "E3-shuffled-2.0-s1": {
+      "train": {
+        "unweighted_NLL": 1.2225274344091408,
+        "greedy_action_agreement": 0.8876885536823425,
+        "loss": 1.2162559310656897,
+        "weighted_bc": 1.2147550924620802,
+        "KL_C_to_actor": 0.015008355751418788,
+        "entropy": 1.2989263715634012,
+        "reference_entropy": 1.3264550751463544,
+        "eligible_decisions": 45080,
+        "greedy_action_frequency": {
+          "move": 0.7315217391304348,
+          "switch": 0.26222271517302576,
+          "tera": 0.006255545696539485
+        },
+        "sampled_action_frequency": {
+          "move": 0.6515986756508395,
+          "switch": 0.32746170605826186,
+          "tera": 0.020939619158259936
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.734871339840284,
+          "switch": 0.26015971606033717,
+          "tera": 0.004968944099378882
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6514314890119388,
+          "switch": 0.3290665021488491,
+          "tera": 0.019502008892099944
+        },
+        "KL_C_to_actor_p95": 0.045326475612819175,
+        "weighted_NLL": 1.2147550924620802,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      },
+      "val": {
+        "unweighted_NLL": 1.343914971711794,
+        "greedy_action_agreement": 0.9043494458414827,
+        "loss": 1.3442738808166206,
+        "weighted_bc": 1.3431403205593926,
+        "KL_C_to_actor": 0.01133552548241627,
+        "entropy": 1.3167629108711407,
+        "reference_entropy": 1.3387450944492467,
+        "eligible_decisions": 10737,
+        "greedy_action_frequency": {
+          "move": 0.7386607059700102,
+          "switch": 0.25509918971779827,
+          "tera": 0.006240104312191488
+        },
+        "sampled_action_frequency": {
+          "move": 0.6512405467985994,
+          "switch": 0.32635934905565306,
+          "tera": 0.022400100992591262
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.744155723200149,
+          "switch": 0.2509080748812517,
+          "tera": 0.004936201918599236
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6518538003306688,
+          "switch": 0.3274399063779709,
+          "tera": 0.02070629608923134
+        },
+        "KL_C_to_actor_p95": 0.033503311872482275,
+        "weighted_NLL": 1.3431403205593926,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      }
+    },
+    "E3-shuffled-2.0-s2": {
+      "train": {
+        "unweighted_NLL": 1.2227516357096933,
+        "greedy_action_agreement": 0.8855368234250222,
+        "loss": 1.2180168452523086,
+        "weighted_bc": 1.2164816463771073,
+        "KL_C_to_actor": 0.015351989501099719,
+        "entropy": 1.303573986144857,
+        "reference_entropy": 1.3264550886856525,
+        "eligible_decisions": 45080,
+        "greedy_action_frequency": {
+          "move": 0.7292590949423248,
+          "switch": 0.2645297249334516,
+          "tera": 0.006211180124223602
+        },
+        "sampled_action_frequency": {
+          "move": 0.6486637403188602,
+          "switch": 0.33029100101609726,
+          "tera": 0.021045258157318846
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.734871339840284,
+          "switch": 0.26015971606033717,
+          "tera": 0.004968944099378882
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6514314910428336,
+          "switch": 0.3290665021488491,
+          "tera": 0.01950200871228114
+        },
+        "KL_C_to_actor_p95": 0.04671130254864691,
+        "weighted_NLL": 1.2164816463771073,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      },
+      "val": {
+        "unweighted_NLL": 1.3450980600813776,
+        "greedy_action_agreement": 0.901089689857502,
+        "loss": 1.3434066959318751,
+        "weighted_bc": 1.3422444765268229,
+        "KL_C_to_actor": 0.011622198098829653,
+        "entropy": 1.3214234853685707,
+        "reference_entropy": 1.3387450944492467,
+        "eligible_decisions": 10737,
+        "greedy_action_frequency": {
+          "move": 0.7371705318059049,
+          "switch": 0.25696190742293007,
+          "tera": 0.00586756077116513
+        },
+        "sampled_action_frequency": {
+          "move": 0.6483388060329679,
+          "switch": 0.32913800055081144,
+          "tera": 0.02252319208390111
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.744155723200149,
+          "switch": 0.2509080748812517,
+          "tera": 0.004936201918599236
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6518538003306688,
+          "switch": 0.3274399063779709,
+          "tera": 0.02070629608923134
+        },
+        "KL_C_to_actor_p95": 0.03384608775377273,
+        "weighted_NLL": 1.3422444765268229,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      }
+    },
+    "E3-shuffled-2.0-s3": {
+      "train": {
+        "unweighted_NLL": 1.222876044258991,
+        "greedy_action_agreement": 0.8871783496007098,
+        "loss": 1.217509687330306,
+        "weighted_bc": 1.2160267322250669,
+        "KL_C_to_actor": 0.014829518305040241,
+        "entropy": 1.3007609518841503,
+        "reference_entropy": 1.3264550805620736,
+        "eligible_decisions": 45080,
+        "greedy_action_frequency": {
+          "move": 0.7324755989352263,
+          "switch": 0.26133540372670805,
+          "tera": 0.006188997338065661
+        },
+        "sampled_action_frequency": {
+          "move": 0.6519526842958439,
+          "switch": 0.32705246655414244,
+          "tera": 0.020994850419322895
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.734871339840284,
+          "switch": 0.26015971606033717,
+          "tera": 0.004968944099378882
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6514314917197985,
+          "switch": 0.32906650350277894,
+          "tera": 0.019502008701703565
+        },
+        "KL_C_to_actor_p95": 0.04448126628994939,
+        "weighted_NLL": 1.2160267322250669,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      },
+      "val": {
+        "unweighted_NLL": 1.3433542549138275,
+        "greedy_action_agreement": 0.9002514668901928,
+        "loss": 1.342074901229167,
+        "weighted_bc": 1.3409588999662518,
+        "KL_C_to_actor": 0.01115996524307499,
+        "entropy": 1.3182697749131216,
+        "reference_entropy": 1.3387450944492467,
+        "eligible_decisions": 10737,
+        "greedy_action_frequency": {
+          "move": 0.7400577442488591,
+          "switch": 0.2538884232094626,
+          "tera": 0.006053832541678308
+        },
+        "sampled_action_frequency": {
+          "move": 0.6513522314139337,
+          "switch": 0.3261522497557457,
+          "tera": 0.022495517897696937
+        },
+        "reference_greedy_action_frequency": {
+          "move": 0.744155723200149,
+          "switch": 0.2509080748812517,
+          "tera": 0.004936201918599236
+        },
+        "reference_sampled_action_frequency": {
+          "move": 0.6518538003306688,
+          "switch": 0.3274399063779709,
+          "tera": 0.02070629608923134
+        },
+        "KL_C_to_actor_p95": 0.031881578266620574,
+        "weighted_NLL": 1.3409588999662518,
+        "drift_flags": {
+          "KL": false,
+          "entropy": false,
+          "action_frequency": false
+        },
+        "abnormal": false
+      }
+    }
+  }
+}

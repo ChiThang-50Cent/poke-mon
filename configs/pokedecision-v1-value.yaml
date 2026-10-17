@@ -1,0 +1,29 @@
+# W4.4 fixed protocol (executed by scripts/train_w4_value.py).
+# No search; no W3/W4 test access; V never changes action selection.
+base_config: configs/pokedecision-v1.yaml
+seed: 20261016
+value_head: true
+value_parameters: 385
+total_parameters: 1300174
+value_weight: 0.5
+value_target: filename WIN/LOSS from the acting trajectory POV
+value_reduction: mean BCE-with-logits over all real steps, including BC-ineligible
+runs:
+  probe:
+    init_checkpoint: models/pokedecision-v1/best.pt
+    freeze: all except value_head
+    learning_rate: 0.001
+    checkpoint_selection: minimum W4 val value BCE
+  joint:
+    init_checkpoint: null
+    learning_rate: 0.0005
+    checkpoint_selection: minimum W4 val BC loss plus 0.5 times value BCE
+selection:
+  joint_policy_loss_max_delta_v1: 0.01
+  among_eligible: minimum W4 val Brier
+  destination: models/pokedecision-v1-value
+turn_buckets: zero-based decision index (simulator turn unavailable in UniversalState)
+resource_command: >-
+  systemd-run --user --scope -p CPUQuota=400% -p MemoryMax=12G nice -n 10
+  env OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 CUBLAS_WORKSPACE_CONFIG=:4096:8
+  uv run python scripts/train_w4_value.py

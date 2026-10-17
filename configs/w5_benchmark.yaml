@@ -1,0 +1,32 @@
+# W5 checkpoint selection uses dev only; heldout requires --final and is one-shot.
+reference_arm: C
+pool: data/teams_w5/dev
+battles: 500
+arms:
+  C:
+    model_dir: models/pokedecision-v1-value
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+opponents:
+  RandomBaseline:
+    baseline: RandomBaseline
+  Grunt:
+    baseline: Grunt
+  GymLeader:
+    baseline: GymLeader
+  PokeEnvHeuristic:
+    baseline: PokeEnvHeuristic
+  EmeraldKaizo:
+    baseline: EmeraldKaizo
+  v0:
+    model_dir: models/pokedecision-v0
+    greedy: true
+  v1_B:
+    model_dir: models/pokedecision-v1
+    greedy: true
+  joint:
+    model_dir: models/pokedecision-v1-joint-ablation
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true

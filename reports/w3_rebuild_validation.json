@@ -1,0 +1,82 @@
+{
+  "status": "PASS",
+  "hash_algorithm": "sha256",
+  "command": "uv run python scripts/build_w3_dataset.py --root .cache/metamon/w3-human --out /tmp/pokeai-w3-rebuild-9_69xmge/datasets/w3 --report /tmp/pokeai-w3-rebuild-9_69xmge/reports/w3_dataset_validation.json --seed 42 --live-run runs/20261016T074108-cd71eb26",
+  "exit_code": 0,
+  "stdout": "train: 5820 trajectories, 161270 valid decisions\nval: 714 trajectories, 19170 valid decisions\ntest: 726 trajectories, 19560 valid decisions\nW3 dataset: PASS (/tmp/pokeai-w3-rebuild-9_69xmge/reports/w3_dataset_validation.json)\n",
+  "wall_time_seconds": 161.90,
+  "source_sha256_at_rebuild": {
+    "scripts/build_w3_dataset.py": "f8594253df46822f54e7362e49168e7ea48854701e6848b8fb6e210274d12fbf",
+    "src/pokeai/data/w3.py": "e1b4d1fe8ee7089e341ab69ae232609580a9a5d58fbca57b045f5b928f2dd4b3",
+    "src/pokeai/data/features.py": "e0b9435dfb6fc8ee1b75f4b536150fe480da35f93c457856204d0e167fb2e844"
+  },
+  "dataset_file_set_identical": true,
+  "dataset_files_compared": 7,
+  "report_files_compared": 1,
+  "comparisons": [
+    {
+      "frozen_path": "datasets/w3/encoder.json",
+      "rebuilt_path": "/tmp/pokeai-w3-rebuild-9_69xmge/datasets/w3/encoder.json",
+      "frozen_sha256": "801521a3ecce057ffea589a6fbe3228e1f5fce84cc82c4bfbaddaaeb4bf43e1d",
+      "rebuilt_sha256": "801521a3ecce057ffea589a6fbe3228e1f5fce84cc82c4bfbaddaaeb4bf43e1d",
+      "identical": true,
+      "frozen_unchanged": true
+    },
+    {
+      "frozen_path": "datasets/w3/feature_stats.json",
+      "rebuilt_path": "/tmp/pokeai-w3-rebuild-9_69xmge/datasets/w3/feature_stats.json",
+      "frozen_sha256": "47aafe9fb7b5a5d35b60c0fa74d20f7ada91e9dc7f8dd0a9af6c91681849d191",
+      "rebuilt_sha256": "47aafe9fb7b5a5d35b60c0fa74d20f7ada91e9dc7f8dd0a9af6c91681849d191",
+      "identical": true,
+      "frozen_unchanged": true
+    },
+    {
+      "frozen_path": "datasets/w3/index.jsonl",
+      "rebuilt_path": "/tmp/pokeai-w3-rebuild-9_69xmge/datasets/w3/index.jsonl",
+      "frozen_sha256": "a32e3005e442d39ade12b2df0489aed00d577c0766401807b0a042841a16ae44",
+      "rebuilt_sha256": "a32e3005e442d39ade12b2df0489aed00d577c0766401807b0a042841a16ae44",
+      "identical": true,
+      "frozen_unchanged": true
+    },
+    {
+      "frozen_path": "datasets/w3/split_ids.json",
+      "rebuilt_path": "/tmp/pokeai-w3-rebuild-9_69xmge/datasets/w3/split_ids.json",
+      "frozen_sha256": "5cb5d911cfe3a7a98b10cc2deda314a67e1b0fcdf864c597d4dc8c9433e6d12f",
+      "rebuilt_sha256": "5cb5d911cfe3a7a98b10cc2deda314a67e1b0fcdf864c597d4dc8c9433e6d12f",
+      "identical": true,
+      "frozen_unchanged": true
+    },
+    {
+      "frozen_path": "datasets/w3/test.npz",
+      "rebuilt_path": "/tmp/pokeai-w3-rebuild-9_69xmge/datasets/w3/test.npz",
+      "frozen_sha256": "7f9fae1d10496abec0ff60f9b41f38f5ec20f4ebe8ea7d0a8102de065e2ead09",
+      "rebuilt_sha256": "7f9fae1d10496abec0ff60f9b41f38f5ec20f4ebe8ea7d0a8102de065e2ead09",
+      "identical": true,
+      "frozen_unchanged": true
+    },
+    {
+      "frozen_path": "datasets/w3/train.npz",
+      "rebuilt_path": "/tmp/pokeai-w3-rebuild-9_69xmge/datasets/w3/train.npz",
+      "frozen_sha256": "b267ac9cc606b53eccd05e7f07a52550a145c73f100d400feeec8c9caf8aaf48",
+      "rebuilt_sha256": "b267ac9cc606b53eccd05e7f07a52550a145c73f100d400feeec8c9caf8aaf48",
+      "identical": true,
+      "frozen_unchanged": true
+    },
+    {
+      "frozen_path": "datasets/w3/val.npz",
+      "rebuilt_path": "/tmp/pokeai-w3-rebuild-9_69xmge/datasets/w3/val.npz",
+      "frozen_sha256": "fe0519e0fca9405d04052846600183a8a298cfc024f8ca60a89f1e437e805ce3",
+      "rebuilt_sha256": "fe0519e0fca9405d04052846600183a8a298cfc024f8ca60a89f1e437e805ce3",
+      "identical": true,
+      "frozen_unchanged": true
+    },
+    {
+      "frozen_path": "reports/w3_dataset_validation.json",
+      "rebuilt_path": "/tmp/pokeai-w3-rebuild-9_69xmge/reports/w3_dataset_validation.json",
+      "frozen_sha256": "557d23c4bac2fe1b42d0bdd8d9f392faabcbbb61045b3e4d2d2d5e05fed0e6d8",
+      "rebuilt_sha256": "557d23c4bac2fe1b42d0bdd8d9f392faabcbbb61045b3e4d2d2d5e05fed0e6d8",
+      "identical": true,
+      "frozen_unchanged": true
+    }
+  ]
+}

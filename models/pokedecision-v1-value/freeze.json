@@ -1,0 +1,43 @@
+{
+  "baseline": "W4 C = PokeDecision-v1 policy + probe value (logging only) + Metamon pretrained preview gen9ou_high_elo_v4 (argmax), greedy argmax",
+  "role": "official W5 baseline / production candidate",
+  "frozen_at_commit": "65eaf30fde54c24923c877c8e70c5c83c0a2f30c",
+  "frozen_as": "git tag w5-baseline",
+  "policy_model": "models/pokedecision-v1-value",
+  "policy_model_sha256": {
+    "best.pt": "0d987dc4fe7f36ab782b142efade20facab0eb53136b1f5bcb9e33eefd4e51ae",
+    "config.yaml": "384e1b59fbc9174e08b9eed5159f1fbfbbd77b2412ab345d192013d524fe71d2",
+    "metrics.json": "aa968afd7a75f4e7cdf00aa3684213b09ccd42c2aef73818d004dabe8b7f5d1f",
+    "tokenizer.json": "801521a3ecce057ffea589a6fbe3228e1f5fce84cc82c4bfbaddaaeb4bf43e1d"
+  },
+  "team_preview_checkpoint": "third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt",
+  "team_preview_sha256": "39cb5c65f30e9e363b5a8dee6fcaa7ea130077b3af0a1b4865e5d48de11daeaa",
+  "references": {
+    "v0": {
+      "best.pt": "121d4105352ca77e76f756173e69815b3f737fdda1ff183a3065e52ab4f6b631",
+      "config.yaml": "1d5a59d6d656c31523e0d5e58fe4d89c71481e1d39c118b7670edfd396444d23",
+      "metrics.json": "1e17da8eac88de92815e47923d75012ea2fdbe8d98df7850c0ddc5e3cbeeaaf2",
+      "tokenizer.json": "801521a3ecce057ffea589a6fbe3228e1f5fce84cc82c4bfbaddaaeb4bf43e1d"
+    },
+    "v1": {
+      "best.pt": "8765c1c0d5d7d76db52216f2b41a20b325d292e0ae1397c358138450d8de909b",
+      "config.yaml": "22bad0fb1bb04d96f247c2f88454fa201818a325d92cf745cf219201b8f8b17f",
+      "metrics.json": "b8b1b54d614ba6bd9e9527bc792a623c5fa2bb765d0989f5b2d7125d4bd0460c",
+      "tokenizer.json": "801521a3ecce057ffea589a6fbe3228e1f5fce84cc82c4bfbaddaaeb4bf43e1d"
+    },
+    "joint_ablation": {
+      "best.pt": "c0da9e42911d473948b6416f50f8d324ff03bd635ef4a838b6288d2262149b4f",
+      "config.yaml": "fcd38d53d5da182685d93f9dfb31d0d071208a7def5c5715c90a28be03957f53",
+      "metrics.json": "deaf9a85c12eadb7789ab40148ef51eb1d100a1a479abd5a5a34caa0efa9577c",
+      "tokenizer.json": "801521a3ecce057ffea589a6fbe3228e1f5fce84cc82c4bfbaddaaeb4bf43e1d"
+    }
+  },
+  "w4_benchmark_team_manifest_sha256": "8a7be9f187bec0a8e480d385d128e76b3d10a36d644639b80c5e0879197fd1f3",
+  "w4_result": "reports/w4_5_final_report.md",
+  "source_sha256": "d14b75a67f355f3ef538000cde42fc8ba951472f15dc9e9725508afd868af612",
+  "spent_splits": [
+    "datasets/w3/test.npz",
+    "datasets/w4/test.npz"
+  ],
+  "notes": "W4 team pool data/teams/gen9ou was used for W4 evaluation; W5 selection/final benchmarks use new disjoint pools."
+}

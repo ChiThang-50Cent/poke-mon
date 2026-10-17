@@ -1,0 +1,383 @@
+{
+  "status": "PASS",
+  "seed": 42,
+  "invariants": {
+    "native_index_complete": true,
+    "encoder_equal_w3": true,
+    "zero_split_overlap": true,
+    "zero_w3_overlap": true,
+    "finite_features": true,
+    "nonempty_splits": true,
+    "tiers_meet_thresholds": true,
+    "source_archive_complete": true,
+    "source_files_match": true,
+    "source_months_match": true
+  },
+  "wall_time_s": 265.0,
+  "workers": 12,
+  "filters": {
+    "format": "gen9ou",
+    "min_rating": 1300,
+    "months": "2025-01..2026-05"
+  },
+  "data_source": {
+    "url": "https://huggingface.co/datasets/jakegrigsby/metamon-parsed-replays/resolve/v6/gen9ou.tar.gz",
+    "etag": "\"75a79ada1f95e8e551011101f3eb7075c013bb2a51ef3d3512b78fde1441f41d\"",
+    "stats_sha256": "cf40f545232767a1fbe1533af7c6f63e14b1a751415a0e265c1a9a0db490df08"
+  },
+  "selection": {
+    "source_files": 122035,
+    "prefixed_files": 79021,
+    "unprefixed_files": 43014,
+    "duplicate_files_removed": 362,
+    "duplicate_battles": 190,
+    "duplicate_battles_both_povs": 172,
+    "duplicate_battles_single_pov": 18,
+    "pre_dedup_single_file_battles": 10061,
+    "pre_dedup_two_file_same_result_battles": 21,
+    "inconsistent_battle_ids": [
+      "gen9ou-2411550489",
+      "gen9ou-2427175900",
+      "gen9ou-2427340191"
+    ],
+    "inconsistent_battles": 3,
+    "inconsistent_trajectories_removed": 6,
+    "single_pov_battles": 10079
+  },
+  "native_index_files": 122035,
+  "encoder": {
+    "sha256": "801521a3ecce057ffea589a6fbe3228e1f5fce84cc82c4bfbaddaaeb4bf43e1d",
+    "equals_w3": true
+  },
+  "battle_id_overlap": {
+    "train_val": 0,
+    "train_test": 0,
+    "val_test": 0
+  },
+  "w3_battle_id_overlap": {
+    "train_w3_test": 0,
+    "train_w3_val": 0,
+    "train_w3_train": 0,
+    "val_w3_test": 0,
+    "val_w3_val": 0,
+    "val_w3_train": 0,
+    "test_w3_test": 0,
+    "test_w3_val": 0,
+    "test_w3_train": 0
+  },
+  "splits": {
+    "train": {
+      "trajectories": 92725,
+      "battles": 50151,
+      "decisions": 2742268,
+      "valid_decisions": 2512343,
+      "excluded_decisions": 229925,
+      "excluded_by_reason": {
+        "missing": 229925,
+        "action_minus_one": 229925,
+        "action_out_of_range": 0,
+        "chosen_not_in_mask": 0,
+        "empty_mask": 222
+      },
+      "reason_counts_overlap": true,
+      "all_finite": true,
+      "unknown_tokens": 0,
+      "total_tokens": 238577316,
+      "unknown_token_rate": 0.0,
+      "ratings": {
+        "min": 1300,
+        "max": 2103,
+        "mean": 1513.1854192504718,
+        "deciles": [
+          1333.0,
+          1368.0,
+          1406.0,
+          1445.0,
+          1488.0,
+          1535.0,
+          1587.0,
+          1649.0,
+          1730.0
+        ]
+      },
+      "rating_buckets": {
+        "1300+": 26337,
+        "1400+": 22438,
+        "1500+": 18141,
+        "1600+": 13503,
+        "1700+": 7790,
+        "1800+": 3486,
+        "1900+": 921,
+        "2000+": 108,
+        "2100+": 1
+      },
+      "months": {
+        "2025-01": 7209,
+        "2025-02": 7566,
+        "2025-03": 9294,
+        "2025-04": 7457,
+        "2025-05": 7929,
+        "2025-06": 10505,
+        "2025-07": 8573,
+        "2025-08": 9383,
+        "2025-09": 8159,
+        "2025-10": 4243,
+        "2025-11": 6647,
+        "2025-12": 5760
+      },
+      "action_class_histogram": [
+        414781,
+        401973,
+        393296,
+        364786,
+        274223,
+        216717,
+        174730,
+        131966,
+        77711,
+        17758,
+        14637,
+        14225,
+        15540
+      ]
+    },
+    "val": {
+      "trajectories": 11359,
+      "battles": 6181,
+      "decisions": 338968,
+      "valid_decisions": 310682,
+      "excluded_decisions": 28286,
+      "excluded_by_reason": {
+        "missing": 28286,
+        "action_minus_one": 28286,
+        "action_out_of_range": 0,
+        "chosen_not_in_mask": 0,
+        "empty_mask": 24
+      },
+      "reason_counts_overlap": true,
+      "all_finite": true,
+      "unknown_tokens": 0,
+      "total_tokens": 29490216,
+      "unknown_token_rate": 0.0,
+      "ratings": {
+        "min": 1300,
+        "max": 2025,
+        "mean": 1499.3237961088123,
+        "deciles": [
+          1332.0,
+          1362.0,
+          1397.0,
+          1433.0,
+          1474.0,
+          1517.0,
+          1568.0,
+          1633.0,
+          1709.0
+        ]
+      },
+      "rating_buckets": {
+        "1300+": 3496,
+        "1400+": 2867,
+        "1500+": 2133,
+        "1600+": 1597,
+        "1700+": 946,
+        "1800+": 288,
+        "1900+": 31,
+        "2000+": 1
+      },
+      "months": {
+        "2026-01": 4009,
+        "2026-02": 7350
+      },
+      "action_class_histogram": [
+        51132,
+        48931,
+        47741,
+        45639,
+        34636,
+        27006,
+        21179,
+        16588,
+        10257,
+        2149,
+        1750,
+        1749,
+        1925
+      ]
+    },
+    "test": {
+      "trajectories": 17583,
+      "battles": 9541,
+      "decisions": 513369,
+      "valid_decisions": 469898,
+      "excluded_decisions": 43471,
+      "excluded_by_reason": {
+        "missing": 43471,
+        "action_minus_one": 43471,
+        "action_out_of_range": 0,
+        "chosen_not_in_mask": 0,
+        "empty_mask": 49
+      },
+      "reason_counts_overlap": true,
+      "all_finite": true,
+      "unknown_tokens": 0,
+      "total_tokens": 44663103,
+      "unknown_token_rate": 0.0,
+      "ratings": {
+        "min": 1300,
+        "max": 2046,
+        "mean": 1495.1897855883524,
+        "deciles": [
+          1330.0,
+          1361.0,
+          1395.0,
+          1431.0,
+          1468.0,
+          1513.0,
+          1563.0,
+          1622.0,
+          1698.0
+        ]
+      },
+      "rating_buckets": {
+        "1300+": 5532,
+        "1400+": 4490,
+        "1500+": 3427,
+        "1600+": 2408,
+        "1700+": 1223,
+        "1800+": 426,
+        "1900+": 74,
+        "2000+": 3
+      },
+      "months": {
+        "2026-03": 8137,
+        "2026-04": 5734,
+        "2026-05": 3712
+      },
+      "action_class_histogram": [
+        77851,
+        73650,
+        72661,
+        69785,
+        51980,
+        40483,
+        32690,
+        24425,
+        14895,
+        3339,
+        2652,
+        2600,
+        2887
+      ]
+    }
+  },
+  "month_by_split": {
+    "2025-01": {
+      "train": 7209,
+      "val": 0,
+      "test": 0
+    },
+    "2025-02": {
+      "train": 7566,
+      "val": 0,
+      "test": 0
+    },
+    "2025-03": {
+      "train": 9294,
+      "val": 0,
+      "test": 0
+    },
+    "2025-04": {
+      "train": 7457,
+      "val": 0,
+      "test": 0
+    },
+    "2025-05": {
+      "train": 7929,
+      "val": 0,
+      "test": 0
+    },
+    "2025-06": {
+      "train": 10505,
+      "val": 0,
+      "test": 0
+    },
+    "2025-07": {
+      "train": 8573,
+      "val": 0,
+      "test": 0
+    },
+    "2025-08": {
+      "train": 9383,
+      "val": 0,
+      "test": 0
+    },
+    "2025-09": {
+      "train": 8159,
+      "val": 0,
+      "test": 0
+    },
+    "2025-10": {
+      "train": 4243,
+      "val": 0,
+      "test": 0
+    },
+    "2025-11": {
+      "train": 6647,
+      "val": 0,
+      "test": 0
+    },
+    "2025-12": {
+      "train": 5760,
+      "val": 0,
+      "test": 0
+    },
+    "2026-01": {
+      "train": 0,
+      "val": 4009,
+      "test": 0
+    },
+    "2026-02": {
+      "train": 0,
+      "val": 7350,
+      "test": 0
+    },
+    "2026-03": {
+      "train": 0,
+      "val": 0,
+      "test": 8137
+    },
+    "2026-04": {
+      "train": 0,
+      "val": 0,
+      "test": 5734
+    },
+    "2026-05": {
+      "train": 0,
+      "val": 0,
+      "test": 3712
+    }
+  },
+  "tiers": {
+    "50000": {
+      "valid_decisions": 50026,
+      "battles": 1019,
+      "trajectories": 1872
+    },
+    "250000": {
+      "valid_decisions": 250032,
+      "battles": 5031,
+      "trajectories": 9278
+    },
+    "1000000": {
+      "valid_decisions": 1000057,
+      "battles": 20059,
+      "trajectories": 37079
+    },
+    "full": {
+      "valid_decisions": 2512343,
+      "battles": 50151,
+      "trajectories": 92725
+    }
+  }
+}

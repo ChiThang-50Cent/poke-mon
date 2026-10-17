@@ -1,0 +1,28 @@
+{
+  "null_permutations": 100,
+  "normalisation": "per_batch",
+  "lambda_1.00": {
+    "real_cos_train_val": -0.029129518195986748,
+    "null_mean": -0.0049182969494722785,
+    "null_std": 0.033883712238683854,
+    "null_p95": 0.05818172935396433,
+    "fraction_null_at_or_above_real": 0.73,
+    "real_above_p95": false
+  },
+  "lambda_0.95": {
+    "real_cos_train_val": 0.06446143239736557,
+    "null_mean": 0.014818525150185452,
+    "null_std": 0.040881353507865134,
+    "null_p95": 0.0747543029487133,
+    "fraction_null_at_or_above_real": 0.09,
+    "real_above_p95": false
+  },
+  "lambda_0.90": {
+    "real_cos_train_val": 0.12593227624893188,
+    "null_mean": 0.03944895686814562,
+    "null_std": 0.03878953405255284,
+    "null_p95": 0.09109833426773546,
+    "fraction_null_at_or_above_real": 0.03,
+    "real_above_p95": true
+  }
+}

@@ -1,0 +1,2534 @@
+[
+  {
+    "file": "competitive-001.gen9ou_team",
+    "source": "competitive",
+    "species": [
+      "Weavile",
+      "Dragonite",
+      "Gliscor",
+      "Clefable",
+      "Corviknight",
+      "Ting-Lu"
+    ]
+  },
+  {
+    "file": "competitive-002.gen9ou_team",
+    "source": "competitive",
+    "species": [
+      "Skarmory",
+      "Ting-Lu",
+      "Zamazenta",
+      "Pecharunt",
+      "Clefable",
+      "Walking Wake"
+    ]
+  },
+  {
+    "file": "competitive-003.gen9ou_team",
+    "source": "competitive",
+    "species": [
+      "Lokix",
+      "Pecharunt",
+      "Zamazenta",
+      "Ting-Lu",
+      "Latios",
+      "Gliscor"
+    ]
+  },
+  {
+    "file": "competitive-004.gen9ou_team",
+    "source": "competitive",
+    "species": [
+      "Gliscor",
+      "Alomomola",
+      "Pecharunt",
+      "Great Tusk",
+      "Weavile",
+      "Iron Crown"
+    ]
+  },
+  {
+    "file": "competitive-005.gen9ou_team",
+    "source": "competitive",
+    "species": [
+      "Ting-Lu",
+      "Weezing-Galar",
+      "Alomomola",
+      "Tornadus-Therian",
+      "Gholdengo",
+      "Zamazenta"
+    ]
+  },
+  {
+    "file": "competitive-006.gen9ou_team",
+    "source": "competitive",
+    "species": [
+      "Dondozo",
+      "Weezing-Galar",
+      "Toxapex",
+      "Iron Treads",
+      "Blissey",
+      "Alomomola"
+    ]
+  },
+  {
+    "file": "competitive-007.gen9ou_team",
+    "source": "competitive",
+    "species": [
+      "Zapdos",
+      "Hydrapple",
+      "Zamazenta",
+      "Slowking-Galar",
+      "Tinkaton",
+      "Ting-Lu"
+    ]
+  },
+  {
+    "file": "competitive-008.gen9ou_team",
+    "source": "competitive",
+    "species": [
+      "Ogerpon-Wellspring",
+      "Garganacl",
+      "Great Tusk",
+      "Dragonite",
+      "Moltres",
+      "Darkrai"
+    ]
+  },
+  {
+    "file": "competitive-009.gen9ou_team",
+    "source": "competitive",
+    "species": [
+      "Tinkaton",
+      "Great Tusk",
+      "Garganacl",
+      "Keldeo",
+      "Zapdos",
+      "Dragapult"
+    ]
+  },
+  {
+    "file": "competitive-010.gen9ou_team",
+    "source": "competitive",
+    "species": [
+      "Gholdengo",
+      "Darkrai",
+      "Ting-Lu",
+      "Zapdos",
+      "Primarina",
+      "Gliscor"
+    ]
+  },
+  {
+    "file": "competitive-011.gen9ou_team",
+    "source": "competitive",
+    "species": [
+      "Ting-Lu",
+      "Corviknight",
+      "Darkrai",
+      "Cinderace",
+      "Kyurem",
+      "Slowking-Galar"
+    ]
+  },
+  {
+    "file": "hl_05_26-001.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Hatterene",
+      "Ursaluna",
+      "Porygon2",
+      "Cresselia",
+      "Iron Hands",
+      "Volcanion"
+    ]
+  },
+  {
+    "file": "hl_05_26-002.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Ribombee",
+      "Gholdengo",
+      "Mimikyu",
+      "Great Tusk",
+      "Raging Bolt",
+      "Ogerpon-Wellspring"
+    ]
+  },
+  {
+    "file": "hl_05_26-003.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Ribombee",
+      "Lokix",
+      "Great Tusk",
+      "Raging Bolt",
+      "Gholdengo",
+      "Iron Moth"
+    ]
+  },
+  {
+    "file": "hl_05_26-004.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Kyurem",
+      "Cinderace",
+      "Tornadus-Therian",
+      "Hatterene",
+      "Great Tusk",
+      "Kingambit"
+    ]
+  },
+  {
+    "file": "hl_05_26-005.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Ting-Lu",
+      "Slowking-Galar",
+      "Corviknight",
+      "Cinderace",
+      "Ogerpon-Wellspring",
+      "Raging Bolt"
+    ]
+  },
+  {
+    "file": "hl_05_26-006.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Rillaboom",
+      "Raging Bolt",
+      "Hawlucha",
+      "Zamazenta",
+      "Ogerpon-Cornerstone",
+      "Iron Treads"
+    ]
+  },
+  {
+    "file": "hl_05_26-007.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Ting-Lu",
+      "Zamazenta",
+      "Ogerpon-Wellspring",
+      "Comfey",
+      "Gholdengo",
+      "Iron Treads"
+    ]
+  },
+  {
+    "file": "hl_05_26-008.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Moltres",
+      "Tyranitar",
+      "Great Tusk",
+      "Kyurem",
+      "Gholdengo",
+      "Primarina"
+    ]
+  },
+  {
+    "file": "hl_05_26-009.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Tinkaton",
+      "Ogerpon",
+      "Great Tusk",
+      "Pecharunt",
+      "Alomomola",
+      "Hydreigon"
+    ]
+  },
+  {
+    "file": "hl_05_26-010.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Dragonite",
+      "Hatterene",
+      "Samurott-Hisui",
+      "Great Tusk",
+      "Gholdengo",
+      "Iron Moth"
+    ]
+  },
+  {
+    "file": "hl_05_26-011.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Kyurem",
+      "Dragonite",
+      "Ogerpon-Wellspring",
+      "Iron Valiant",
+      "Gholdengo",
+      "Great Tusk"
+    ]
+  },
+  {
+    "file": "hl_05_26-012.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Iron Moth",
+      "Gliscor",
+      "Hatterene",
+      "Ogerpon-Wellspring",
+      "Raging Bolt",
+      "Zamazenta"
+    ]
+  },
+  {
+    "file": "hl_05_26-013.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Blissey",
+      "Corviknight",
+      "Dondozo",
+      "Gliscor",
+      "Clefable",
+      "Slowking-Galar"
+    ]
+  },
+  {
+    "file": "hl_05_26-014.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Gyarados",
+      "Samurott-Hisui",
+      "Great Tusk",
+      "Gholdengo",
+      "Iron Moth",
+      "Iron Valiant"
+    ]
+  },
+  {
+    "file": "hl_05_26-015.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Blissey",
+      "Corviknight",
+      "Dondozo",
+      "Gliscor",
+      "Clefable",
+      "Slowking-Galar"
+    ]
+  },
+  {
+    "file": "hl_05_26-016.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Rillaboom",
+      "Raging Bolt",
+      "Hawlucha",
+      "Zamazenta",
+      "Ogerpon-Cornerstone",
+      "Iron Treads"
+    ]
+  },
+  {
+    "file": "hl_05_26-017.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Gliscor",
+      "Alomomola",
+      "Clodsire",
+      "Blissey",
+      "Dondozo",
+      "Corviknight"
+    ]
+  },
+  {
+    "file": "hl_05_26-018.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Pelipper",
+      "Iron Treads",
+      "Barraskewda",
+      "Kingdra",
+      "Iron Valiant",
+      "Goodra-Hisui"
+    ]
+  },
+  {
+    "file": "hl_05_26-019.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Great Tusk",
+      "Ogerpon-Cornerstone",
+      "Rillaboom",
+      "Tyranitar",
+      "Corviknight",
+      "Dragapult"
+    ]
+  },
+  {
+    "file": "hl_05_26-020.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Tyranitar",
+      "Great Tusk",
+      "Slowking-Galar",
+      "Gholdengo",
+      "Meowscarada",
+      "Moltres"
+    ]
+  },
+  {
+    "file": "hl_05_26-021.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Lokix",
+      "Iron Crown",
+      "Great Tusk",
+      "Tornadus-Therian",
+      "Alomomola",
+      "Dragapult"
+    ]
+  },
+  {
+    "file": "hl_05_26-022.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Hydreigon",
+      "Gholdengo",
+      "Zamazenta",
+      "Corviknight",
+      "Alomomola",
+      "Landorus-Therian"
+    ]
+  },
+  {
+    "file": "hl_05_26-023.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Dragonite",
+      "Hatterene",
+      "Kingambit",
+      "Iron Crown",
+      "Crawdaunt",
+      "Manaphy"
+    ]
+  },
+  {
+    "file": "hl_05_26-024.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Deoxys-Speed",
+      "Ting-Lu",
+      "Dragapult",
+      "Great Tusk",
+      "Keldeo",
+      "Raging Bolt"
+    ]
+  },
+  {
+    "file": "hl_05_26-025.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Dragonite",
+      "Ting-Lu",
+      "Gholdengo",
+      "Zamazenta",
+      "Hatterene",
+      "Ogerpon-Wellspring"
+    ]
+  },
+  {
+    "file": "hl_05_26-026.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Clodsire",
+      "Conkeldurr",
+      "Dragapult",
+      "Skarmory",
+      "Sinistcha",
+      "Ceruledge"
+    ]
+  },
+  {
+    "file": "hl_05_26-027.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Slowking-Galar",
+      "Cinderace",
+      "Enamorus-Therian",
+      "Hoopa-Unbound",
+      "Kingambit",
+      "Great Tusk"
+    ]
+  },
+  {
+    "file": "hl_05_26-028.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Rillaboom",
+      "Hawlucha",
+      "Great Tusk",
+      "Volcanion",
+      "Goodra-Hisui",
+      "Regieleki"
+    ]
+  },
+  {
+    "file": "hl_05_26-029.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Ting-Lu",
+      "Kingambit",
+      "Dragapult",
+      "Skeledirge",
+      "Iron Valiant",
+      "Rotom-Wash"
+    ]
+  },
+  {
+    "file": "hl_05_26-030.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Torkoal",
+      "Walking Wake",
+      "Great Tusk",
+      "Alomomola",
+      "Pecharunt",
+      "Scream Tail"
+    ]
+  },
+  {
+    "file": "hl_05_26-031.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Ogerpon-Cornerstone",
+      "Hatterene",
+      "Pecharunt",
+      "Landorus-Therian",
+      "Kingambit",
+      "Latios"
+    ]
+  },
+  {
+    "file": "hl_05_26-032.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Zarude",
+      "Skarmory",
+      "Keldeo",
+      "Gliscor",
+      "Pecharunt",
+      "Blissey"
+    ]
+  },
+  {
+    "file": "hl_05_26-033.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Chesnaught",
+      "Gliscor",
+      "Weezing-Galar",
+      "Goodra-Hisui",
+      "Gholdengo",
+      "Darkrai"
+    ]
+  },
+  {
+    "file": "hl_05_26-034.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Dondozo",
+      "Gliscor",
+      "Weezing-Galar",
+      "Blissey",
+      "Corviknight",
+      "Amoonguss"
+    ]
+  },
+  {
+    "file": "hl_05_26-035.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Ogerpon",
+      "Hatterene",
+      "Tornadus-Therian",
+      "Raging Bolt",
+      "Ting-Lu",
+      "Alomomola"
+    ]
+  },
+  {
+    "file": "hl_05_26-036.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Ogerpon-Wellspring",
+      "Ninetales-Alola",
+      "Great Tusk",
+      "Kyurem",
+      "Slowking-Galar",
+      "Dragapult"
+    ]
+  },
+  {
+    "file": "hl_05_26-037.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Glaceon",
+      "Slowking-Galar",
+      "Rotom-Wash",
+      "Great Tusk",
+      "Cinderace",
+      "Grimmsnarl"
+    ]
+  },
+  {
+    "file": "hl_05_26-038.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Cinderace",
+      "Kingambit",
+      "Tornadus-Therian",
+      "Kyurem",
+      "Slowking-Galar",
+      "Iron Valiant"
+    ]
+  },
+  {
+    "file": "hl_05_26-039.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Orthworm",
+      "Rillaboom",
+      "Tinkaton",
+      "Dragapult",
+      "Pecharunt",
+      "Garganacl"
+    ]
+  },
+  {
+    "file": "hl_05_26-040.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Samurott-Hisui",
+      "Landorus-Therian",
+      "Dragapult",
+      "Iron Crown",
+      "Great Tusk",
+      "Primarina"
+    ]
+  },
+  {
+    "file": "hl_05_26-041.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Great Tusk",
+      "Dondozo",
+      "Ribombee",
+      "Milotic",
+      "Zoroark-Hisui",
+      "Goodra-Hisui"
+    ]
+  },
+  {
+    "file": "hl_05_26-042.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Slowking-Galar",
+      "Scizor",
+      "Hydrapple",
+      "Cinderace",
+      "Sandy Shocks",
+      "Alomomola"
+    ]
+  },
+  {
+    "file": "hl_05_26-043.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Great Tusk",
+      "Kingambit",
+      "Raging Bolt",
+      "Walking Wake",
+      "Ninetales",
+      "Ceruledge"
+    ]
+  },
+  {
+    "file": "hl_05_26-044.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Tyranitar",
+      "Gholdengo",
+      "Zamazenta",
+      "Rillaboom",
+      "Garchomp",
+      "Zapdos"
+    ]
+  },
+  {
+    "file": "hl_05_26-045.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Sinistcha-Masterpiece",
+      "Zamazenta",
+      "Zapdos",
+      "Great Tusk",
+      "Slowking-Galar",
+      "Kingambit"
+    ]
+  },
+  {
+    "file": "hl_05_26-046.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Darkrai",
+      "Zamazenta",
+      "Pecharunt",
+      "Hatterene",
+      "Ting-Lu",
+      "Ogerpon"
+    ]
+  },
+  {
+    "file": "hl_05_26-047.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Dragonite",
+      "Hatterene",
+      "Samurott-Hisui",
+      "Great Tusk",
+      "Gholdengo",
+      "Iron Moth"
+    ]
+  },
+  {
+    "file": "hl_05_26-048.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Ceruledge",
+      "Hoopa-Unbound",
+      "Zamazenta",
+      "Iron Treads",
+      "Raging Bolt",
+      "Landorus-Therian"
+    ]
+  },
+  {
+    "file": "hl_05_26-049.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Great Tusk",
+      "Heatran",
+      "Weavile",
+      "Primarina",
+      "Ogerpon",
+      "Pecharunt"
+    ]
+  },
+  {
+    "file": "hl_05_26-050.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Rabsca",
+      "Slowking-Galar",
+      "Ursaluna",
+      "Azumarill",
+      "Mimikyu",
+      "Kingambit"
+    ]
+  },
+  {
+    "file": "hl_05_26-051.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Torkoal",
+      "Charizard",
+      "Great Tusk",
+      "Walking Wake",
+      "Kingambit",
+      "Raging Bolt"
+    ]
+  },
+  {
+    "file": "hl_05_26-052.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Thundurus",
+      "Dragonite",
+      "Alomomola",
+      "Ogerpon-Wellspring",
+      "Iron Treads",
+      "Sinistcha-Masterpiece"
+    ]
+  },
+  {
+    "file": "hl_05_26-053.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Zamazenta",
+      "Kingambit",
+      "Dragapult",
+      "Zapdos",
+      "Volcanion",
+      "Iron Treads"
+    ]
+  },
+  {
+    "file": "hl_05_26-054.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Landorus-Therian",
+      "Cinderace",
+      "Great Tusk",
+      "Heatran",
+      "Clodsire",
+      "Armarouge"
+    ]
+  },
+  {
+    "file": "hl_05_26-055.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Raging Bolt",
+      "Ribombee",
+      "Gholdengo",
+      "Great Tusk",
+      "Ogerpon-Cornerstone",
+      "Ceruledge"
+    ]
+  },
+  {
+    "file": "hl_05_26-056.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Glimmora",
+      "Gholdengo",
+      "Great Tusk",
+      "Ogerpon-Wellspring",
+      "Moltres",
+      "Dragonite"
+    ]
+  },
+  {
+    "file": "hl_05_26-057.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Iron Treads",
+      "Landorus-Therian",
+      "Iron Valiant",
+      "Kingambit",
+      "Zamazenta",
+      "Primarina"
+    ]
+  },
+  {
+    "file": "hl_05_26-058.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Raging Bolt",
+      "Iron Crown",
+      "Ceruledge",
+      "Great Tusk",
+      "Ogerpon-Wellspring",
+      "Deoxys-Speed"
+    ]
+  },
+  {
+    "file": "hl_05_26-059.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Slowking-Galar",
+      "Great Tusk",
+      "Arcanine-Hisui",
+      "Corviknight",
+      "Dragapult",
+      "Darkrai"
+    ]
+  },
+  {
+    "file": "hl_05_26-060.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Zamazenta",
+      "Raging Bolt",
+      "Darkrai",
+      "Great Tusk",
+      "Ogerpon-Cornerstone",
+      "Primarina"
+    ]
+  },
+  {
+    "file": "hl_05_26-061.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Dragapult",
+      "Deoxys-Speed",
+      "Zamazenta",
+      "Iron Treads",
+      "Dragonite",
+      "Iron Moth"
+    ]
+  },
+  {
+    "file": "hl_05_26-062.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Scizor",
+      "Ogerpon-Wellspring",
+      "Alomomola",
+      "Great Tusk",
+      "Weezing-Galar",
+      "Dragapult"
+    ]
+  },
+  {
+    "file": "hl_05_26-063.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Great Tusk",
+      "Heatran",
+      "Weavile",
+      "Primarina",
+      "Ogerpon",
+      "Pecharunt"
+    ]
+  },
+  {
+    "file": "hl_05_26-064.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Wo-Chien",
+      "Ceruledge",
+      "Primarina",
+      "Iron Treads",
+      "Gholdengo",
+      "Dragonite"
+    ]
+  },
+  {
+    "file": "hl_05_26-065.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Torkoal",
+      "Walking Wake",
+      "Great Tusk",
+      "Hatterene",
+      "Raging Bolt",
+      "Ceruledge"
+    ]
+  },
+  {
+    "file": "hl_05_26-066.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Pelipper",
+      "Iron Treads",
+      "Serperior",
+      "Manaphy",
+      "Darkrai",
+      "Tinkaton"
+    ]
+  },
+  {
+    "file": "hl_05_26-067.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Metagross",
+      "Cinderace",
+      "Hydrapple",
+      "Landorus-Therian",
+      "Raging Bolt",
+      "Alomomola"
+    ]
+  },
+  {
+    "file": "hl_05_26-068.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Cinderace",
+      "Great Tusk",
+      "Slowking-Galar",
+      "Corviknight",
+      "Raging Bolt",
+      "Meowscarada"
+    ]
+  },
+  {
+    "file": "hl_05_26-069.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Ninetales",
+      "Great Tusk",
+      "Heatran",
+      "Walking Wake",
+      "Raging Bolt",
+      "Sinistcha"
+    ]
+  },
+  {
+    "file": "hl_05_26-070.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Pecharunt",
+      "Kingambit",
+      "Volcanion",
+      "Iron Valiant",
+      "Landorus-Therian",
+      "Deoxys-Speed"
+    ]
+  },
+  {
+    "file": "hl_05_26-071.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Iron Moth",
+      "Umbreon",
+      "Garchomp",
+      "Glimmora",
+      "Gholdengo",
+      "Dragonite"
+    ]
+  },
+  {
+    "file": "hl_05_26-072.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Iron Crown",
+      "Iron Moth",
+      "Great Tusk",
+      "Gliscor",
+      "Gholdengo",
+      "Dondozo"
+    ]
+  },
+  {
+    "file": "hl_05_26-073.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Slowking-Galar",
+      "Crawdaunt",
+      "Deoxys-Speed",
+      "Corviknight",
+      "Great Tusk",
+      "Glimmora"
+    ]
+  },
+  {
+    "file": "hl_05_26-074.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Pelipper",
+      "Hatterene",
+      "Iron Treads",
+      "Toxicroak",
+      "Barraskewda",
+      "Zapdos"
+    ]
+  },
+  {
+    "file": "hl_05_26-075.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Blaziken",
+      "Moltres-Galar",
+      "Kyurem",
+      "Gholdengo",
+      "Deoxys-Speed",
+      "Zamazenta"
+    ]
+  },
+  {
+    "file": "hl_05_26-076.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Zamazenta",
+      "Walking Wake",
+      "Iron Treads",
+      "Ceruledge",
+      "Maushold-Four",
+      "Enamorus"
+    ]
+  },
+  {
+    "file": "hl_05_26-077.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Azelf",
+      "Ogerpon-Wellspring",
+      "Scizor",
+      "Gengar",
+      "Raging Bolt",
+      "Cinderace"
+    ]
+  },
+  {
+    "file": "hl_05_26-078.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Lokix",
+      "Garganacl",
+      "Iron Treads",
+      "Alomomola",
+      "Tornadus-Therian",
+      "Weezing-Galar"
+    ]
+  },
+  {
+    "file": "hl_05_26-079.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Primarina",
+      "Raging Bolt",
+      "Heatran",
+      "Weezing-Galar",
+      "Garchomp",
+      "Weavile"
+    ]
+  },
+  {
+    "file": "hl_05_26-080.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Darkrai",
+      "Deoxys-Speed",
+      "Raging Bolt",
+      "Kingambit",
+      "Iron Valiant",
+      "Great Tusk"
+    ]
+  },
+  {
+    "file": "hl_05_26-081.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Ninetales",
+      "Raging Bolt",
+      "Hatterene",
+      "Walking Wake",
+      "Iron Treads",
+      "Slither Wing"
+    ]
+  },
+  {
+    "file": "hl_05_26-082.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Ninetales",
+      "Blaziken",
+      "Walking Wake",
+      "Whimsicott",
+      "Great Tusk",
+      "Iron Moth"
+    ]
+  },
+  {
+    "file": "hl_05_26-083.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Talonflame",
+      "Raging Bolt",
+      "Rillaboom",
+      "Samurott-Hisui",
+      "Gholdengo",
+      "Great Tusk"
+    ]
+  },
+  {
+    "file": "hl_05_26-084.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Slowking-Galar",
+      "Hydrapple",
+      "Cinderace",
+      "Alomomola",
+      "Iron Crown",
+      "Slither Wing"
+    ]
+  },
+  {
+    "file": "hl_05_26-085.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Tyranitar",
+      "Zapdos",
+      "Pelipper",
+      "Quaquaval",
+      "Kingdra",
+      "Excadrill"
+    ]
+  },
+  {
+    "file": "hl_05_26-086.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Dragapult",
+      "Slowking-Galar",
+      "Alomomola",
+      "Darkrai",
+      "Great Tusk",
+      "Iron Valiant"
+    ]
+  },
+  {
+    "file": "hl_05_26-087.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Mimikyu",
+      "Hatterene",
+      "Ursaluna",
+      "Kingambit",
+      "Raging Bolt",
+      "Kyurem"
+    ]
+  },
+  {
+    "file": "hl_05_26-088.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Latios",
+      "Blaziken",
+      "Conkeldurr",
+      "Corviknight",
+      "Clodsire",
+      "Azumarill"
+    ]
+  },
+  {
+    "file": "hl_05_26-089.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Garganacl",
+      "Darkrai",
+      "Great Tusk",
+      "Hatterene",
+      "Tornadus-Therian",
+      "Dragonite"
+    ]
+  },
+  {
+    "file": "hl_05_26-090.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Pecharunt",
+      "Gholdengo",
+      "Iron Valiant",
+      "Ting-Lu",
+      "Zarude",
+      "Zapdos"
+    ]
+  },
+  {
+    "file": "hl_05_26-091.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Tornadus-Therian",
+      "Hatterene",
+      "Slowking-Galar",
+      "Kyurem",
+      "Kingambit",
+      "Great Tusk"
+    ]
+  },
+  {
+    "file": "hl_05_26-092.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Hatterene",
+      "Great Tusk",
+      "Tornadus-Therian",
+      "Kyurem",
+      "Slowking-Galar",
+      "Kingambit"
+    ]
+  },
+  {
+    "file": "hl_05_26-093.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Articuno",
+      "Samurott-Hisui",
+      "Iron Valiant",
+      "Gholdengo",
+      "Landorus-Therian",
+      "Gliscor"
+    ]
+  },
+  {
+    "file": "hl_05_26-094.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Klefki",
+      "Manaphy",
+      "Kyurem",
+      "Cinderace",
+      "Iron Valiant",
+      "Clefable"
+    ]
+  },
+  {
+    "file": "hl_05_26-095.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Wo-Chien",
+      "Ursaluna",
+      "Slowking-Galar",
+      "Corviknight",
+      "Cinderace",
+      "Alomomola"
+    ]
+  },
+  {
+    "file": "hl_05_26-096.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Enamorus",
+      "Kyurem",
+      "Landorus-Therian",
+      "Kingambit",
+      "Ogerpon-Wellspring",
+      "Glimmora"
+    ]
+  },
+  {
+    "file": "hl_05_26-097.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Dragonite",
+      "Ting-Lu",
+      "Clefable",
+      "Pecharunt",
+      "Heatran",
+      "Zamazenta"
+    ]
+  },
+  {
+    "file": "hl_05_26-098.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Dragonite",
+      "Great Tusk",
+      "Magnezone",
+      "Cinderace",
+      "Slowking-Galar",
+      "Rillaboom"
+    ]
+  },
+  {
+    "file": "hl_05_26-099.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Dondozo",
+      "Gliscor",
+      "Weezing-Galar",
+      "Blissey",
+      "Corviknight",
+      "Amoonguss"
+    ]
+  },
+  {
+    "file": "hl_05_26-100.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Ogerpon-Wellspring",
+      "Landorus-Therian",
+      "Slither Wing",
+      "Heatran",
+      "Dragapult",
+      "Hatterene"
+    ]
+  },
+  {
+    "file": "hl_05_26-101.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Ninetales",
+      "Walking Wake",
+      "Typhlosion-Hisui",
+      "Great Tusk",
+      "Rillaboom",
+      "Raging Bolt"
+    ]
+  },
+  {
+    "file": "hl_05_26-102.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Gholdengo",
+      "Darkrai",
+      "Clefable",
+      "Ting-Lu",
+      "Dragonite",
+      "Pecharunt"
+    ]
+  },
+  {
+    "file": "hl_05_26-103.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Meowscarada",
+      "Iron Treads",
+      "Deoxys-Speed",
+      "Iron Valiant",
+      "Iron Crown",
+      "Zapdos"
+    ]
+  },
+  {
+    "file": "hl_05_26-104.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Iron Treads",
+      "Zamazenta",
+      "Meowscarada",
+      "Raging Bolt",
+      "Zapdos",
+      "Slowking-Galar"
+    ]
+  },
+  {
+    "file": "hl_05_26-105.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Tyranitar",
+      "Pelipper",
+      "Barraskewda",
+      "Raging Bolt",
+      "Corviknight",
+      "Excadrill"
+    ]
+  },
+  {
+    "file": "hl_05_26-106.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Araquanid",
+      "Gholdengo",
+      "Raging Bolt",
+      "Iron Valiant",
+      "Ceruledge",
+      "Deoxys-Speed"
+    ]
+  },
+  {
+    "file": "hl_05_26-107.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Tyranitar",
+      "Pelipper",
+      "Excadrill",
+      "Walking Wake",
+      "Torkoal",
+      "Ogerpon-Wellspring"
+    ]
+  },
+  {
+    "file": "hl_05_26-108.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Araquanid",
+      "Great Tusk",
+      "Glimmora",
+      "Dragonite",
+      "Ceruledge",
+      "Iron Valiant"
+    ]
+  },
+  {
+    "file": "hl_05_26-109.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Gliscor",
+      "Blissey",
+      "Pecharunt",
+      "Meowscarada",
+      "Reuniclus",
+      "Skarmory"
+    ]
+  },
+  {
+    "file": "hl_05_26-110.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Samurott-Hisui",
+      "Pecharunt",
+      "Zamazenta",
+      "Ogerpon-Cornerstone",
+      "Tornadus-Therian",
+      "Iron Treads"
+    ]
+  },
+  {
+    "file": "hl_05_26-111.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Iron Moth",
+      "Umbreon",
+      "Garchomp",
+      "Glimmora",
+      "Gholdengo",
+      "Dragonite"
+    ]
+  },
+  {
+    "file": "hl_05_26-112.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Ribombee",
+      "Kingambit",
+      "Milotic",
+      "Serperior",
+      "Gothitelle",
+      "Cinderace"
+    ]
+  },
+  {
+    "file": "hl_05_26-113.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Slowking-Galar",
+      "Dondozo",
+      "Ting-Lu",
+      "Kyurem",
+      "Gholdengo",
+      "Great Tusk"
+    ]
+  },
+  {
+    "file": "hl_05_26-114.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Ting-Lu",
+      "Iron Moth",
+      "Zarude",
+      "Dragonite",
+      "Zamazenta",
+      "Gholdengo"
+    ]
+  },
+  {
+    "file": "hl_05_26-115.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Tyranitar",
+      "Deoxys-Speed",
+      "Slowking-Galar",
+      "Great Tusk",
+      "Raging Bolt",
+      "Dondozo"
+    ]
+  },
+  {
+    "file": "hl_05_26-116.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Weezing-Galar",
+      "Primarina",
+      "Thundurus",
+      "Lokix",
+      "Hitmonlee",
+      "Pawmot"
+    ]
+  },
+  {
+    "file": "hl_05_26-117.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Ninetales",
+      "Walking Wake",
+      "Raging Bolt",
+      "Cinderace",
+      "Ceruledge",
+      "Iron Moth"
+    ]
+  },
+  {
+    "file": "hl_05_26-118.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Moltres",
+      "Slowking-Galar",
+      "Gholdengo",
+      "Greninja",
+      "Great Tusk",
+      "Kleavor"
+    ]
+  },
+  {
+    "file": "hl_05_26-119.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Iron Treads",
+      "Landorus-Therian",
+      "Iron Valiant",
+      "Kingambit",
+      "Zamazenta",
+      "Primarina"
+    ]
+  },
+  {
+    "file": "hl_05_26-120.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Ting-Lu",
+      "Slowking-Galar",
+      "Corviknight",
+      "Cinderace",
+      "Ogerpon-Wellspring",
+      "Raging Bolt"
+    ]
+  },
+  {
+    "file": "hl_05_26-121.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Darkrai",
+      "Deoxys-Speed",
+      "Raging Bolt",
+      "Kingambit",
+      "Iron Valiant",
+      "Great Tusk"
+    ]
+  },
+  {
+    "file": "hl_05_26-122.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Kyurem",
+      "Zapdos",
+      "Gholdengo",
+      "Samurott-Hisui",
+      "Ting-Lu",
+      "Weezing-Galar"
+    ]
+  },
+  {
+    "file": "hl_05_26-123.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Enamorus",
+      "Kyurem",
+      "Landorus-Therian",
+      "Kingambit",
+      "Ogerpon-Wellspring",
+      "Glimmora"
+    ]
+  },
+  {
+    "file": "hl_05_26-124.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Entei",
+      "Kyurem",
+      "Zamazenta",
+      "Altaria",
+      "Toxapex",
+      "Ceruledge"
+    ]
+  },
+  {
+    "file": "hl_05_26-125.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Ting-Lu",
+      "Slowking-Galar",
+      "Corviknight",
+      "Cinderace",
+      "Ogerpon-Wellspring",
+      "Raging Bolt"
+    ]
+  },
+  {
+    "file": "hl_05_26-126.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Landorus-Therian",
+      "Enamorus",
+      "Kyurem",
+      "Tyranitar",
+      "Corviknight",
+      "Dragonite"
+    ]
+  },
+  {
+    "file": "hl_05_26-127.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Iron Crown",
+      "Landorus-Therian",
+      "Ogerpon",
+      "Primarina",
+      "Moltres",
+      "Raging Bolt"
+    ]
+  },
+  {
+    "file": "hl_05_26-128.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Landorus-Therian",
+      "Revavroom",
+      "Kingambit",
+      "Hatterene",
+      "Iron Valiant",
+      "Dragonite"
+    ]
+  },
+  {
+    "file": "hl_05_26-129.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Sinistcha",
+      "Samurott-Hisui",
+      "Moltres",
+      "Tinkaton",
+      "Zamazenta",
+      "Gliscor"
+    ]
+  },
+  {
+    "file": "hl_05_26-130.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Hydrapple",
+      "Slowking-Galar",
+      "Cinderace",
+      "Darkrai",
+      "Manaphy",
+      "Iron Valiant"
+    ]
+  },
+  {
+    "file": "hl_05_26-131.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Iron Moth",
+      "Raging Bolt",
+      "Great Tusk",
+      "Zamazenta",
+      "Iron Valiant",
+      "Ogerpon-Cornerstone"
+    ]
+  },
+  {
+    "file": "hl_05_26-132.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Iron Moth",
+      "Raging Bolt",
+      "Great Tusk",
+      "Zamazenta",
+      "Iron Valiant",
+      "Ogerpon-Cornerstone"
+    ]
+  },
+  {
+    "file": "hl_05_26-133.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Iron Crown",
+      "Meowscarada",
+      "Great Tusk",
+      "Pecharunt",
+      "Ting-Lu",
+      "Iron Valiant"
+    ]
+  },
+  {
+    "file": "hl_05_26-134.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Primarina",
+      "Raging Bolt",
+      "Heatran",
+      "Weezing-Galar",
+      "Garchomp",
+      "Weavile"
+    ]
+  },
+  {
+    "file": "hl_05_26-135.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Samurott-Hisui",
+      "Gholdengo",
+      "Great Tusk",
+      "Raging Bolt",
+      "Dragonite",
+      "Kingambit"
+    ]
+  },
+  {
+    "file": "hl_05_26-136.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Primarina",
+      "Raging Bolt",
+      "Heatran",
+      "Weezing-Galar",
+      "Garchomp",
+      "Weavile"
+    ]
+  },
+  {
+    "file": "hl_05_26-137.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Iron Hands",
+      "Glimmora",
+      "Landorus-Therian",
+      "Dragapult",
+      "Primarina",
+      "Kingambit"
+    ]
+  },
+  {
+    "file": "hl_05_26-138.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Iron Valiant",
+      "Slowking-Galar",
+      "Kingambit",
+      "Ting-Lu",
+      "Corviknight",
+      "Ogerpon-Wellspring"
+    ]
+  },
+  {
+    "file": "hl_05_26-139.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Flamigo",
+      "Deoxys-Speed",
+      "Armarouge",
+      "Gardevoir",
+      "Samurott-Hisui",
+      "Iron Valiant"
+    ]
+  },
+  {
+    "file": "hl_05_26-140.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Indeedee",
+      "Greninja",
+      "Slowking-Galar",
+      "Deoxys-Speed",
+      "Great Tusk",
+      "Moltres"
+    ]
+  },
+  {
+    "file": "hl_05_26-141.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Gallade",
+      "Garchomp",
+      "Meowscarada",
+      "Iron Hands",
+      "Corviknight",
+      "Cinderace"
+    ]
+  },
+  {
+    "file": "hl_05_26-142.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Slowking-Galar",
+      "Kyurem",
+      "Iron Valiant",
+      "Landorus-Therian",
+      "Cinderace",
+      "Kingambit"
+    ]
+  },
+  {
+    "file": "hl_05_26-143.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Iron Moth",
+      "Gliscor",
+      "Hatterene",
+      "Ogerpon-Wellspring",
+      "Raging Bolt",
+      "Zamazenta"
+    ]
+  },
+  {
+    "file": "hl_05_26-144.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Ceruledge",
+      "Ninetales-Alola",
+      "Glimmora",
+      "Gholdengo",
+      "Thundurus-Therian",
+      "Ogerpon-Wellspring"
+    ]
+  },
+  {
+    "file": "hl_05_26-145.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Kingambit",
+      "Zamazenta",
+      "Iron Treads",
+      "Ogerpon-Wellspring",
+      "Moltres",
+      "Garganacl"
+    ]
+  },
+  {
+    "file": "hl_05_26-146.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Raging Bolt",
+      "Ribombee",
+      "Gholdengo",
+      "Great Tusk",
+      "Ogerpon-Cornerstone",
+      "Ceruledge"
+    ]
+  },
+  {
+    "file": "hl_05_26-147.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Landorus-Therian",
+      "Alomomola",
+      "Iron Treads",
+      "Kingambit",
+      "Enamorus",
+      "Pecharunt"
+    ]
+  },
+  {
+    "file": "hl_05_26-148.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Toxapex",
+      "Gliscor",
+      "Alomomola",
+      "Blissey",
+      "Clodsire",
+      "Dondozo"
+    ]
+  },
+  {
+    "file": "hl_05_26-149.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Pecharunt",
+      "Iron Treads",
+      "Hatterene",
+      "Kyurem",
+      "Tornadus-Therian",
+      "Zamazenta"
+    ]
+  },
+  {
+    "file": "hl_05_26-150.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Iron Leaves",
+      "Iron Treads",
+      "Iron Valiant",
+      "Kingambit",
+      "Pawmot",
+      "Pincurchin"
+    ]
+  },
+  {
+    "file": "hl_05_26-151.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Indeedee",
+      "Hatterene",
+      "Ursaluna",
+      "Iron Hands",
+      "Hoopa-Unbound",
+      "Mimikyu"
+    ]
+  },
+  {
+    "file": "hl_05_26-152.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Dondozo",
+      "Blissey",
+      "Corviknight",
+      "Weezing-Galar",
+      "Gliscor",
+      "Toxapex"
+    ]
+  },
+  {
+    "file": "hl_05_26-153.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Pecharunt",
+      "Kingambit",
+      "Volcanion",
+      "Iron Valiant",
+      "Landorus-Therian",
+      "Deoxys-Speed"
+    ]
+  },
+  {
+    "file": "hl_05_26-154.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Deoxys-Speed",
+      "Ceruledge",
+      "Great Tusk",
+      "Zamazenta",
+      "Iron Valiant",
+      "Ogerpon-Wellspring"
+    ]
+  },
+  {
+    "file": "hl_05_26-155.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Gyarados",
+      "Samurott-Hisui",
+      "Great Tusk",
+      "Gholdengo",
+      "Iron Moth",
+      "Iron Valiant"
+    ]
+  },
+  {
+    "file": "hl_05_26-156.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Ogerpon-Wellspring",
+      "Raging Bolt",
+      "Cinderace",
+      "Corviknight",
+      "Gengar",
+      "Ting-Lu"
+    ]
+  },
+  {
+    "file": "hl_05_26-157.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Landorus-Therian",
+      "Gholdengo",
+      "Rillaboom",
+      "Walking Wake",
+      "Volcanion",
+      "Zamazenta"
+    ]
+  },
+  {
+    "file": "hl_05_26-158.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Great Tusk",
+      "Zamazenta",
+      "Ting-Lu",
+      "Pecharunt",
+      "Slowking-Galar",
+      "Corviknight"
+    ]
+  },
+  {
+    "file": "hl_05_26-159.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Gallade",
+      "Garchomp",
+      "Meowscarada",
+      "Iron Hands",
+      "Corviknight",
+      "Cinderace"
+    ]
+  },
+  {
+    "file": "hl_05_26-160.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Gardevoir",
+      "Rillaboom",
+      "Hawlucha",
+      "Iron Moth",
+      "Landorus-Therian",
+      "Kingambit"
+    ]
+  },
+  {
+    "file": "hl_05_26-161.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Meowscarada",
+      "Raging Bolt",
+      "Great Tusk",
+      "Fezandipiti",
+      "Landorus-Therian",
+      "Cinderace"
+    ]
+  },
+  {
+    "file": "hl_05_26-162.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Darkrai",
+      "Hatterene",
+      "Great Tusk",
+      "Heatran",
+      "Kyurem",
+      "Tornadus-Therian"
+    ]
+  },
+  {
+    "file": "hl_05_26-163.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Lokix",
+      "Cinderace",
+      "Great Tusk",
+      "Alomomola",
+      "Enamorus",
+      "Slowking-Galar"
+    ]
+  },
+  {
+    "file": "hl_05_26-164.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Ribombee",
+      "Raging Bolt",
+      "Gholdengo",
+      "Enamorus",
+      "Ogerpon-Wellspring",
+      "Great Tusk"
+    ]
+  },
+  {
+    "file": "hl_05_26-165.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Chesnaught",
+      "Gliscor",
+      "Weezing-Galar",
+      "Goodra-Hisui",
+      "Gholdengo",
+      "Darkrai"
+    ]
+  },
+  {
+    "file": "hl_05_26-166.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Ogerpon-Wellspring",
+      "Ting-Lu",
+      "Great Tusk",
+      "Gholdengo",
+      "Hydreigon",
+      "Moltres"
+    ]
+  },
+  {
+    "file": "hl_05_26-167.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Quaquaval",
+      "Barraskewda",
+      "Pelipper",
+      "Slither Wing",
+      "Hatterene",
+      "Crawdaunt"
+    ]
+  },
+  {
+    "file": "hl_05_26-168.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Moltres",
+      "Ting-Lu",
+      "Alomomola",
+      "Darkrai",
+      "Zamazenta",
+      "Gholdengo"
+    ]
+  },
+  {
+    "file": "hl_05_26-169.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Kyurem",
+      "Raging Bolt",
+      "Torkoal",
+      "Walking Wake",
+      "Corviknight",
+      "Ting-Lu"
+    ]
+  },
+  {
+    "file": "hl_05_26-170.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Ninetales",
+      "Blaziken",
+      "Walking Wake",
+      "Great Tusk",
+      "Iron Moth",
+      "Ceruledge"
+    ]
+  },
+  {
+    "file": "hl_05_26-171.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Swampert",
+      "Ribombee",
+      "Gholdengo",
+      "Great Tusk",
+      "Raging Bolt",
+      "Kingambit"
+    ]
+  },
+  {
+    "file": "hl_05_26-172.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Kingambit",
+      "Zamazenta",
+      "Glimmora",
+      "Gholdengo",
+      "Kyurem",
+      "Landorus-Therian"
+    ]
+  },
+  {
+    "file": "hl_05_26-173.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Garganacl",
+      "Darkrai",
+      "Great Tusk",
+      "Hatterene",
+      "Tornadus-Therian",
+      "Dragonite"
+    ]
+  },
+  {
+    "file": "hl_05_26-174.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Garganacl",
+      "Darkrai",
+      "Great Tusk",
+      "Hatterene",
+      "Tornadus-Therian",
+      "Dragonite"
+    ]
+  },
+  {
+    "file": "hl_05_26-175.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Alomomola",
+      "Slowking-Galar",
+      "Corviknight",
+      "Great Tusk",
+      "Lokix",
+      "Kyurem"
+    ]
+  },
+  {
+    "file": "hl_05_26-176.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Ceruledge",
+      "Dragapult",
+      "Pelipper",
+      "Slowking",
+      "Kyurem",
+      "Weezing-Galar"
+    ]
+  },
+  {
+    "file": "hl_05_26-177.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Zamazenta",
+      "Iron Valiant",
+      "Iron Hands",
+      "Okidogi",
+      "Kommo-o",
+      "Infernape"
+    ]
+  },
+  {
+    "file": "hl_05_26-178.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Pelipper",
+      "Barraskewda",
+      "Raging Bolt",
+      "Golduck",
+      "Pawmot",
+      "Tentacruel"
+    ]
+  },
+  {
+    "file": "hl_05_26-179.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Pelipper",
+      "Overqwil",
+      "Iron Treads",
+      "Greninja",
+      "Hatterene",
+      "Kingambit"
+    ]
+  },
+  {
+    "file": "hl_05_26-180.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Zapdos",
+      "Iron Boulder",
+      "Great Tusk",
+      "Ogerpon",
+      "Hatterene",
+      "Kingambit"
+    ]
+  },
+  {
+    "file": "hl_05_26-181.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Pecharunt",
+      "Great Tusk",
+      "Ogerpon-Wellspring",
+      "Iron Crown",
+      "Tornadus-Therian",
+      "Ting-Lu"
+    ]
+  },
+  {
+    "file": "hl_05_26-182.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Dondozo",
+      "Blissey",
+      "Corviknight",
+      "Weezing-Galar",
+      "Gliscor",
+      "Toxapex"
+    ]
+  },
+  {
+    "file": "hl_05_26-183.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Gholdengo",
+      "Zamazenta",
+      "Dragonite",
+      "Great Tusk",
+      "Ogerpon",
+      "Tornadus-Therian"
+    ]
+  },
+  {
+    "file": "hl_05_26-184.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Great Tusk",
+      "Scizor",
+      "Garganacl",
+      "Ting-Lu",
+      "Raging Bolt",
+      "Gholdengo"
+    ]
+  },
+  {
+    "file": "hl_05_26-185.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Landorus-Therian",
+      "Kyurem",
+      "Ceruledge",
+      "Hatterene",
+      "Kingambit",
+      "Zamazenta"
+    ]
+  },
+  {
+    "file": "hl_05_26-186.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Scizor",
+      "Raging Bolt",
+      "Ogerpon-Wellspring",
+      "Ting-Lu",
+      "Weezing-Galar",
+      "Zamazenta"
+    ]
+  },
+  {
+    "file": "hl_05_26-187.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Iron Treads",
+      "Landorus-Therian",
+      "Iron Valiant",
+      "Kingambit",
+      "Zamazenta",
+      "Primarina"
+    ]
+  },
+  {
+    "file": "hl_05_26-188.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Garganacl",
+      "Landorus-Therian",
+      "Weezing-Galar",
+      "Dragapult",
+      "Hoopa-Unbound",
+      "Scizor"
+    ]
+  },
+  {
+    "file": "hl_05_26-189.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Chesnaught",
+      "Gliscor",
+      "Weezing-Galar",
+      "Goodra-Hisui",
+      "Gholdengo",
+      "Darkrai"
+    ]
+  },
+  {
+    "file": "hl_05_26-190.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Lycanroc-Dusk",
+      "Kingambit",
+      "Ceruledge",
+      "Iron Treads",
+      "Ogerpon-Wellspring",
+      "Sylveon"
+    ]
+  },
+  {
+    "file": "hl_05_26-191.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Dragapult",
+      "Alomomola",
+      "Ting-Lu",
+      "Kyurem",
+      "Weezing-Galar",
+      "Corviknight"
+    ]
+  },
+  {
+    "file": "hl_05_26-192.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Raging Bolt",
+      "Ribombee",
+      "Gholdengo",
+      "Great Tusk",
+      "Ogerpon",
+      "Ceruledge"
+    ]
+  },
+  {
+    "file": "hl_05_26-193.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Lokix",
+      "Iron Valiant",
+      "Alomomola",
+      "Mandibuzz",
+      "Great Tusk",
+      "Gholdengo"
+    ]
+  },
+  {
+    "file": "hl_05_26-194.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Tinkaton",
+      "Ogerpon",
+      "Great Tusk",
+      "Pecharunt",
+      "Alomomola",
+      "Hydreigon"
+    ]
+  },
+  {
+    "file": "hl_05_26-195.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Tyranitar",
+      "Iron Valiant",
+      "Excadrill",
+      "Tornadus-Therian",
+      "Ogerpon-Cornerstone",
+      "Toxapex"
+    ]
+  },
+  {
+    "file": "hl_05_26-196.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Hoopa-Unbound",
+      "Ogerpon",
+      "Weezing-Galar",
+      "Zamazenta",
+      "Iron Treads",
+      "Tornadus-Therian"
+    ]
+  },
+  {
+    "file": "hl_05_26-197.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Pelipper",
+      "Raging Bolt",
+      "Overqwil",
+      "Barraskewda",
+      "Iron Treads",
+      "Kingambit"
+    ]
+  },
+  {
+    "file": "hl_05_26-198.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Tyranitar",
+      "Alomomola",
+      "Primarina",
+      "Amoonguss",
+      "Tornadus-Therian",
+      "Excadrill"
+    ]
+  },
+  {
+    "file": "hl_05_26-199.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Excadrill",
+      "Tyranitar",
+      "Gholdengo",
+      "Chesnaught",
+      "Tornadus-Therian",
+      "Iron Valiant"
+    ]
+  },
+  {
+    "file": "hl_05_26-200.gen9ou_team",
+    "source": "hl_05_26",
+    "species": [
+      "Rotom-Wash",
+      "Scizor",
+      "Ting-Lu",
+      "Dragapult",
+      "Dragonite",
+      "Great Tusk"
+    ]
+  }
+]

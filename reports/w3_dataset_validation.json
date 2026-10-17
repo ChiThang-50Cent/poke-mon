@@ -1,0 +1,213 @@
+{
+  "status": "PASS",
+  "seed": 42,
+  "split_fractions": {
+    "train": 0.8,
+    "val": 0.1,
+    "test": 0.1
+  },
+  "filters": {
+    "format": "gen9ou",
+    "min_rating": 1300,
+    "outcomes": "both",
+    "source": "all downloaded pilot trajectories",
+    "download_skipped": {
+      "unrated": 5555,
+      "below_min_rating": 7221
+    }
+  },
+  "data_source": {
+    "url": "https://huggingface.co/datasets/jakegrigsby/metamon-parsed-replays/resolve/v6/gen9ou.tar.gz",
+    "revision": "v6",
+    "etag": "\"75a79ada1f95e8e551011101f3eb7075c013bb2a51ef3d3512b78fde1441f41d\"",
+    "sample_json_sha256": "03dcafff1b3fbe8fa9a48554613711179cd2668fcc51fc54ea6074b3ce60fee0",
+    "index_sha256": "a32e3005e442d39ade12b2df0489aed00d577c0766401807b0a042841a16ae44"
+  },
+  "encoder": {
+    "tokenizer_name": "DefaultObservationSpace-v1",
+    "vocab_size": 2542,
+    "token_len": 87,
+    "unknown_id": 2541,
+    "native_unknown_id": -1,
+    "unknown_handling": "native -1 maps to appended unknown_id; known IDs unchanged",
+    "observation_space": "DefaultObservationSpace",
+    "observation_space_version": "DefaultObservationSpace@metamon-0a00a75"
+  },
+  "native_encoding_equivalence_states": 8,
+  "battle_id_overlap": {
+    "train_val": 0,
+    "train_test": 0,
+    "val_test": 0
+  },
+  "splits": {
+    "train": {
+      "trajectories": 5820,
+      "battles": 5120,
+      "decisions": 176584,
+      "valid_decisions": 161270,
+      "excluded_decisions": 15314,
+      "excluded_by_reason": {
+        "missing": 15314,
+        "action_minus_one": 15314,
+        "action_out_of_range": 0,
+        "chosen_not_in_mask": 0,
+        "empty_mask": 13
+      },
+      "reason_counts_overlap": true,
+      "all_finite": true,
+      "unknown_tokens": 0,
+      "total_tokens": 15362808,
+      "unknown_token_rate": 0.0,
+      "ratings": {
+        "min": 1300,
+        "max": 2089,
+        "mean": 1494.0463917525774,
+        "deciles": [
+          1331.0,
+          1359.0,
+          1391.0,
+          1424.0,
+          1462.0,
+          1503.0,
+          1552.0,
+          1624.0,
+          1721.0
+        ]
+      },
+      "months": {
+        "2023-12": 5820
+      },
+      "action_class_histogram": [
+        26218,
+        25958,
+        26026,
+        23821,
+        17612,
+        13593,
+        10647,
+        8289,
+        5134,
+        1075,
+        872,
+        892,
+        1133
+      ]
+    },
+    "val": {
+      "trajectories": 714,
+      "battles": 640,
+      "decisions": 21078,
+      "valid_decisions": 19170,
+      "excluded_decisions": 1908,
+      "excluded_by_reason": {
+        "missing": 1908,
+        "action_minus_one": 1908,
+        "action_out_of_range": 0,
+        "chosen_not_in_mask": 0,
+        "empty_mask": 1
+      },
+      "reason_counts_overlap": true,
+      "all_finite": true,
+      "unknown_tokens": 0,
+      "total_tokens": 1833786,
+      "unknown_token_rate": 0.0,
+      "ratings": {
+        "min": 1300,
+        "max": 1944,
+        "mean": 1483.3837535014006,
+        "deciles": [
+          1325.3,
+          1354.0,
+          1381.9,
+          1407.2,
+          1449.0,
+          1491.8,
+          1537.1,
+          1603.4,
+          1713.7
+        ]
+      },
+      "months": {
+        "2023-12": 714
+      },
+      "action_class_histogram": [
+        3039,
+        3189,
+        2960,
+        2964,
+        2017,
+        1627,
+        1285,
+        1045,
+        557,
+        127,
+        125,
+        107,
+        128
+      ]
+    },
+    "test": {
+      "trajectories": 726,
+      "battles": 640,
+      "decisions": 21394,
+      "valid_decisions": 19560,
+      "excluded_decisions": 1834,
+      "excluded_by_reason": {
+        "missing": 1834,
+        "action_minus_one": 1834,
+        "action_out_of_range": 0,
+        "chosen_not_in_mask": 0,
+        "empty_mask": 0
+      },
+      "reason_counts_overlap": true,
+      "all_finite": true,
+      "unknown_tokens": 0,
+      "total_tokens": 1861278,
+      "unknown_token_rate": 0.0,
+      "ratings": {
+        "min": 1300,
+        "max": 1965,
+        "mean": 1502.5702479338843,
+        "deciles": [
+          1330.5,
+          1363.0,
+          1396.0,
+          1433.0,
+          1474.5,
+          1518.0,
+          1567.0,
+          1640.0,
+          1732.5
+        ]
+      },
+      "months": {
+        "2023-12": 726
+      },
+      "action_class_histogram": [
+        3053,
+        3102,
+        3211,
+        2979,
+        2087,
+        1632,
+        1327,
+        1007,
+        670,
+        130,
+        125,
+        97,
+        140
+      ]
+    }
+  },
+  "train_serve_gap": {
+    "source_run": "runs/20261016T074108-cd71eb26",
+    "backend": "poke-env UniversalState.from_Battle",
+    "trajectories": 4,
+    "decisions": 73,
+    "unknown_tokens": 0,
+    "total_tokens": 6351,
+    "unknown_token_rate": 0.0,
+    "note": "Measured only; backend sim2sim differences are not corrected."
+  }
+}

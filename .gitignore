@@ -1,0 +1,15 @@
+.venv/
+.cache/
+third_party/
+checkpoints/
+runs/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+shard-*.tar
+shard-*.tar.part
+datasets/w4/outcomes.json
+datasets/w4/outcomes_holdout.json
+datasets/w4/*.npz
+models/*/feature_cache.pt

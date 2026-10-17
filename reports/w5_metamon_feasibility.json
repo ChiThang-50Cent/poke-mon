@@ -1,0 +1,38 @@
+{
+  "purpose": "Feasibility only; no pretrained weights downloaded or battles run",
+  "observed": {
+    "amago_present": true,
+    "torch_version": "2.14.1",
+    "pretrained_import_and_SmallRL_configuration": "successful",
+    "import_warning": "Missing FlashAttention (2.0) Install",
+    "import_wall_time_s": 6.35,
+    "checkpoint_bytes_downloaded": 0
+  },
+  "dependencies": {
+    "declared": "Metamon requires amago @ git+https://github.com/UT-Austin-RPL/amago@v3.4.0, gin-config, huggingface_hub, torch>=2.6 and forked poke-env",
+    "source": "third_party/metamon/pyproject.toml:24-40"
+  },
+  "candidates": {
+    "SmallRL": {
+      "default_checkpoint": "small-rl/ckpts/policy_weights/policy_epoch_40.pt",
+      "download_bytes": 55821762,
+      "backend": "poke-env",
+      "observation": "TokenizedObservationSpace(DefaultObservationSpace, allreplays-v3 tokenizer)",
+      "action_space": "MinimalActionSpace (not the current Gen9 13-slot DefaultActionSpace)",
+      "feasibility": "Legacy model, not an appropriate drop-in Gen9 OU stronger reference; backend and action-space mismatch",
+      "sources": ["third_party/metamon/metamon/rl/pretrained.py:145-180,383-393", "https://huggingface.co/api/models/jakegrigsby/metamon/tree/main/small-rl/ckpts/policy_weights?limit=100"]
+    },
+    "Kakuna": {
+      "default_checkpoint": "kakuna/ckpts/policy_weights/policy_epoch_34.pt",
+      "download_bytes": 571581627,
+      "backend": "metamon",
+      "observation": "Tokenized OpponentMoveObservationSpace using DefaultObservationSpace-v1 tokenizer, not PokeDecision's frozen DefaultObservationSpace tensor encoder",
+      "action_space": "DefaultActionSpace",
+      "architecture": "superkazam.gin: 10-layer 900-wide trajectory transformer, 128 max sequence length, FlashAttention with (96,0) window; Perceiver timestep encoder",
+      "gpu_memory": "[INFERENCE] Serialized weights are approximately 0.572 GB. At fp32, a full 128-step K/V cache for 10 layers x width 900 is approximately 9.216 MB per lane (73.728 MB for eight lanes), excluding activations, CUDA workspace, other model tensors, preview and allocator overhead. 12 GB appears feasible for bounded inference, but actual peak VRAM is unmeasured and cannot be guaranteed without initializing the checkpoint.",
+      "feasibility": "Format/backend compatible in principle, but not drop-in NeuralPlayer weights. Requires AMAGO Experiment evaluation/challenge integration with its own observation/action spaces, independently maintained recurrent/cache state per battle, sanctioned validated team loader and local server endpoint. FlashAttention is currently missing. No evidence of stronger win rate on this benchmark yet.",
+      "sources": ["third_party/metamon/metamon/rl/pretrained.py:878-916", "third_party/metamon/metamon/rl/configs/models/superkazam.gin:7-56", "third_party/metamon/metamon/rl/evaluate/serve_matchup.py:52-94", "https://huggingface.co/api/models/jakegrigsby/metamon/tree/main/kakuna/ckpts/policy_weights?limit=100"]
+    }
+  },
+  "decision": "Do not silently substitute a legacy backend or feed PokeDecision encoded inputs to AMAGO. Use the tested PokeDecision neural references for W5.0/W5.1; a future explicit AMAGO adapter can add Kakuna after dependency and legality validation. No download over 1 GB was attempted."
+}

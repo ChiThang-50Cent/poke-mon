@@ -1,0 +1,2821 @@
+{
+  "contract": "W5 Experiment A2.1: offline AWBC signal test at matched KL. No battles.\n\nPre-registered (user plan, W5.3 audit follow-up):\n- Data: W5.1 pilot C decisions, W5.2/W5.3 team-pair split (train 80 / val 20).\n- Actor: copy of C, batch 64 full trajectories, AdamW lr 3e-4 wd 1e-4, clip 1.0,\n  lambda_KL 0.1, max 30 epochs, seeds 1/2/3. Loss = existing `awbc_loss`.\n- Variants: E1 (w = 1), E3 (probe advantage, beta 2, max weight 5), E3-shuffled\n  (battle outcomes permuted at battle level inside (split, opponent type) groups,\n  self-play complementarity preserved, seed-specific permutation).\n- Matched KL: checkpoint at the FIRST epoch whose val KL(C||actor) >= 0.05\n  (primary) and >= 0.10 (exploratory sensitivity only).\n- Primary metric: S(theta) = E_val[A_t * (log pi_theta(a_t|s_t) - log pi_C(a_t|s_t))]\n  with the real probe advantage; differences E3-E1 and E3-shuffled, 95% CI from a\n  5,000-resample bootstrap clustered by team pair (seed-averaged Delta per decision).\n- Cross-split gradient: at theta = C, advantage component g^A = g_w - g_1 of the\n  BC term on train and on val; cos(g^A_train, g^A_val) for the real advantage vs a\n  20-permutation battle-level null. Both per-batch and global weight normalisation.\n- Gate (KL 0.05): S(E3)-S(E1) > 0 and S(E3)-S(shuffled) > 0 with CIs excluding 0;\n  real cross-split cosine above the null 95th percentile; no NaN / mask violation /\n  entropy collapse (> 30 % change); all three seeds reported.\n",
+  "train_trajectories": 1120,
+  "runs": [
+    {
+      "variant": "E1",
+      "seed": 1,
+      "matched": {
+        "0.05": {
+          "epoch": 11,
+          "val_KL": 0.05358265269236479,
+          "dir": "checkpoints/w5_a2/E1-s1/kl0.05"
+        },
+        "0.1": {
+          "epoch": 17,
+          "val_KL": 0.10601827428764922,
+          "dir": "checkpoints/w5_a2/E1-s1/kl0.10"
+        }
+      },
+      "epochs_run": 17,
+      "history": [
+        {
+          "epoch": 1,
+          "train_loss": 1.3315738198153193,
+          "val_KL": 0.005006367354085198,
+          "val_KL_p95": 0.014438134431838931,
+          "val_entropy": 1.3422726956872264,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.9324764831889727,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 2,
+          "train_loss": 1.2870389916458909,
+          "val_KL": 0.007836626143670675,
+          "val_KL_p95": 0.02357044965028761,
+          "val_entropy": 1.328148022481402,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.917667877433175,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 3,
+          "train_loss": 1.2567560781523943,
+          "val_KL": 0.010843746441575089,
+          "val_KL_p95": 0.03230954110622401,
+          "val_entropy": 1.3310726620891835,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.9001583310049363,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 4,
+          "train_loss": 1.228842943933228,
+          "val_KL": 0.01423977632458937,
+          "val_KL_p95": 0.04155914634466167,
+          "val_entropy": 1.3137300712853335,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8939182266927447,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 5,
+          "train_loss": 1.2019240992885833,
+          "val_KL": 0.018477680270540222,
+          "val_KL_p95": 0.053473672270774764,
+          "val_entropy": 1.3034758466997882,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8753841855266834,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 6,
+          "train_loss": 1.1751636309124456,
+          "val_KL": 0.023292593726494674,
+          "val_KL_p95": 0.06676343381404863,
+          "val_entropy": 1.291296453796597,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.863928471640123,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 7,
+          "train_loss": 1.1481224316538385,
+          "val_KL": 0.028291352953502637,
+          "val_KL_p95": 0.07975740134716026,
+          "val_entropy": 1.2803858440548745,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8528453012945888,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 8,
+          "train_loss": 1.121660900211165,
+          "val_KL": 0.034433322195773844,
+          "val_KL_p95": 0.09554167091846462,
+          "val_entropy": 1.2700254431958415,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8438111204246996,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 9,
+          "train_loss": 1.0951909153199133,
+          "val_KL": 0.04018540359610917,
+          "val_KL_p95": 0.1132712736725807,
+          "val_entropy": 1.264158041592449,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8313309118003167,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 10,
+          "train_loss": 1.0682144671493436,
+          "val_KL": 0.0464364604696061,
+          "val_KL_p95": 0.1285766273736952,
+          "val_entropy": 1.2504862802837151,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8236006333240198,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 11,
+          "train_loss": 1.0410949414957913,
+          "val_KL": 0.05358265269236479,
+          "val_KL_p95": 0.1481817692518232,
+          "val_entropy": 1.2392405655349201,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8131694141752818,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 12,
+          "train_loss": 1.0138458354621729,
+          "val_KL": 0.061347058551698086,
+          "val_KL_p95": 0.169138753414154,
+          "val_entropy": 1.2212298452670962,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.80720871751886,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 13,
+          "train_loss": 0.985504446449064,
+          "val_KL": 0.06867738475432729,
+          "val_KL_p95": 0.18577842116355847,
+          "val_entropy": 1.212206806141293,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8022725156002608,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 14,
+          "train_loss": 0.9573473770637478,
+          "val_KL": 0.07717988292417835,
+          "val_KL_p95": 0.20915216803550699,
+          "val_entropy": 1.201064550444724,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.793610878271398,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 15,
+          "train_loss": 0.9292823652144333,
+          "val_KL": 0.08713956781288892,
+          "val_KL_p95": 0.23562979698181136,
+          "val_entropy": 1.1868050166589539,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7854149203688181,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 16,
+          "train_loss": 0.9008586316758695,
+          "val_KL": 0.09660949063326622,
+          "val_KL_p95": 0.2597198605537413,
+          "val_entropy": 1.1736725839787359,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7786160007450871,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 17,
+          "train_loss": 0.8730879495034413,
+          "val_KL": 0.10601827428764922,
+          "val_KL_p95": 0.28656116724014274,
+          "val_entropy": 1.1616855112214188,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7734935270559746,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        }
+      ],
+      "wall_s": 23.973646979022305
+    },
+    {
+      "variant": "E1",
+      "seed": 2,
+      "matched": {
+        "0.05": {
+          "epoch": 11,
+          "val_KL": 0.05303220242252172,
+          "dir": "checkpoints/w5_a2/E1-s2/kl0.05"
+        },
+        "0.1": {
+          "epoch": 17,
+          "val_KL": 0.10621231694363943,
+          "dir": "checkpoints/w5_a2/E1-s2/kl0.10"
+        }
+      },
+      "epochs_run": 17,
+      "history": [
+        {
+          "epoch": 1,
+          "train_loss": 1.3318260563879596,
+          "val_KL": 0.004578976499264918,
+          "val_KL_p95": 0.013480003178119655,
+          "val_entropy": 1.3456604680369284,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.9326627549594859,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 2,
+          "train_loss": 1.2876626895557173,
+          "val_KL": 0.007751400952132954,
+          "val_KL_p95": 0.022923453524708707,
+          "val_entropy": 1.3330077329161136,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.9173884697774052,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 3,
+          "train_loss": 1.257218718719144,
+          "val_KL": 0.010503561649451744,
+          "val_KL_p95": 0.031046696007251736,
+          "val_entropy": 1.321970891761549,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.9057464841203315,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 4,
+          "train_loss": 1.229487685024897,
+          "val_KL": 0.01464050601875706,
+          "val_KL_p95": 0.043153219670057266,
+          "val_entropy": 1.3163462437497089,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.889540840085685,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 5,
+          "train_loss": 1.2026039366502093,
+          "val_KL": 0.018814018535538515,
+          "val_KL_p95": 0.05416681915521614,
+          "val_entropy": 1.3059162297283924,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8774331750023284,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 6,
+          "train_loss": 1.1763541119280598,
+          "val_KL": 0.023114881941525976,
+          "val_KL_p95": 0.06642833948135374,
+          "val_entropy": 1.2922896265905863,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.863928471640123,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 7,
+          "train_loss": 1.1501218491274379,
+          "val_KL": 0.02840724379994177,
+          "val_KL_p95": 0.08056107461452482,
+          "val_entropy": 1.276159109744633,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8536835242618981,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 8,
+          "train_loss": 1.123301700260011,
+          "val_KL": 0.03388784337354082,
+          "val_KL_p95": 0.09545826315879818,
+          "val_entropy": 1.2693593829129122,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8456738381298314,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 9,
+          "train_loss": 1.0962751683558418,
+          "val_KL": 0.03939869555397397,
+          "val_KL_p95": 0.10993498265743254,
+          "val_entropy": 1.2664644280947308,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8333799012759616,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 10,
+          "train_loss": 1.06909732039565,
+          "val_KL": 0.04605676511161552,
+          "val_KL_p95": 0.1268876701593397,
+          "val_entropy": 1.2455296821519628,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.824904535717612,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 11,
+          "train_loss": 1.0420469752855817,
+          "val_KL": 0.05303220242252172,
+          "val_KL_p95": 0.14639462232589723,
+          "val_entropy": 1.237148782666684,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8165223060445189,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 12,
+          "train_loss": 1.0143921496612684,
+          "val_KL": 0.06100055894051904,
+          "val_KL_p95": 0.1676047474145889,
+          "val_entropy": 1.225388398925008,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8089782993387352,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 13,
+          "train_loss": 0.9868218403412053,
+          "val_KL": 0.06841758581025313,
+          "val_KL_p95": 0.18594343066215493,
+          "val_entropy": 1.214078539563833,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8018999720592345,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 14,
+          "train_loss": 0.9585481974543357,
+          "val_KL": 0.07701312543721442,
+          "val_KL_p95": 0.21198835670948027,
+          "val_entropy": 1.2011816069723853,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7925863835335755,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 15,
+          "train_loss": 0.9305016335585843,
+          "val_KL": 0.08660743322684532,
+          "val_KL_p95": 0.23743807673454279,
+          "val_entropy": 1.1859184976417703,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7845766974015088,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 16,
+          "train_loss": 0.9023560693756922,
+          "val_KL": 0.09632369281290919,
+          "val_KL_p95": 0.25980815291404713,
+          "val_entropy": 1.1731062991510082,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7797336313681662,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 17,
+          "train_loss": 0.8741462897704361,
+          "val_KL": 0.10621231694363943,
+          "val_KL_p95": 0.2892241120338438,
+          "val_entropy": 1.1612529443764117,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7726553040886653,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        }
+      ],
+      "wall_s": 23.19348642101977
+    },
+    {
+      "variant": "E1",
+      "seed": 3,
+      "matched": {
+        "0.05": {
+          "epoch": 11,
+          "val_KL": 0.05208424934151953,
+          "dir": "checkpoints/w5_a2/E1-s3/kl0.05"
+        },
+        "0.1": {
+          "epoch": 17,
+          "val_KL": 0.10472410762955092,
+          "dir": "checkpoints/w5_a2/E1-s3/kl0.10"
+        }
+      },
+      "epochs_run": 17,
+      "history": [
+        {
+          "epoch": 1,
+          "train_loss": 1.3324866129401096,
+          "val_KL": 0.00554842074799204,
+          "val_KL_p95": 0.016325175762176507,
+          "val_entropy": 1.3438284697119192,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.9304274937133278,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 2,
+          "train_loss": 1.2887882696889414,
+          "val_KL": 0.0071889055815887145,
+          "val_KL_p95": 0.021151529252529114,
+          "val_entropy": 1.3408538286852705,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.9197168669088199,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 3,
+          "train_loss": 1.2584738279139984,
+          "val_KL": 0.010693886013637544,
+          "val_KL_p95": 0.03171145170927036,
+          "val_entropy": 1.3224928597337187,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.9044425817267393,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 4,
+          "train_loss": 1.230733445596145,
+          "val_KL": 0.01381918019070823,
+          "val_KL_p95": 0.040402096509933434,
+          "val_entropy": 1.3164314667228392,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8905653348235075,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 5,
+          "train_loss": 1.2043990740388923,
+          "val_KL": 0.018148108803501196,
+          "val_KL_p95": 0.05275107026100146,
+          "val_entropy": 1.3018620219145827,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8780851261991245,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 6,
+          "train_loss": 1.177230646772626,
+          "val_KL": 0.022229587429206474,
+          "val_KL_p95": 0.06309259384870529,
+          "val_entropy": 1.2924668371671848,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8669088199683338,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 7,
+          "train_loss": 1.150597716668272,
+          "val_KL": 0.027787331003191595,
+          "val_KL_p95": 0.07923327386379242,
+          "val_entropy": 1.2823830357896469,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8535903883766415,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 8,
+          "train_loss": 1.1239855063019755,
+          "val_KL": 0.03331944247163174,
+          "val_KL_p95": 0.09275876581668853,
+          "val_entropy": 1.2712490568172556,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8439042563099562,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 9,
+          "train_loss": 1.0973352843798043,
+          "val_KL": 0.039299901634526895,
+          "val_KL_p95": 0.11044628322124471,
+          "val_entropy": 1.258951095292563,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8334730371612182,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 10,
+          "train_loss": 1.0704883949330346,
+          "val_KL": 0.04514499864323885,
+          "val_KL_p95": 0.12399823069572431,
+          "val_entropy": 1.2465644545802481,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8294681940951849,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 11,
+          "train_loss": 1.0432233319017035,
+          "val_KL": 0.05208424934151953,
+          "val_KL_p95": 0.1427403002977371,
+          "val_entropy": 1.2358628548622752,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8178262084381112,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 12,
+          "train_loss": 1.0154767617940268,
+          "val_KL": 0.05971175293630091,
+          "val_KL_p95": 0.16316196322441096,
+          "val_entropy": 1.2267220770612135,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8077675328303996,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 13,
+          "train_loss": 0.9882136684661432,
+          "val_KL": 0.06817376465882137,
+          "val_KL_p95": 0.18394248187541948,
+          "val_entropy": 1.2089406948155328,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8021793797150042,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 14,
+          "train_loss": 0.9601742330505558,
+          "val_KL": 0.07635942016126857,
+          "val_KL_p95": 0.206115013360977,
+          "val_entropy": 1.2011609947458264,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7934246065008848,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 15,
+          "train_loss": 0.9317380228464119,
+          "val_KL": 0.08590147747050408,
+          "val_KL_p95": 0.23370426595211027,
+          "val_entropy": 1.1866797231990576,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7864394151066406,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 16,
+          "train_loss": 0.9036681449759715,
+          "val_KL": 0.09451410046827974,
+          "val_KL_p95": 0.25737553834915133,
+          "val_entropy": 1.176830802292889,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7801061749091925,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 17,
+          "train_loss": 0.8748396596513497,
+          "val_KL": 0.10472410762955092,
+          "val_KL_p95": 0.282123303413391,
+          "val_entropy": 1.1669275824379919,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7739592064822576,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        }
+      ],
+      "wall_s": 23.416284922976047
+    },
+    {
+      "variant": "E3",
+      "seed": 1,
+      "matched": {
+        "0.05": {
+          "epoch": 11,
+          "val_KL": 0.05435537274268027,
+          "dir": "checkpoints/w5_a2/E3-s1/kl0.05"
+        },
+        "0.1": {
+          "epoch": 17,
+          "val_KL": 0.10734454999203631,
+          "dir": "checkpoints/w5_a2/E3-s1/kl0.10"
+        }
+      },
+      "epochs_run": 17,
+      "history": [
+        {
+          "epoch": 1,
+          "train_loss": 1.3303951010306323,
+          "val_KL": 0.005062900062184131,
+          "val_KL_p95": 0.014810103923082338,
+          "val_entropy": 1.3380822402600236,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.9322902114184596,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 2,
+          "train_loss": 1.2847889725677504,
+          "val_KL": 0.008027023033224983,
+          "val_KL_p95": 0.023991700634360284,
+          "val_entropy": 1.326192748716471,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.915153208531247,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 3,
+          "train_loss": 1.2543367172514535,
+          "val_KL": 0.011131472441849123,
+          "val_KL_p95": 0.032765600085258445,
+          "val_entropy": 1.3272532722165467,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.9001583310049363,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 4,
+          "train_loss": 1.2254132996857854,
+          "val_KL": 0.014494321185426194,
+          "val_KL_p95": 0.04192235246300691,
+          "val_entropy": 1.3107824205652767,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.892707460184409,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 5,
+          "train_loss": 1.1980272252737365,
+          "val_KL": 0.018877196025848943,
+          "val_KL_p95": 0.054355160892009736,
+          "val_entropy": 1.2999568859980384,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8765949520350191,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 6,
+          "train_loss": 1.1706488378934343,
+          "val_KL": 0.02378141630104054,
+          "val_KL_p95": 0.06816205233335494,
+          "val_entropy": 1.2874620453076977,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8640216075253795,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 7,
+          "train_loss": 1.1435383411350775,
+          "val_KL": 0.02905000652710219,
+          "val_KL_p95": 0.08196264803409568,
+          "val_entropy": 1.2768003057476482,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8535903883766415,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 8,
+          "train_loss": 1.116673584180589,
+          "val_KL": 0.03519717682612012,
+          "val_KL_p95": 0.09924221485853188,
+          "val_entropy": 1.266498853810131,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8408307720964888,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 9,
+          "train_loss": 1.090454301177239,
+          "val_KL": 0.04102335755041139,
+          "val_KL_p95": 0.11537028849124908,
+          "val_entropy": 1.260210157850773,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8313309118003167,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 10,
+          "train_loss": 1.063295631061747,
+          "val_KL": 0.047342375098140675,
+          "val_KL_p95": 0.13080427944660183,
+          "val_entropy": 1.2467693489801621,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8215516438483748,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 11,
+          "train_loss": 1.0356003296433451,
+          "val_KL": 0.05435537274268027,
+          "val_KL_p95": 0.15084760785102835,
+          "val_entropy": 1.2349227076748335,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8153115395361833,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 12,
+          "train_loss": 1.0080725111801114,
+          "val_KL": 0.06237013764589917,
+          "val_KL_p95": 0.17196716964244813,
+          "val_entropy": 1.2153068486345406,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8079538046009127,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 13,
+          "train_loss": 0.9794426365867058,
+          "val_KL": 0.06955050830486001,
+          "val_KL_p95": 0.18976412713527674,
+          "val_entropy": 1.2083167003010908,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8000372543541027,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 14,
+          "train_loss": 0.9520868095128856,
+          "val_KL": 0.07794583107954499,
+          "val_KL_p95": 0.21052910685539225,
+          "val_entropy": 1.1977296956948664,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7922138399925491,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 15,
+          "train_loss": 0.9232270964964259,
+          "val_KL": 0.08776937075402691,
+          "val_KL_p95": 0.2350312203168869,
+          "val_entropy": 1.1822045962104608,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7849492409425352,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 16,
+          "train_loss": 0.8957156523850606,
+          "val_KL": 0.09719302304921075,
+          "val_KL_p95": 0.2642806768417358,
+          "val_entropy": 1.1706701340683792,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7769395548104685,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 17,
+          "train_loss": 0.8682026640770704,
+          "val_KL": 0.10734454999203631,
+          "val_KL_p95": 0.28990021347999556,
+          "val_entropy": 1.1537185161598038,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7710719940393034,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        }
+      ],
+      "wall_s": 23.30801517900545
+    },
+    {
+      "variant": "E3",
+      "seed": 2,
+      "matched": {
+        "0.05": {
+          "epoch": 11,
+          "val_KL": 0.053716806823413246,
+          "dir": "checkpoints/w5_a2/E3-s2/kl0.05"
+        },
+        "0.1": {
+          "epoch": 17,
+          "val_KL": 0.1065343504868218,
+          "dir": "checkpoints/w5_a2/E3-s2/kl0.10"
+        }
+      },
+      "epochs_run": 17,
+      "history": [
+        {
+          "epoch": 1,
+          "train_loss": 1.3309580442539442,
+          "val_KL": 0.004715250940767732,
+          "val_KL_p95": 0.013770970702171323,
+          "val_entropy": 1.3426650215085685,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.9314519884511502,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 2,
+          "train_loss": 1.2857933053186539,
+          "val_KL": 0.008014387721132497,
+          "val_KL_p95": 0.0236766405403614,
+          "val_entropy": 1.3322597921832797,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.9152463444165037,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 3,
+          "train_loss": 1.254498134597065,
+          "val_KL": 0.010781129093956428,
+          "val_KL_p95": 0.03185212761163711,
+          "val_entropy": 1.3178838726483189,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.9041631740709696,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 4,
+          "train_loss": 1.2265810027916872,
+          "val_KL": 0.014905579472625956,
+          "val_KL_p95": 0.04295676648616785,
+          "val_entropy": 1.3153477388353358,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8876781223805532,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 5,
+          "train_loss": 1.1996843514631783,
+          "val_KL": 0.019303858729839724,
+          "val_KL_p95": 0.05483566373586654,
+          "val_entropy": 1.3025627352954445,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.874825370215144,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 6,
+          "train_loss": 1.1727518501489058,
+          "val_KL": 0.02362649228579618,
+          "val_KL_p95": 0.0669197231531143,
+          "val_entropy": 1.2914340202286776,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8610412591971687,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 7,
+          "train_loss": 1.1460173699849459,
+          "val_KL": 0.0286472030435043,
+          "val_KL_p95": 0.08079151362180695,
+          "val_entropy": 1.2739223932502677,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.854149203688181,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 8,
+          "train_loss": 1.1187111397496132,
+          "val_KL": 0.03472499215164042,
+          "val_KL_p95": 0.09796309620141977,
+          "val_entropy": 1.2651729407874057,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8421346744900811,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 9,
+          "train_loss": 1.0915589507851013,
+          "val_KL": 0.040069010999004104,
+          "val_KL_p95": 0.112546107172966,
+          "val_entropy": 1.263186276863882,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8323554065381391,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 10,
+          "train_loss": 1.0644932425778422,
+          "val_KL": 0.046882939077979684,
+          "val_KL_p95": 0.12974397838115678,
+          "val_entropy": 1.2417337240492863,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8229486821272236,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 11,
+          "train_loss": 1.0368339992246485,
+          "val_KL": 0.053716806823413246,
+          "val_KL_p95": 0.1477298915386199,
+          "val_entropy": 1.2331451447280724,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8158703548477229,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 12,
+          "train_loss": 1.0093619188378105,
+          "val_KL": 0.061744624039816925,
+          "val_KL_p95": 0.1703860998153683,
+          "val_entropy": 1.2213355781446458,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8077675328303996,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 13,
+          "train_loss": 0.9818651771111729,
+          "val_KL": 0.06895143761530018,
+          "val_KL_p95": 0.18703806400299064,
+          "val_entropy": 1.2105126925839096,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.800875477321412,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 14,
+          "train_loss": 0.9534073607772985,
+          "val_KL": 0.07762405030374545,
+          "val_KL_p95": 0.21355372071266168,
+          "val_entropy": 1.1969042459413128,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7925863835335755,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 15,
+          "train_loss": 0.9256593840436377,
+          "val_KL": 0.08707375567355413,
+          "val_KL_p95": 0.23642258048057552,
+          "val_entropy": 1.1827601087907178,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7843904256309956,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 16,
+          "train_loss": 0.8976977785604658,
+          "val_KL": 0.09678508730877086,
+          "val_KL_p95": 0.260503393411636,
+          "val_entropy": 1.169596985153194,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7779640495482909,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 17,
+          "train_loss": 0.8690585545739349,
+          "val_KL": 0.1065343504868218,
+          "val_KL_p95": 0.2866405606269836,
+          "val_entropy": 1.1558639613056778,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7711651299245599,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        }
+      ],
+      "wall_s": 23.249721209023846
+    },
+    {
+      "variant": "E3",
+      "seed": 3,
+      "matched": {
+        "0.05": {
+          "epoch": 11,
+          "val_KL": 0.05270036764854413,
+          "dir": "checkpoints/w5_a2/E3-s3/kl0.05"
+        },
+        "0.1": {
+          "epoch": 17,
+          "val_KL": 0.10534513749087157,
+          "dir": "checkpoints/w5_a2/E3-s3/kl0.10"
+        }
+      },
+      "epochs_run": 17,
+      "history": [
+        {
+          "epoch": 1,
+          "train_loss": 1.331610156435721,
+          "val_KL": 0.005745183730346509,
+          "val_KL_p95": 0.0169473797082901,
+          "val_entropy": 1.3408186980840202,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.9290304554344789,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 2,
+          "train_loss": 1.2869954927526117,
+          "val_KL": 0.007537781713818223,
+          "val_KL_p95": 0.022125317156314783,
+          "val_entropy": 1.3401079230261013,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.9177610133184316,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 3,
+          "train_loss": 1.2555430415095539,
+          "val_KL": 0.011049962723817646,
+          "val_KL_p95": 0.032250955700874315,
+          "val_entropy": 1.3208371283477984,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.9012759616280153,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 4,
+          "train_loss": 1.2273432390739565,
+          "val_KL": 0.014135068909611973,
+          "val_KL_p95": 0.04093982800841329,
+          "val_entropy": 1.3143005513207833,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.889540840085685,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 5,
+          "train_loss": 1.2014372280507142,
+          "val_KL": 0.018433088576893873,
+          "val_KL_p95": 0.05348108410835264,
+          "val_entropy": 1.2993003075667087,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8769674955760455,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 6,
+          "train_loss": 1.1732187085481693,
+          "val_KL": 0.02265249861771555,
+          "val_KL_p95": 0.06444396078586571,
+          "val_entropy": 1.2876572304734795,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8667225481978206,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 7,
+          "train_loss": 1.146426376859065,
+          "val_KL": 0.028221701913791416,
+          "val_KL_p95": 0.08056164532899851,
+          "val_entropy": 1.278323291211174,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8531247089503585,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 8,
+          "train_loss": 1.1194005606813355,
+          "val_KL": 0.033946228426553864,
+          "val_KL_p95": 0.09432244300842282,
+          "val_entropy": 1.2668659174321273,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8439973921952129,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 9,
+          "train_loss": 1.092200976150059,
+          "val_KL": 0.040050779895983095,
+          "val_KL_p95": 0.11193200945854141,
+          "val_entropy": 1.2539157659589795,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8333799012759616,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 10,
+          "train_loss": 1.0652401160141378,
+          "val_KL": 0.045867568982666716,
+          "val_KL_p95": 0.12543019652366635,
+          "val_entropy": 1.2427528411902184,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8279780199310794,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 11,
+          "train_loss": 1.0381999936017614,
+          "val_KL": 0.05270036764854413,
+          "val_KL_p95": 0.1442216008901592,
+          "val_entropy": 1.2335133680009838,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8153115395361833,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 12,
+          "train_loss": 1.0102208897630092,
+          "val_KL": 0.06064509401108129,
+          "val_KL_p95": 0.16454365551471697,
+          "val_entropy": 1.2211077237935264,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8080469404861693,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 13,
+          "train_loss": 0.9826169019041066,
+          "val_KL": 0.06886395239067819,
+          "val_KL_p95": 0.18642242848873136,
+          "val_entropy": 1.212932275795366,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7966843624848654,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 14,
+          "train_loss": 0.9551926415820193,
+          "val_KL": 0.07664653099084506,
+          "val_KL_p95": 0.20691996812820404,
+          "val_entropy": 1.200211092847746,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7934246065008848,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 15,
+          "train_loss": 0.9267510143575567,
+          "val_KL": 0.08638951905356936,
+          "val_KL_p95": 0.2341948866844177,
+          "val_entropy": 1.1851560271651183,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7842041538604825,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 16,
+          "train_loss": 0.8988018053817665,
+          "val_KL": 0.09525175412959468,
+          "val_KL_p95": 0.2554101705551147,
+          "val_entropy": 1.1714528756977916,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7792679519418833,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 17,
+          "train_loss": 0.870752752202744,
+          "val_KL": 0.10534513749087157,
+          "val_KL_p95": 0.28176026344299315,
+          "val_entropy": 1.163017950122823,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7687435969078886,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        }
+      ],
+      "wall_s": 23.477852792973863
+    },
+    {
+      "variant": "E3-shuffled",
+      "seed": 1,
+      "matched": {
+        "0.05": {
+          "epoch": 11,
+          "val_KL": 0.054327195383454985,
+          "dir": "checkpoints/w5_a2/E3-shuffled-s1/kl0.05"
+        },
+        "0.1": {
+          "epoch": 17,
+          "val_KL": 0.1082002603636892,
+          "dir": "checkpoints/w5_a2/E3-shuffled-s1/kl0.10"
+        }
+      },
+      "epochs_run": 17,
+      "history": [
+        {
+          "epoch": 1,
+          "train_loss": 1.3264527249198734,
+          "val_KL": 0.004976305010546125,
+          "val_KL_p95": 0.014589922130107872,
+          "val_entropy": 1.3425209746743154,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.9323833473037161,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 2,
+          "train_loss": 1.2812583192059077,
+          "val_KL": 0.008008080195832282,
+          "val_KL_p95": 0.024153228849172592,
+          "val_entropy": 1.3276810697129378,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.9190649157120239,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 3,
+          "train_loss": 1.2504087051328772,
+          "val_KL": 0.010996795463427531,
+          "val_KL_p95": 0.03270436823368071,
+          "val_entropy": 1.3306252073728695,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.9000651951196796,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 4,
+          "train_loss": 1.221658349000149,
+          "val_KL": 0.014534955765697069,
+          "val_KL_p95": 0.042915914207696915,
+          "val_entropy": 1.312634428553134,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8925211884138958,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 5,
+          "train_loss": 1.1942253825933191,
+          "val_KL": 0.018790798151602433,
+          "val_KL_p95": 0.05451522022485731,
+          "val_entropy": 1.3032859254396305,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.874825370215144,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 6,
+          "train_loss": 1.1671608692740802,
+          "val_KL": 0.023645453836293184,
+          "val_KL_p95": 0.06770618855953216,
+          "val_entropy": 1.2907094771584242,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8657911893452547,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 7,
+          "train_loss": 1.1396737742974046,
+          "val_KL": 0.028989362430746544,
+          "val_KL_p95": 0.0826369374990463,
+          "val_entropy": 1.280686523346547,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8517276706715098,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 8,
+          "train_loss": 1.1132655967307916,
+          "val_KL": 0.03494074848564053,
+          "val_KL_p95": 0.099059872329235,
+          "val_entropy": 1.271961400814648,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8423209462605942,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 9,
+          "train_loss": 1.0864288980863532,
+          "val_KL": 0.04098338759721541,
+          "val_KL_p95": 0.11517829895019513,
+          "val_entropy": 1.2650129089611275,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8297476017509546,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 10,
+          "train_loss": 1.058934465752784,
+          "val_KL": 0.04731794654500044,
+          "val_KL_p95": 0.1321070253849029,
+          "val_entropy": 1.250382139083892,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8199683337990128,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 11,
+          "train_loss": 1.0315833962693506,
+          "val_KL": 0.054327195383454985,
+          "val_KL_p95": 0.1534213542938231,
+          "val_entropy": 1.237669409081913,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.811958647666946,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 12,
+          "train_loss": 1.0038167967123064,
+          "val_KL": 0.06247848345635878,
+          "val_KL_p95": 0.17360494136810287,
+          "val_entropy": 1.2189251186573007,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8057185433547546,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 13,
+          "train_loss": 0.9746663979068729,
+          "val_KL": 0.06975701069231194,
+          "val_KL_p95": 0.19281673133373242,
+          "val_entropy": 1.2090695979731303,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7990127596162802,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 14,
+          "train_loss": 0.946931620349425,
+          "val_KL": 0.07811645470102306,
+          "val_KL_p95": 0.21328729391098017,
+          "val_entropy": 1.199795136296728,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7921207041072925,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 15,
+          "train_loss": 0.9188117053858876,
+          "val_KL": 0.08801699520375927,
+          "val_KL_p95": 0.24128108620643615,
+          "val_entropy": 1.1866443367924584,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7830865232374034,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 16,
+          "train_loss": 0.8909443340554318,
+          "val_KL": 0.09785499220077826,
+          "val_KL_p95": 0.26667854189872675,
+          "val_entropy": 1.1749855646199328,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7763807394989289,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 17,
+          "train_loss": 0.863758666909894,
+          "val_KL": 0.1082002603636892,
+          "val_KL_p95": 0.29516879320144634,
+          "val_entropy": 1.1555511852632836,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7708857222687902,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        }
+      ],
+      "wall_s": 23.39144283698988
+    },
+    {
+      "variant": "E3-shuffled",
+      "seed": 2,
+      "matched": {
+        "0.05": {
+          "epoch": 11,
+          "val_KL": 0.05461546908441264,
+          "dir": "checkpoints/w5_a2/E3-shuffled-s2/kl0.05"
+        },
+        "0.1": {
+          "epoch": 17,
+          "val_KL": 0.108145726702589,
+          "dir": "checkpoints/w5_a2/E3-shuffled-s2/kl0.10"
+        }
+      },
+      "epochs_run": 17,
+      "history": [
+        {
+          "epoch": 1,
+          "train_loss": 1.3238249225540297,
+          "val_KL": 0.004769180928975139,
+          "val_KL_p95": 0.014105702936649322,
+          "val_entropy": 1.3474939898249045,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.9308000372543541,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 2,
+          "train_loss": 1.2780096479877499,
+          "val_KL": 0.007784075726273299,
+          "val_KL_p95": 0.023305734992027278,
+          "val_entropy": 1.332050190964946,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.9161777032690696,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 3,
+          "train_loss": 1.2466430077456538,
+          "val_KL": 0.010670405185868245,
+          "val_KL_p95": 0.03142584189772603,
+          "val_entropy": 1.3199902989516392,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.9022073204805812,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 4,
+          "train_loss": 1.2185782974445407,
+          "val_KL": 0.014882791969192042,
+          "val_KL_p95": 0.0434055402874945,
+          "val_entropy": 1.3141690560023167,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8884232094626059,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 5,
+          "train_loss": 1.1909971873053642,
+          "val_KL": 0.019405315188720337,
+          "val_KL_p95": 0.05629792660474773,
+          "val_entropy": 1.3023320557163605,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8746390984446307,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 6,
+          "train_loss": 1.1637731762009589,
+          "val_KL": 0.023642961752744177,
+          "val_KL_p95": 0.06712609380483625,
+          "val_entropy": 1.2893610987415014,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8635559280990965,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 7,
+          "train_loss": 1.1371898227543988,
+          "val_KL": 0.029122461117869973,
+          "val_KL_p95": 0.08208657354116437,
+          "val_entropy": 1.27316750598107,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8550805625407469,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 8,
+          "train_loss": 1.1100021510998972,
+          "val_KL": 0.0349204888317692,
+          "val_KL_p95": 0.09823081940412515,
+          "val_entropy": 1.2671867087087874,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8434385768836733,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 9,
+          "train_loss": 1.0821062598618767,
+          "val_KL": 0.04078995456241291,
+          "val_KL_p95": 0.1120441764593124,
+          "val_entropy": 1.264063188969073,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8316103194560864,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 10,
+          "train_loss": 1.0549895930443598,
+          "val_KL": 0.04757781049169519,
+          "val_KL_p95": 0.13249346017837524,
+          "val_entropy": 1.2427169147501047,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8239731768650461,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 11,
+          "train_loss": 1.0272203808615668,
+          "val_KL": 0.05461546908441264,
+          "val_KL_p95": 0.1514239102602003,
+          "val_entropy": 1.2341112135242036,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8171742572413151,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 12,
+          "train_loss": 0.9993710704273424,
+          "val_KL": 0.0624840295476055,
+          "val_KL_p95": 0.17236120104789726,
+          "val_entropy": 1.2223594532650677,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8085126199124523,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 13,
+          "train_loss": 0.9717180272278367,
+          "val_KL": 0.07030561442627546,
+          "val_KL_p95": 0.19454287588596336,
+          "val_entropy": 1.2098308746914874,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7995715749278197,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 14,
+          "train_loss": 0.9432975863342065,
+          "val_KL": 0.07876515505621862,
+          "val_KL_p95": 0.2163164049386977,
+          "val_entropy": 1.1970249690123085,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7923069758778057,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 15,
+          "train_loss": 0.9153673702052662,
+          "val_KL": 0.08862312556720373,
+          "val_KL_p95": 0.2447615355253219,
+          "val_entropy": 1.1820312966134192,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7837384744341995,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 16,
+          "train_loss": 0.8870218048052335,
+          "val_KL": 0.09794543173777899,
+          "val_KL_p95": 0.26866678595542903,
+          "val_entropy": 1.1708310299482805,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7788022725156003,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 17,
+          "train_loss": 0.859042752339127,
+          "val_KL": 0.108145726702589,
+          "val_KL_p95": 0.2946500897407531,
+          "val_entropy": 1.1584368515050176,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7721896246623824,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        }
+      ],
+      "wall_s": 23.34884071999113
+    },
+    {
+      "variant": "E3-shuffled",
+      "seed": 3,
+      "matched": {
+        "0.05": {
+          "epoch": 11,
+          "val_KL": 0.05316683673367072,
+          "dir": "checkpoints/w5_a2/E3-shuffled-s3/kl0.05"
+        },
+        "0.1": {
+          "epoch": 17,
+          "val_KL": 0.10588907053586745,
+          "dir": "checkpoints/w5_a2/E3-shuffled-s3/kl0.10"
+        }
+      },
+      "epochs_run": 17,
+      "history": [
+        {
+          "epoch": 1,
+          "train_loss": 1.3259363653549814,
+          "val_KL": 0.005838142606848968,
+          "val_KL_p95": 0.017183888703584664,
+          "val_entropy": 1.3443495054157062,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.9269814659588339,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 2,
+          "train_loss": 1.2802974122360733,
+          "val_KL": 0.0074318738387445,
+          "val_KL_p95": 0.02165802866220473,
+          "val_entropy": 1.338719832249901,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.9165502468100959,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 3,
+          "train_loss": 1.2489192319741371,
+          "val_KL": 0.011072009434002182,
+          "val_KL_p95": 0.03251037597656249,
+          "val_entropy": 1.321707628265577,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.9003446027754494,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 4,
+          "train_loss": 1.2208706368253415,
+          "val_KL": 0.014263220680285136,
+          "val_KL_p95": 0.0414448395371437,
+          "val_entropy": 1.315934976963421,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.886374219986961,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 5,
+          "train_loss": 1.1941047662322037,
+          "val_KL": 0.018737356714599678,
+          "val_KL_p95": 0.05421866551041602,
+          "val_entropy": 1.2999095790621797,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8756635931824532,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 6,
+          "train_loss": 1.1667266367993316,
+          "val_KL": 0.022897307218631088,
+          "val_KL_p95": 0.06533483415842055,
+          "val_entropy": 1.2903520772940533,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8659774611157679,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 7,
+          "train_loss": 1.1387235704151635,
+          "val_KL": 0.028453093389016384,
+          "val_KL_p95": 0.08228525519371024,
+          "val_entropy": 1.2805205454670474,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8499580888516345,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 8,
+          "train_loss": 1.1118543632097126,
+          "val_KL": 0.03408272572703464,
+          "val_KL_p95": 0.09602505862712823,
+          "val_entropy": 1.2693588599330876,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8428797615721337,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 9,
+          "train_loss": 1.0848239740546868,
+          "val_KL": 0.040352008712905695,
+          "val_KL_p95": 0.11411293894052504,
+          "val_entropy": 1.258211977001985,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8322622706528826,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 10,
+          "train_loss": 1.057323942783668,
+          "val_KL": 0.04607167239107044,
+          "val_KL_p95": 0.12915143072605126,
+          "val_entropy": 1.245408532738719,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8272329328490268,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 11,
+          "train_loss": 1.0301927917479095,
+          "val_KL": 0.05316683673367072,
+          "val_KL_p95": 0.14788180291652642,
+          "val_entropy": 1.234421340560096,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.814938995995157,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 12,
+          "train_loss": 1.0028613007454716,
+          "val_KL": 0.06063932977402367,
+          "val_KL_p95": 0.1661462008953094,
+          "val_entropy": 1.2249914231308792,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8077675328303996,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 13,
+          "train_loss": 0.9753402467760874,
+          "val_KL": 0.06937068707452003,
+          "val_KL_p95": 0.18866733610630027,
+          "val_entropy": 1.205505297194427,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.8000372543541027,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 14,
+          "train_loss": 0.947236523278117,
+          "val_KL": 0.07732869977043184,
+          "val_KL_p95": 0.20995889604091636,
+          "val_entropy": 1.2025603978030117,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7927726553040887,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 15,
+          "train_loss": 0.9189140801725392,
+          "val_KL": 0.08721250989069716,
+          "val_KL_p95": 0.23548827171325667,
+          "val_entropy": 1.1855135634590086,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7861600074508708,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 16,
+          "train_loss": 0.8905925926121866,
+          "val_KL": 0.09564215658810081,
+          "val_KL_p95": 0.2598648071289062,
+          "val_entropy": 1.1752717482751671,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7807581261059886,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        },
+        {
+          "epoch": 17,
+          "train_loss": 0.8617785439133221,
+          "val_KL": 0.10588907053586745,
+          "val_KL_p95": 0.2817571341991424,
+          "val_entropy": 1.1661916304491768,
+          "C_entropy": 1.3387451171875,
+          "val_greedy_agreement": 0.7729347117444352,
+          "drift_flags": {
+            "KL": false,
+            "entropy": false,
+            "action_frequency": false
+          },
+          "finite": true
+        }
+      ],
+      "wall_s": 23.531852429005085
+    }
+  ],
+  "alignment": {
+    "val_decisions": 10737,
+    "val_team_pairs": 200,
+    "kl_0.05": {
+      "runs": {
+        "E1-s1": {
+          "epoch": 11,
+          "val_KL": 0.05358265269236479,
+          "S": 0.0014259629033074699,
+          "greedy_flip_rate_nonforced": 0.19121151463158897
+        },
+        "E1-s2": {
+          "epoch": 11,
+          "val_KL": 0.05303220242252172,
+          "S": 0.0020254758873763886,
+          "greedy_flip_rate_nonforced": 0.18778000190639596
+        },
+        "E1-s3": {
+          "epoch": 11,
+          "val_KL": 0.05208424934151953,
+          "S": 0.0019162846016708133,
+          "greedy_flip_rate_nonforced": 0.18644552473548756
+        },
+        "E3-s1": {
+          "epoch": 11,
+          "val_KL": 0.05435537274268027,
+          "S": 0.001844073104346472,
+          "greedy_flip_rate_nonforced": 0.18901915927938231
+        },
+        "E3-s2": {
+          "epoch": 11,
+          "val_KL": 0.053716806823413246,
+          "S": 0.0024348433640396005,
+          "greedy_flip_rate_nonforced": 0.18844724049185016
+        },
+        "E3-s3": {
+          "epoch": 11,
+          "val_KL": 0.05270036764854413,
+          "S": 0.002311677357036023,
+          "greedy_flip_rate_nonforced": 0.18901915927938231
+        },
+        "E3-shuffled-s1": {
+          "epoch": 11,
+          "val_KL": 0.054327195383454985,
+          "S": 0.0016998756288394668,
+          "greedy_flip_rate_nonforced": 0.19245067200457536
+        },
+        "E3-shuffled-s2": {
+          "epoch": 11,
+          "val_KL": 0.05461546908441264,
+          "S": 0.002069000453580526,
+          "greedy_flip_rate_nonforced": 0.18711276332094176
+        },
+        "E3-shuffled-s3": {
+          "epoch": 11,
+          "val_KL": 0.05316683673367072,
+          "S": 0.0016892393932529885,
+          "greedy_flip_rate_nonforced": 0.18940043847107044
+        }
+      },
+      "all_variants_matched_all_seeds": true,
+      "S_seed_mean": {
+        "E1": 0.001789241130784891,
+        "E3": 0.0021968646084740318,
+        "E3-shuffled": 0.0018193718252243268
+      },
+      "E3_minus_E1": {
+        "estimate": 0.0004076234776891408,
+        "ci95": [
+          -0.00025402180803197916,
+          0.0010554299757029092
+        ],
+        "excludes_zero": false,
+        "clusters": 200
+      },
+      "E3_minus_shuffled": {
+        "estimate": 0.00037749278324970446,
+        "ci95": [
+          -0.00040844654105301795,
+          0.0011555047466859985
+        ],
+        "excludes_zero": false,
+        "clusters": 200
+      },
+      "per_seed": {
+        "s1": {
+          "E3_minus_E1": {
+            "estimate": 0.0004181102010390018,
+            "ci95": [
+              -0.0002902744358078923,
+              0.0011016811157592895
+            ],
+            "excludes_zero": false,
+            "clusters": 200
+          },
+          "E3_minus_shuffled": {
+            "estimate": 0.000144197475507005,
+            "ci95": [
+              -0.0008101989016099319,
+              0.0010309476413725676
+            ],
+            "excludes_zero": false,
+            "clusters": 200
+          }
+        },
+        "s2": {
+          "E3_minus_E1": {
+            "estimate": 0.0004093674766632119,
+            "ci95": [
+              -0.00028084547144947446,
+              0.0010888112321718092
+            ],
+            "excludes_zero": false,
+            "clusters": 200
+          },
+          "E3_minus_shuffled": {
+            "estimate": 0.0003658429104590746,
+            "ci95": [
+              -0.0006974132942858342,
+              0.0014426905036959638
+            ],
+            "excludes_zero": false,
+            "clusters": 200
+          }
+        },
+        "s3": {
+          "E3_minus_E1": {
+            "estimate": 0.000395392755365209,
+            "ci95": [
+              -0.0002572538579317162,
+              0.0010446977577533206
+            ],
+            "excludes_zero": false,
+            "clusters": 200
+          },
+          "E3_minus_shuffled": {
+            "estimate": 0.0006224379637830335,
+            "ci95": [
+              -0.0002902380630567585,
+              0.0015632508389935831
+            ],
+            "excludes_zero": false,
+            "clusters": 200
+          }
+        }
+      }
+    },
+    "kl_0.10": {
+      "runs": {
+        "E1-s1": {
+          "epoch": 17,
+          "val_KL": 0.10601827428764922,
+          "S": 0.0020972009756786486,
+          "greedy_flip_rate_nonforced": 0.23181774854637308
+        },
+        "E1-s2": {
+          "epoch": 17,
+          "val_KL": 0.10621231694363943,
+          "S": 0.0027801120437830995,
+          "greedy_flip_rate_nonforced": 0.2328662663235154
+        },
+        "E1-s3": {
+          "epoch": 17,
+          "val_KL": 0.10472410762955092,
+          "S": 0.002572307810094996,
+          "greedy_flip_rate_nonforced": 0.23134114955676294
+        },
+        "E3-s1": {
+          "epoch": 17,
+          "val_KL": 0.10734454999203631,
+          "S": 0.002372006555224413,
+          "greedy_flip_rate_nonforced": 0.23448670288818987
+        },
+        "E3-s2": {
+          "epoch": 17,
+          "val_KL": 0.1065343504868218,
+          "S": 0.0032389258379926125,
+          "greedy_flip_rate_nonforced": 0.23439138309026786
+        },
+        "E3-s3": {
+          "epoch": 17,
+          "val_KL": 0.10534513749087157,
+          "S": 0.00276320539606912,
+          "greedy_flip_rate_nonforced": 0.23667905824039653
+        },
+        "E3-shuffled-s1": {
+          "epoch": 17,
+          "val_KL": 0.1082002603636892,
+          "S": 0.0027912965348160295,
+          "greedy_flip_rate_nonforced": 0.23448670288818987
+        },
+        "E3-shuffled-s2": {
+          "epoch": 17,
+          "val_KL": 0.108145726702589,
+          "S": 0.002874250236301583,
+          "greedy_flip_rate_nonforced": 0.2335335049089696
+        },
+        "E3-shuffled-s3": {
+          "epoch": 17,
+          "val_KL": 0.10588907053586745,
+          "S": 0.002146620427817442,
+          "greedy_flip_rate_nonforced": 0.23258030692974932
+        }
+      },
+      "all_variants_matched_all_seeds": true,
+      "S_seed_mean": {
+        "E1": 0.0024832069431855812,
+        "E3": 0.002791379263095382,
+        "E3-shuffled": 0.0026040557329783504
+      },
+      "E3_minus_E1": {
+        "estimate": 0.000308172319909801,
+        "ci95": [
+          -0.0007000563827807865,
+          0.0012616065652302293
+        ],
+        "excludes_zero": false,
+        "clusters": 200
+      },
+      "E3_minus_shuffled": {
+        "estimate": 0.00018732353011703069,
+        "ci95": [
+          -0.0009862471274374467,
+          0.0012922060814592735
+        ],
+        "excludes_zero": false,
+        "clusters": 200
+      },
+      "per_seed": {
+        "s1": {
+          "E3_minus_E1": {
+            "estimate": 0.0002748055795457652,
+            "ci95": [
+              -0.0008191302203897625,
+              0.0013249449767603987
+            ],
+            "excludes_zero": false,
+            "clusters": 200
+          },
+          "E3_minus_shuffled": {
+            "estimate": -0.0004192899795916161,
+            "ci95": [
+              -0.0017923224331787078,
+              0.0008619191931001391
+            ],
+            "excludes_zero": false,
+            "clusters": 200
+          }
+        },
+        "s2": {
+          "E3_minus_E1": {
+            "estimate": 0.00045881379420951394,
+            "ci95": [
+              -0.0005435148407945789,
+              0.0014071196965171576
+            ],
+            "excludes_zero": false,
+            "clusters": 200
+          },
+          "E3_minus_shuffled": {
+            "estimate": 0.00036467560169103024,
+            "ci95": [
+              -0.001186942139294517,
+              0.0018581804670984542
+            ],
+            "excludes_zero": false,
+            "clusters": 200
+          }
+        },
+        "s3": {
+          "E3_minus_E1": {
+            "estimate": 0.00019089758597412422,
+            "ci95": [
+              -0.0008380914702195008,
+              0.0011694215572613613
+            ],
+            "excludes_zero": false,
+            "clusters": 200
+          },
+          "E3_minus_shuffled": {
+            "estimate": 0.0006165849682516778,
+            "ci95": [
+              -0.0007353905441963318,
+              0.0019486210882685155
+            ],
+            "excludes_zero": false,
+            "clusters": 200
+          }
+        }
+      }
+    }
+  },
+  "gradients_at_C": {
+    "real_E3_beta2": {
+      "per_batch": {
+        "cos_train_val": -0.029129518195986748,
+        "norm_train": 0.0227736234664917,
+        "norm_val": 0.0477958507835865
+      },
+      "global": {
+        "cos_train_val": -0.0346151627600193,
+        "norm_train": 0.02329355478286743,
+        "norm_val": 0.04978546127676964
+      },
+      "normalisation_full_grad_cos": 0.9989887475967407,
+      "normalisation_component_cos": 0.9789021611213684,
+      "normalisation_norm_ratio_global_over_batch": 1.0106697082519531
+    },
+    "null_permutations": 20,
+    "null_per_batch": {
+      "mean": -0.011299005872569979,
+      "std": 0.02743619375979273,
+      "p95": 0.03899143729358912,
+      "real_rank_fraction_above": 0.7,
+      "real_above_p95": false
+    },
+    "null_global": {
+      "mean": -0.012395988567732275,
+      "std": 0.02641120782424472,
+      "p95": 0.02854519309476019,
+      "real_rank_fraction_above": 0.8,
+      "real_above_p95": false
+    }
+  },
+  "gate_kl_0.05": {
+    "checks": {
+      "matched": true,
+      "E3_gt_E1": false,
+      "E3_gt_shuffled": false,
+      "cross_split_gradient": false,
+      "reliability": true
+    },
+    "reliability": {
+      "all_finite": true,
+      "entropy_collapse": false,
+      "mask_violations": 0
+    },
+    "pass": false
+  },
+  "wall_s": 271.88220584599185
+}

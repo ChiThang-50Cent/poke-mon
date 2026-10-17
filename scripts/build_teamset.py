@@ -1,0 +1,243 @@
+"""Fetch, deterministically sample, and validate a fixed Gen9 OU team pool."""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+import random
+import subprocess
+from collections import Counter
+from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+os.environ.setdefault("METAMON_CACHE_DIR", str(ROOT / ".cache" / "metamon"))
+
+from metamon.env.wrappers import TeamSet, get_metamon_teams
+
+SHOWDOWN = ROOT / "third_party/metamon/server/pokemon-showdown/pokemon-showdown"
+OUTPUT = ROOT / "data/teams/gen9ou"
+
+
+def validate_team(path: Path) -> tuple[str, list[str]]:
+    """Return the export text and legality errors from the local server's rules."""
+    text = path.read_text(encoding="utf-8")
+    result = subprocess.run(
+        ["node", str(SHOWDOWN), "validate-team", "gen9ou"],
+        input=text,
+        text=True,
+        capture_output=True,
+        timeout=60,
+        cwd=SHOWDOWN.parent,
+        check=False,
+    )
+    if result.returncode not in (0, 1):
+        raise RuntimeError(
+            f"Showdown validator failed for {path}: {result.stderr or result.stdout}"
+        )
+    if result.returncode:
+        errors = [line.strip() for line in result.stderr.splitlines() if line.strip()]
+        if not errors:
+            raise RuntimeError(f"Showdown rejected {path} without an error message")
+        return text, errors
+    species = [mon.species or mon.nickname for mon in TeamSet.parse_showdown_team(text)]
+    if len(species) != 6 or not all(species):
+        return text, ["Expected six parseable species"]
+    return text, []
+
+
+def build_teamset(sources: list[str], sample: int, seed: int) -> None:
+    """Validate all competitive teams and a seeded sample of other source pools."""
+    rng = random.Random(seed)
+    selected: list[tuple[str, Path]] = []
+    for source in sources:
+        teamset = get_metamon_teams("gen9ou", source)
+        paths = sorted(Path(path) for path in teamset.team_files)
+        if source != "competitive" and len(paths) > sample:
+            paths = sorted(rng.sample(paths, sample))
+        selected.extend((source, path) for path in paths)
+        print(f"{source}: selected {len(paths)} of {len(teamset.team_files)} teams")
+    if not selected:
+        raise RuntimeError("No source teams were selected")
+
+    # Each CLI process loads the dex; bound parallelism to avoid memory spikes.
+    workers = min(4, os.cpu_count() or 1)
+    with ThreadPoolExecutor(max_workers=workers) as executor:
+        results = list(executor.map(validate_team, [path for _, path in selected]))
+
+    kept: Counter[str] = Counter()
+    rejected: Counter[str] = Counter()
+    reasons: Counter[str] = Counter()
+    manifest: list[dict[str, object]] = []
+    exports: dict[str, str] = {}
+    for (source, _), (text, errors) in zip(selected, results, strict=True):
+        if errors:
+            rejected[source] += 1
+            reasons.update(errors)
+            continue
+        kept[source] += 1
+        filename = f"{source}-{kept[source]:03d}.gen9ou_team"
+        exports[filename] = text
+        manifest.append(
+            {
+                "file": filename,
+                "source": source,
+                "species": [
+                    mon.species or mon.nickname
+                    for mon in TeamSet.parse_showdown_team(text)
+                ],
+            }
+        )
+    if not manifest:
+        raise RuntimeError("All selected teams were rejected; existing pool unchanged")
+
+    OUTPUT.mkdir(parents=True, exist_ok=True)
+    for filename, text in exports.items():
+        (OUTPUT / filename).write_text(text, encoding="utf-8")
+    # Remove stale output from previous runs with different sources/sample sizes.
+    for path in OUTPUT.glob("*.gen9ou_team"):
+        if path.name not in exports:
+            path.unlink()
+    (OUTPUT / "manifest.json").write_text(
+        json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+    )
+    for source in sources:
+        print(f"{source}: kept {kept[source]}, rejected {rejected[source]}")
+    print(f"Total: kept {len(manifest)}, rejected {sum(rejected.values())}")
+    if reasons:
+        print("Rejection reasons:")
+        for reason, count in reasons.most_common():
+            print(f"  {count:4d}  {reason}")
+    print(f"Wrote {OUTPUT.relative_to(ROOT)}/manifest.json (seed={seed})")
+
+
+def normalized_sha256(text: str) -> str:
+    """Hash the canonical packed representation, not export whitespace."""
+    packed = TeamSet.join_team(TeamSet.parse_showdown_team(text))
+    return hashlib.sha256(packed.encode()).hexdigest()
+
+
+def seeded_candidates(paths: list[Path], seed: int) -> list[Path]:
+    ordered = sorted(paths)
+    random.Random(seed).shuffle(ordered)
+    return ordered
+
+
+def build_w5_pools(
+    output: Path, seed: int, sizes: dict[str, int], workers: int = 4,
+) -> None:
+    """Keep the first N valid unique teams in one deterministic shuffled stream."""
+    source = "hl_05_26"
+    source_paths = sorted(
+        Path(p) for p in get_metamon_teams("gen9ou", source).team_files
+    )
+    old = list(OUTPUT.glob("*.gen9ou_team"))
+    competitive = get_metamon_teams("gen9ou", "competitive").team_files
+    excluded = {
+        normalized_sha256(Path(p).read_text())
+        for p in [*old, *competitive]
+    }
+    # Explicitly exclude the entire original sampled source selection, including
+    # any team that the W4 validator might have rejected.
+    old_selection = sorted(random.Random(20261016).sample(source_paths, 200))
+    excluded.update(normalized_sha256(p.read_text()) for p in old_selection)
+    seen = set(excluded)
+    candidates = iter(seeded_candidates(source_paths, seed))
+    pool_hashes: dict[str, set[str]] = {}
+    with ThreadPoolExecutor(max_workers=workers) as executor:
+        for role, size in sizes.items():
+            target = output / role / "gen9ou"
+            if target.exists():
+                raise FileExistsError(f"Refusing to replace team pool: {target}")
+            entries, exports = [], {}
+            rejected: Counter[str] = Counter()
+            attempts = 0
+            while len(entries) < size:
+                batch = []
+                while len(batch) < min(workers, size - len(entries)):
+                    try:
+                        path = next(candidates)
+                    except StopIteration as exc:
+                        raise RuntimeError("Not enough valid disjoint teams") from exc
+                    digest = normalized_sha256(path.read_text())
+                    if digest in seen:
+                        rejected["excluded_or_duplicate_sha256"] += 1
+                        continue
+                    seen.add(digest)
+                    batch.append((path, digest))
+                results = executor.map(validate_team, [p for p, _ in batch])
+                for (path, digest), (text, errors) in zip(batch, results, strict=True):
+                    attempts += 1
+                    if errors:
+                        rejected.update(errors)
+                        continue
+                    filename = f"{source}-{len(entries) + 1:04d}.gen9ou_team"
+                    exports[filename] = text
+                    entries.append({
+                        "file": filename, "source": source,
+                        "source_file": path.name, "sha256": digest,
+                    })
+            hashes = {str(e["sha256"]) for e in entries}
+            proof = {
+                "normalization": "TeamSet.join_team(TeamSet.parse_showdown_team(text))",
+                "excluded_sha256_count": len(excluded),
+                "excluded_sha256_set_digest": hashlib.sha256(
+                    "\n".join(sorted(excluded)).encode()
+                ).hexdigest(),
+                "overlap_with_w4_and_competitive": len(hashes & excluded),
+                "overlap_with_previous_pools": {
+                    name: len(hashes & values) for name, values in pool_hashes.items()
+                },
+            }
+            pool_hashes[role] = hashes
+            target.mkdir(parents=True)
+            for filename, text in exports.items():
+                (target / filename).write_text(text)
+            manifest = {
+                "schema_version": 1, "role": role, "seed": seed,
+                "source": source, "source_count": len(source_paths),
+                "selection": "single seeded shuffle; first N valid unique teams",
+                "pool_order": list(sizes), "requested": size,
+                "validation": {
+                    "command": "node pokemon-showdown validate-team gen9ou",
+                    "server_git_commit": subprocess.check_output(
+                        ["git", "rev-parse", "HEAD"], cwd=SHOWDOWN.parent, text=True
+                    ).strip(),
+                    "attempted": attempts, "rejected_reasons": dict(rejected),
+                    "rejected_validation_count": attempts - size,
+                },
+                "disjointness": proof, "teams": entries,
+            }
+            (target / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
+            print(f"Wrote {role}: {size} validated teams", flush=True)
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--sources", nargs="+", default=["competitive", "hl_05_26"],
+        choices=["competitive", "hl_05_26"],
+    )
+    parser.add_argument("--sample", type=int, default=200)
+    parser.add_argument("--seed", type=int, default=20261016)
+    parser.add_argument("--w5", action="store_true")
+    parser.add_argument("--output", type=Path, default=ROOT / "data/teams_w5")
+    parser.add_argument("--workers", type=int, choices=range(1, 5), default=4)
+    args = parser.parse_args()
+    if args.sample < 1:
+        parser.error("--sample must be positive")
+    if len(set(args.sources)) != len(args.sources):
+        parser.error("--sources must not contain duplicates")
+    if args.w5:
+        build_w5_pools(
+            args.output, args.seed, {"collect": 1000, "dev": 200, "heldout": 200},
+            args.workers,
+        )
+    else:
+        build_teamset(args.sources, args.sample, args.seed)
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,31 @@
+# Fixed W4.2 data-scale experiment; selection uses W4 validation loss only.
+seed: 20261016
+dataset_version: w4
+data_root: datasets/w4
+output_dir: checkpoints/w4
+report_path: reports/w4_training_metrics.json
+selected_dir: models/pokedecision-v1
+architectures: [gru]
+expected_parameters: 1299789
+tokenizer_sha256: 801521a3ecce057ffea589a6fbe3228e1f5fce84cc82c4bfbaddaaeb4bf43e1d
+tiers: ['50000', '250000', '1000000', full]
+arms:
+  scratch:
+    init_checkpoint: null
+    learning_rate: 0.0005
+  finetune:
+    init_checkpoint: models/pokedecision-v0/best.pt
+    learning_rate: 0.00025
+model:
+  d_model: 96
+  hidden_size: 384
+  numeric_size: 128
+train:
+  device: cuda
+  epochs: 12
+  patience: 3
+  batch_size: 16
+  sequence_policy: full_trajectories
+  weight_decay: 0.0001
+  grad_clip: 1.0
+  cpu_threads: 4

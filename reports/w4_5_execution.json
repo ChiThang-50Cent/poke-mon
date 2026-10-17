@@ -1,0 +1,79 @@
+{
+  "resource_prefix": "systemd-run --user --scope -p CPUQuota=400% -p MemoryMax=12G nice -n 10 env OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 CUBLAS_WORKSPACE_CONFIG=:4096:8",
+  "command_semantics": "Each command_suffix below was executed after resource_prefix and a single space; concatenation is the exact executed command. Shell && sequences used separate scopes per suffix.",
+  "showdown_http_status": 200,
+  "executions": [
+    {
+      "purpose": "Smoke: 20 battles per arm per opponent (240 total)",
+      "command_suffix": "uv run python scripts/evaluate_w4_5.py --battles 20 --out reports/w4_5_smoke.json --paired-out reports/w4_5_smoke_paired.json",
+      "observed_tool_wall_time_s": 40.05,
+      "result": "All 12 arm/opponent cells valid; 0 errors, 0 model-illegal actions"
+    },
+    {
+      "purpose": "Initial full benchmark, preserved invalid evidence",
+      "command_suffix": "uv run python scripts/evaluate_w4_5.py",
+      "observed_tool_wall_time_s": 933.67,
+      "result": "6000 attempted battles; one D/RandomBaseline revival target rejection timeout; 0 model-illegal. Preserved reports/w4_5_ablation_run1.json. Paired statistics rejected invalid battle."
+    },
+    {
+      "purpose": "Exactly one corrected full rerun",
+      "command_suffix": "uv run python scripts/evaluate_w4_5.py",
+      "observed_tool_wall_time_s": 802.00,
+      "reported_benchmark_wall_time_s": 797.1220428469969,
+      "result": "6000/6000 completed, 0 errors, 0 model-illegal, 2 classified opponent hidden-trap protocol retries"
+    },
+    {
+      "purpose": "First and only frozen holdout evaluation invocation",
+      "command_suffix": "uv run python scripts/final_w4_5_test.py",
+      "observed_tool_wall_time_s": 44.74,
+      "reported_evaluation_wall_time_s": 40.66485246299999,
+      "result": "Both test splits evaluated once after battles; reports/w4_5_test_results.json"
+    },
+    {
+      "purpose": "Live calibration and embedding final holdout metrics",
+      "command_suffix": "/usr/bin/time -f 'calibration_wall_s=%e' uv run python scripts/w4_5_calibration.py --benchmark reports/w4_5_ablation.json --final-holdout reports/w4_5_test_results.json",
+      "observed_time_wall_s": 78.25,
+      "observed_tool_wall_time_s": 78.28,
+      "result": "Completed; 5000 seeded battle-bootstrap resamples"
+    },
+    {
+      "purpose": "Initial affected tests",
+      "command_suffix": "/usr/bin/time -f 'checks_wall_s=%e' uv run pytest tests/test_w4_5_eval.py tests/test_w4_5_calibration.py tests/test_w4_outcomes.py tests/test_runner.py tests/test_neural_player.py tests/test_w4_preview_eval.py tests/test_team_preview.py tests/test_value_metrics.py -m 'not server'",
+      "observed_time_wall_s": 5.94,
+      "result": "134 passed, 3 deselected; pytest 1.34 s"
+    },
+    {
+      "purpose": "Initial lint (before mechanical corrections)",
+      "command_suffix": "/usr/bin/time -f 'ruff_wall_s=%e' uv run ruff check src scripts tests",
+      "observed_time_wall_s": 0.03,
+      "result": "18 style findings; import ordering, dict literals, mutable test class attribute, dictionary iteration"
+    },
+    {
+      "purpose": "Mechanical lint fixes, remaining two findings edited surgically",
+      "command_suffix": "uv run ruff check --fix --unsafe-fixes --select I,C408 scripts/evaluate_w4_5.py scripts/render_w4_5_report.py scripts/w4_5_calibration.py tests/test_w4_5_eval.py",
+      "result": "16 import/dict-literal findings fixed; no benchmark or test-set reruns"
+    },
+    {
+      "purpose": "Final affected tests after lint corrections",
+      "command_suffix": "/usr/bin/time -f 'checks_wall_s=%e' uv run pytest tests/test_w4_5_eval.py tests/test_w4_5_calibration.py tests/test_w4_outcomes.py tests/test_runner.py tests/test_neural_player.py tests/test_w4_preview_eval.py tests/test_team_preview.py tests/test_value_metrics.py -m 'not server'",
+      "observed_time_wall_s": 5.99,
+      "result": "134 passed, 3 deselected; pytest 1.33 s"
+    },
+    {
+      "purpose": "Final repository lint",
+      "command_suffix": "/usr/bin/time -f 'ruff_wall_s=%e' uv run ruff check src scripts tests",
+      "observed_time_wall_s": 0.03,
+      "result": "All checks passed"
+    },
+    {
+      "purpose": "Render final report from JSON evidence",
+      "command_suffix": "/usr/bin/time -f 'render_wall_s=%e' uv run python scripts/render_w4_5_report.py",
+      "observed_time_wall_s": 0.04,
+      "result": "reports/w4_5_final_report.md generated"
+    }
+  ],
+  "test_split_access": "Only final_w4_5_test.py invoked test NPZ evaluation; once, after corrected battles. One-shot started marker retained. Outcome labels stored separately in gitignored datasets/w4/outcomes_holdout.json.",
+  "final_checks_combined_tool_wall_time_s": 6.19,
+  "unmodified": ["AGENTS.md", "research.md"],
+  "committed": false
+}

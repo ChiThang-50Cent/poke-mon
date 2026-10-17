@@ -1,0 +1,307 @@
+{
+ "roots": 50,
+ "G1": {
+  "legal": {
+   "ok": 400,
+   "total": 400
+  },
+  "public_view_equal": {
+   "ok": 400,
+   "total": 400
+  },
+  "learner_state_equal": {
+   "ok": 400,
+   "total": 400
+  },
+  "prng_unchanged": {
+   "ok": 400,
+   "total": 400
+  },
+  "root_inputs_identical": {
+   "ok": 400,
+   "total": 400
+  },
+  "turn_leak_free": {
+   "ok": 400,
+   "total": 400
+  },
+  "facts_violations": 0,
+  "world_step_errors": 0,
+  "true_team_legal": 50,
+  "violating_worlds": [],
+  "negative_control": [
+   {
+    "mon": "Toxapex",
+    "violations_detected": 2
+   },
+   {
+    "mon": "Quaquaval",
+    "violations_detected": 2
+   },
+   {
+    "mon": "Great Tusk",
+    "violations_detected": 2
+   },
+   {
+    "mon": "Iron Crown",
+    "violations_detected": 3
+   },
+   {
+    "mon": "Raging Bolt",
+    "violations_detected": 1
+   },
+   {
+    "mon": "Landorus",
+    "violations_detected": 2
+   },
+   {
+    "mon": "Zapdos",
+    "violations_detected": 1
+   },
+   {
+    "mon": "Ting-Lu",
+    "violations_detected": 1
+   },
+   {
+    "mon": "Tornadus",
+    "violations_detected": 3
+   },
+   {
+    "mon": "Ceruledge",
+    "violations_detected": 1
+   },
+   {
+    "mon": "Garganacl",
+    "violations_detected": 1
+   },
+   {
+    "mon": "Walking Wake",
+    "violations_detected": 2
+   },
+   {
+    "mon": "Hatterene",
+    "violations_detected": 2
+   },
+   {
+    "mon": "Rotom",
+    "violations_detected": 2
+   },
+   {
+    "mon": "Crawdaunt",
+    "violations_detected": 1
+   },
+   {
+    "mon": "Gholdengo",
+    "violations_detected": 1
+   },
+   {
+    "mon": "Iron Jugulis",
+    "violations_detected": 1
+   },
+   {
+    "mon": "Ting-Lu",
+    "violations_detected": 4
+   },
+   {
+    "mon": "Slowbro",
+    "violations_detected": 1
+   },
+   {
+    "mon": "Zamazenta",
+    "violations_detected": 1
+   },
+   {
+    "mon": "Klefki",
+    "violations_detected": 2
+   },
+   {
+    "mon": "Latias",
+    "violations_detected": 2
+   },
+   {
+    "mon": "Iron Crown",
+    "violations_detected": 1
+   },
+   {
+    "mon": "Hatterene",
+    "violations_detected": 3
+   },
+   {
+    "mon": "Ogerpon",
+    "violations_detected": 1
+   },
+   {
+    "mon": "Garganacl",
+    "violations_detected": 1
+   },
+   {
+    "mon": "Ting-Lu",
+    "violations_detected": 2
+   },
+   {
+    "mon": "Zamazenta",
+    "violations_detected": 2
+   },
+   {
+    "mon": "Kyurem",
+    "violations_detected": 1
+   },
+   {
+    "mon": "Araquanid",
+    "violations_detected": 1
+   },
+   {
+    "mon": "Dragapult",
+    "violations_detected": 2
+   },
+   {
+    "mon": "Kyurem",
+    "violations_detected": 1
+   },
+   {
+    "mon": "Kyurem",
+    "violations_detected": 1
+   },
+   {
+    "mon": "Zamazenta",
+    "violations_detected": 1
+   },
+   {
+    "mon": "Duraludon",
+    "violations_detected": 1
+   },
+   {
+    "mon": "Ninetales",
+    "violations_detected": 1
+   },
+   {
+    "mon": "Hatterene",
+    "violations_detected": 2
+   },
+   {
+    "mon": "Glimmora",
+    "violations_detected": 1
+   },
+   {
+    "mon": "Toxapex",
+    "violations_detected": 2
+   },
+   {
+    "mon": "Landorus",
+    "violations_detected": 1
+   },
+   {
+    "mon": "Raging Bolt",
+    "violations_detected": 1
+   },
+   {
+    "mon": "Glimmora",
+    "violations_detected": 1
+   },
+   {
+    "mon": "Dragonite",
+    "violations_detected": 1
+   },
+   {
+    "mon": "Iron Moth",
+    "violations_detected": 1
+   },
+   {
+    "mon": "Ribombee",
+    "violations_detected": 1
+   },
+   {
+    "mon": "Zamazenta",
+    "violations_detected": 2
+   },
+   {
+    "mon": "Ceruledge",
+    "violations_detected": 1
+   }
+  ],
+  "negative_control_all_detected": true,
+  "turn_first_diff_histogram_relative_to_first_p2_subject": {
+   "at_or_after": 271,
+   "no_diff": 129
+  },
+  "hard_pass": true
+ },
+ "G2": {
+  "deterministic_pairs": {
+   "pairs": 3120,
+   "identical": 3120
+  },
+  "unexpected_errors": 0,
+  "unexpected_examples": [],
+  "illegal_actions": 0,
+  "root_failures": [],
+  "rollouts_total_including_repeats": 12480,
+  "hard_pass": true
+ },
+ "diversity": {
+  "mean_distinct_over_8_worlds": {
+   "movesets": 6.744897959183674,
+   "items": 3.1403508771929824,
+   "abilities": 1.25,
+   "tera": 3.7030716723549486
+  },
+  "mons_with_unrevealed_field_counts": {
+   "movesets": 294,
+   "items": 228,
+   "abilities": 240,
+   "tera": 293
+  },
+  "frozen_counts": {
+   "mons": 300,
+   "item_frozen": 72,
+   "ability_frozen": 60,
+   "tera_frozen": 7
+  }
+ },
+ "hit_rate_vs_true_hidden": {
+  "item": {
+   "hits": 777,
+   "trials": 1824,
+   "hit_rate": 0.42598684210526316,
+   "prior_implied_rate": 0.43541855281353525
+  },
+  "ability": {
+   "hits": 1771,
+   "trials": 1920,
+   "hit_rate": 0.9223958333333333,
+   "prior_implied_rate": 0.9215744536697373
+  },
+  "tera": {
+   "hits": 774,
+   "trials": 2344,
+   "hit_rate": 0.3302047781569966,
+   "prior_implied_rate": 0.3315485205629114
+  },
+  "moves": {
+   "hits": 4171,
+   "trials": 7984,
+   "hit_rate": 0.5224198396793587,
+   "prior_implied_rate": 0.5168837675350701
+  }
+ },
+ "rejection": {
+  "worlds": 400,
+  "mon_attempts": 2533,
+  "mon_rejections": 133,
+  "team_attempts": 400,
+  "team_rejections": 0,
+  "mon_rejection_rate": 0.05250690880378997,
+  "team_rejection_rate": 0.0,
+  "reasons": {
+   "move Tera Blast is banned.": 133
+  }
+ },
+ "prior": {
+  "chosen": "Metamon NaiveUsagePredictor distributions (Smogon gen9ou 2026-01..04, rank 1500) via get_usage_stats; marginals re-sampled with a per-root seeded numpy Generator",
+  "replay_predictor": "evaluated by reading metamon predictor.py: ReplayPredictor supports only gen1ou-gen4ou and falls back to NaiveUsagePredictor for gen9ou; not usable",
+  "no_random_battle_prior": true
+ },
+ "rules_documented": "CF1.1 belief sampler b(H | I_t) over the opponent's unrevealed team details.\n\nInput = ONLY what the learner has observed: the learner (p1) channel of the battle log\n(`Sim.public_log`) and the public roster (species / name / level / gender / legal ability\nlist from the dex). The sampler never calls `Sim.p2_full` (true hidden sets); that call is\nreserved for QA and oracle labels. Everything unrevealed is drawn from Metamon's\nNaiveUsagePredictor distributions (Smogon gen9ou usage, marginal per field, reimplemented\nwith a seeded numpy Generator because the vendor class uses global ``np.random``).\n\nInference rules APPLIED (history constraints, all from the learner channel):\n  * revealed moves (`|move|` without `[from]` except lockedmove) stay in the moveset\n  * item: `-item`, `-enditem` (consumed/knocked/stolen => gone), `[from] item: X`,\n    `-activate|..|item: X` reveal / remove; revealed item or \"gone\" is frozen\n  * ability: `-ability`, `-activate|..|ability: X`, `[from] ability: X` (owner = `[of]`\n    else the subject); ambiguous swap/copy abilities freeze the TRUE ability (conservative)\n  * Tera: `-terastallize` freezes the Tera type; unrevealed Tera type is sampled\n  * Choice rule: two different moves in one stint with no item event => no Choice item\n  * Assault Vest rule: a revealed status move => no Assault Vest\n  * public HP % / status / boosts / volatiles / fainted / species / preview are untouched\n    (the world is the true battle state with only hidden fields replaced)\nKnowingly SKIPPED: damage-calc and speed-order inference, teammate/team-level\ncorrelations (marginal sampling => unlikely move/item combinations possible),\nFocus-Sash / unrevealed-consumed-item inference, forme-hiding species (Zacian etc. read\nfrom the sim roster), onStart effects of newly assigned unannounced abilities,\nSubstitute HP / other hidden volatile values are kept from the true state.\n",
+ "opponent_python_state_approximation": "The opponent player's poke-env/Metamon battle object and the opponent C GRU hidden come from the TRUE history up to the root (checkpoint), not from the sampled world. Its own request and own-channel HP lines are regenerated from the sampled sets, so its next decision is world-consistent, but its internal history may contain true-world moves/items. Opponent C therefore acts on a mixed state; measured effect: 0 errors/illegal actions.",
+ "wall_s_run": 649.7821200180042
+}
