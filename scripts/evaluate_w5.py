@@ -53,6 +53,7 @@ def run_config(arm: dict, opponent: dict, *, pool: Path, battles: int,
         opponent_team_preview_disabled=not bool(opponent.get("preview_checkpoint")),
         opponent_team_preview_argmax=opponent.get("preview_argmax", True),
         schedule_seed=seed, swap_team_pairs=True, alternate_challenger=True,
+        search=arm.get("search"), timeout_s=arm.get("battle_timeout_s", 120.0),
     )
 
 
@@ -103,6 +104,11 @@ async def evaluate(args):
         output.write_text(json.dumps(report, indent=2) + "\n")
 
     save()
+    searching = [arm["search"] for arm in arms.values() if arm.get("search")]
+    if searching:  # BS1.1: start the worker pool before any battle (startup is not a decision)
+        from pokeai.agents.live_search import SearchSettings, start_pool
+
+        start_pool(SearchSettings.from_dict(searching[0]))
     for index, (name, opponent) in enumerate(config["opponents"].items()):
         seed = args.seed + index
         rows_by_arm = {}
@@ -146,6 +152,10 @@ async def evaluate(args):
                     ] = bootstrap(clusters, seed=seed + 10000)
     report["valid"] = True
     save()
+    if searching:
+        from pokeai.agents.live_search import stop_pool
+
+        stop_pool()
 
 
 def main():

@@ -41,6 +41,8 @@ class RunConfig:
     opponent_team_preview_disabled: bool = False
     opponent_team_preview_argmax: bool | None = None
     opponent_type: str | None = None
+    # BS1.1: live belief-search settings for the PLAYER only (None = exact baseline behaviour).
+    search: dict[str, Any] | None = None
 
     def __post_init__(self) -> None:
         if self.battles < 1 or self.concurrent < 1:
@@ -341,8 +343,16 @@ def _counted_baseline(name: str) -> type:
     return CountedBaseline
 
 
+def _config_dict(config: RunConfig) -> dict[str, Any]:
+    """asdict(config), without the BS1.1 `search` key when search is off (identical bytes)."""
+    out = asdict(config)
+    if out.get("search") is None:
+        out.pop("search", None)
+    return out
+
+
 def _player_type(
-    name: str, config: RunConfig, team_preview_model: Any = None
+    name: str, config: RunConfig, team_preview_model: Any = None, search: Any = None
 ) -> Any:
     if not name.startswith("neural:"):
         return _counted_baseline(name)
@@ -354,6 +364,7 @@ def _player_type(
         NeuralPlayer, model_dir=name.removeprefix("neural:"),
         sample=config.sample, temperature=config.temperature, device=config.device,
         team_preview_model=team_preview_model,
+        **({"search": search} if search is not None else {}),
     )
 
 
@@ -410,7 +421,18 @@ async def _run_on_poke_loop(
             device="cuda" if torch.cuda.is_available() else "cpu",
             use_argmax=config.team_preview_argmax,
         )
-    player_type = _player_type(config.player, config, team_preview_model)
+    live_search = None
+    if config.search is not None:
+        from pokeai.agents.live_search import LiveSearch, SearchSettings, start_pool
+
+        settings = SearchSettings.from_dict(config.search)
+        start_pool(settings)
+        live_search = LiveSearch(settings)
+    player_type = (
+        _player_type(config.player, config, team_preview_model)
+        if live_search is None
+        else _player_type(config.player, config, team_preview_model, live_search)
+    )
     from dataclasses import replace
 
     opponent_config = replace(
@@ -448,7 +470,7 @@ async def _run_on_poke_loop(
             "run_id": run_id,
             "schema_version": "1.0",
             "created_at": datetime.now(UTC).isoformat(),
-            "config": asdict(config),
+            "config": _config_dict(config),
             "metamon_commit": git_commit("third_party/metamon"),
             "showdown_commit": git_commit("third_party/metamon/server/pokemon-showdown"),
             "trajectory_files": [],
@@ -601,6 +623,14 @@ async def _run_on_poke_loop(
                                     record["values"][role] = getattr(
                                         participant, "decision_values", {}
                                     ).pop(latest_tag, [])
+                                if getattr(player, "search", None) is not None:
+                                    record["search"] = player.search_rows.pop(latest_tag, [])
+                                    record["search_state"] = {
+                                        "hidden_after_battle": len(player.hidden),
+                                        "frame_tables": [
+                                            len(player._frame_snap), len(player._search_open)],
+                                        "forward_count": player.forward_count,
+                                    }
                             if record["error"]:
                                 cleanup_errors = await _close_players(players)
                                 if cleanup_errors:
@@ -631,7 +661,7 @@ async def _run_on_poke_loop(
         await asyncio.gather(
             *(lane() for _ in range(min(config.concurrent, config.battles)))
         )
-    summary_config = asdict(config)
+    summary_config = _config_dict(config)
     if not config.save_trajectories:
         summary_config.pop("save_trajectories")
     summary = summarize(records, time.perf_counter() - started, summary_config)

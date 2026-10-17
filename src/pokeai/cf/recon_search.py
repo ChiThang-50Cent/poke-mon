@@ -159,7 +159,7 @@ def _decide_chunk(
     roll_times: list[float] = []
     st: dict[str, Any] = {
         "timing": timing, "n_rollouts": 0, "worlds_built": 0, "unsupported": [], "errors": [],
-        "illegal": 0, "retries": 0, "t_end": 0.0}
+        "illegal": 0, "retries": 0, "t_end": 0.0, "rounds": 0, "turns": 0}
     keys = []
 
     def can_start() -> bool:
@@ -206,6 +206,8 @@ def _decide_chunk(
                 roll_times.append(time.time() - t)
                 timing["rollout_s"] += roll_times[-1]
                 st["n_rollouts"] += 1
+                st["rounds"] += r.rounds
+                st["turns"] += r.turns
                 outs.append(outcome(r.winner))
                 st["illegal"] += r.illegal_actions
                 for e in r.errors:
@@ -233,43 +235,95 @@ class SearchPool:
     """
 
     def __init__(
-        self, workers: int = N_WORKERS, worker_target: Any = None
+        self, workers: int = N_WORKERS, worker_target: Any = None, wait: bool = True
     ) -> None:
         self.ctx = mp.get_context("spawn")
         self.target = worker_target or _worker_main
         self.conns: list[Any] = []
         self.procs: list[Any] = []
         self.outstanding: list[int] = []
+        self.ready: list[bool] = []
+        self.last_hard: list[float] = []
+        self.restarts = 0
         self.did = 0
         for _ in range(workers):
             self._spawn()
-        for conn in self.conns:
-            assert conn.recv()[0] == "ready"
+        if wait:
+            self.wait_ready()
 
     def _spawn(self, index: int | None = None) -> None:
         parent, child = self.ctx.Pipe()
         proc = self.ctx.Process(target=self.target, args=(child,), daemon=True)
         proc.start()
+        child.close()
         if index is None:
             self.conns.append(parent)
             self.procs.append(proc)
             self.outstanding.append(0)
+            self.ready.append(False)
+            self.last_hard.append(0.0)
         else:
-            self.conns[index], self.procs[index], self.outstanding[index] = parent, proc, 0
+            self.conns[index], self.procs[index] = parent, proc
+            self.outstanding[index], self.ready[index] = 0, False
+            self.last_hard[index] = 0.0
+
+    def wait_ready(self, timeout: float = 180.0) -> None:
+        """Startup only (before any request is served): block until every worker is ready."""
+        end = time.time() + timeout
+        while not all(self.ready) and time.time() < end:
+            self._poll(min(end - time.time(), 0.5))
+        if not all(self.ready):
+            raise RuntimeError("search workers did not become ready")
 
     def _poll(self, timeout: float, sink: Any = None) -> bool:
         """Receive what is available; route by decision id. True if anything was received."""
         got = False
         for conn in mp_connection.wait(self.conns, timeout=max(timeout, 0.0)):
             i = self.conns.index(conn)
-            while conn.poll():
-                kind, did, body = self._recv3(conn)
-                got = True
-                if kind == "idle":
-                    self.outstanding[i] = max(self.outstanding[i] - 1, 0)
-                elif sink is not None and did == self.did:
-                    sink(i, kind, body)
+            try:
+                while conn.poll():
+                    kind, did, body = self._recv3(conn)
+                    got = True
+                    if kind == "ready":
+                        self.ready[i] = True
+                    elif kind == "idle":
+                        self.outstanding[i] = max(self.outstanding[i] - 1, 0)
+                    elif sink is not None and did == self.did:
+                        sink(i, kind, body)
+            except (EOFError, OSError):  # worker died: maintain() restarts it
+                self.ready[i] = False
+                self.outstanding[i] = 0
         return got
+
+    def usable(self) -> bool:
+        """Non-blocking: can a decision be dispatched right now? Every worker started, alive and
+        at most one decision behind (a queued decision starts late but its absolute deadlines
+        still hold)."""
+        self._poll(0.0)
+        return all(
+            self.ready[i] and self.procs[i].is_alive() and self.outstanding[i] <= 1
+            for i in range(len(self.conns))
+        )
+
+    def maintain(self, stuck_after_s: float = 15.0) -> int:
+        """Non-blocking worker upkeep, safe on the critical path: a dead worker or one stuck
+        beyond its hard deadline is killed and respawned asynchronously (it reports `ready`
+        later; `usable()` is False meanwhile). Returns the number of restarts started."""
+        self._poll(0.0)
+        now = time.time()
+        started = 0
+        for i in range(len(self.conns)):
+            dead = not self.procs[i].is_alive()
+            stuck = self.outstanding[i] > 0 and now > self.last_hard[i] + stuck_after_s
+            if dead or stuck:
+                if self.procs[i].is_alive():
+                    self.procs[i].kill()
+                with contextlib.suppress(Exception):
+                    self.conns[i].close()
+                self._spawn(i)
+                self.restarts += 1
+                started += 1
+        return started
 
     @staticmethod
     def _recv3(conn: Any) -> tuple[str, int, Any]:
@@ -290,8 +344,10 @@ class SearchPool:
                 self.procs[i].kill()
                 self.procs[i].join(timeout=5)
                 self._spawn(i)
-                assert self.conns[i].recv()[0] == "ready"
+                self.restarts += 1
                 recycled += 1
+        if recycled:
+            self.wait_ready()
         return recycled
 
     def decision(
@@ -312,6 +368,7 @@ class SearchPool:
         for i, (conn, pairs) in enumerate(zip(self.conns, chunks, strict=True)):
             conn.send(("decide", did, blob, pairs, sched, hard))
             self.outstanding[i] += 1
+            self.last_hard[i] = hard
         t_sent = time.time()
         n = len(self.conns)
         pairs_by: list[list[dict[str, Any]]] = [[] for _ in range(n)]
@@ -348,6 +405,8 @@ class SearchPool:
             "unsupported": [u for s in have for u in s["unsupported"]],
             "errors": [e for s in have for e in s["errors"]],
             "illegal": sum(s["illegal"] for s in have),
+            "rounds": sum(s.get("rounds", 0) for s in have),
+            "turns": sum(s.get("turns", 0) for s in have),
             "retries": sum(s["retries"] for s in have),
             "pairs": pairs, "workers_done": sum(done), "workers": n,
             "hard_deadline_hit": not all(done),

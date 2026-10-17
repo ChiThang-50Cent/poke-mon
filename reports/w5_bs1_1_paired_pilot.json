@@ -1,0 +1,84 @@
+{
+ "label": "EXPLORATORY (n <= 20 per arm x opponent); simulator-adjacent local server play against the named opponents, not a Showdown ladder win rate",
+ "runs": [
+  "runs/w5-bs1-1b-block1",
+  "runs/w5-bs1-1b-block2"
+ ],
+ "wlt": {
+  "Grunt": {
+   "C": {
+    "opponent": 12,
+    "player": 8
+   },
+   "C+search": {
+    "player": 20
+   }
+  },
+  "GymLeader": {
+   "C": {
+    "opponent": 6,
+    "player": 14
+   },
+   "C+search": {
+    "player": 19,
+    "opponent": 1
+   }
+  },
+  "C": {
+   "C": {
+    "opponent": 11,
+    "player": 9
+   },
+   "C+search": {
+    "opponent": 5,
+    "player": 15
+   }
+  }
+ },
+ "paired_difference_C+search_minus_C": {
+  "Grunt": {
+   "win_rate_difference": 0.6,
+   "bootstrap_95": [
+    0.35,
+    0.8
+   ],
+   "verdict": "positive",
+   "clusters": 10,
+   "seed": 20271101,
+   "resamples": 5000
+  },
+  "GymLeader": {
+   "win_rate_difference": 0.25,
+   "bootstrap_95": [
+    0.05,
+    0.45
+   ],
+   "verdict": "positive",
+   "clusters": 10,
+   "seed": 20271101,
+   "resamples": 5000
+  },
+  "C": {
+   "win_rate_difference": 0.3,
+   "bootstrap_95": [
+    0.0,
+    0.6
+   ],
+   "verdict": "inconclusive",
+   "clusters": 10,
+   "seed": 20271101,
+   "resamples": 5000
+  },
+  "pooled": {
+   "win_rate_difference": 0.38333333333333336,
+   "bootstrap_95": [
+    0.23333333333333334,
+    0.5333333333333333
+   ],
+   "verdict": "positive",
+   "clusters": 30,
+   "seed": 20281101,
+   "resamples": 5000
+  }
+ }
+}

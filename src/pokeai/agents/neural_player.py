@@ -63,6 +63,10 @@ class NeuralPlayer(MetamonPlayer):
     # (pokeai.cf.descriptors; built from the battle object only) in `last_descriptor`.
     describe: bool = False
     last_descriptor: Any = None
+    # BS1.1: optional live belief-search layer (pokeai.agents.live_search.LiveSearch). None is a
+    # strict no-op: no extra state, snapshots, softmax or timestamps are taken.
+    search: Any = None
+    forward_count: int = 0
 
     def __init__(
         self,
@@ -74,6 +78,7 @@ class NeuralPlayer(MetamonPlayer):
         sample: bool = False,
         temperature: float = 1.0,
         team_preview_model: Any = None,
+        search: Any = None,
         **kwargs: Any,
     ) -> None:
         if not np.isfinite(temperature) or temperature <= 0:
@@ -116,6 +121,15 @@ class NeuralPlayer(MetamonPlayer):
         self.latencies_ms: list[float] = []
         self.unknown_tokens = 0
         self.total_tokens = 0
+        self.search = search
+        if search is not None:
+            self._frame_snap: dict[str, Any] = {}  # pre-frame python snapshot per battle
+            self._frame_start: dict[str, int] = {}  # history length at that snapshot
+            self._frame_decided: dict[str, bool] = {}
+            self._t_request: dict[str, float] = {}
+            self.search_rows: dict[str, list[dict[str, Any]]] = {}
+            self._search_open: dict[str, dict[str, Any]] = {}
+            self._last_probs: list[float] | None = None
         super().__init__(*args, team_preview_model=team_preview_model, **kwargs)
 
     def randomize(self) -> None:
@@ -128,12 +142,18 @@ class NeuralPlayer(MetamonPlayer):
         self._pending_choice.pop(battle.battle_tag, None)
         self._public_log.pop(battle.battle_tag, None)
         self.history.pop(battle.battle_tag, None)
+        if self.search is not None:
+            for table in (self._frame_snap, self._frame_start, self._frame_decided,
+                          self._t_request, self._search_open):
+                table.pop(battle.battle_tag, None)
         super()._battle_finished_callback(battle)
 
     async def _handle_battle_message(self, split_messages: list[list[str]]) -> None:
         from pokeai.env.runner import expected_retry_reason
 
         tag = split_messages[0][0].removeprefix(">")
+        if self.search is not None:
+            self._search_frame_hook(tag, split_messages)
         public_log = self._public_log.setdefault(tag, deque(maxlen=40))
         history = self.history.setdefault(tag, [])
         for message in split_messages[1:]:
@@ -171,6 +191,24 @@ class NeuralPlayer(MetamonPlayer):
                         self.illegal_actions += 1
         await super()._handle_battle_message(split_messages)
 
+    def _search_frame_hook(self, tag: str, split_messages: list[list[str]]) -> None:
+        """BS1.1 bookkeeping, run before the vendor processes a message batch: the request
+        arrival clock, and the python snapshot of the state BEFORE the lines of the frame that
+        precedes the next decision (what the offline reconstruction expects as its root)."""
+        lines = [m for m in split_messages[1:] if len(m) > 1]
+        if any(m[1] == "request" for m in lines):
+            self._t_request[tag] = time.time()
+        fresh = [m for m in lines if m[1] not in ("request", "error")]
+        new_frame = tag not in self._frame_snap or self._frame_decided.get(tag, True)
+        if fresh and new_frame and tag in self._battles and not getattr(
+            self._battles[tag], "finished", False
+        ):
+            from pokeai.cf.offline import snapshot_player
+
+            self._frame_snap[tag] = snapshot_player(self, tag)
+            self._frame_start[tag] = len(self.history.get(tag, []))
+            self._frame_decided[tag] = False
+
     async def _handle_battle_request(
         self, battle: Any, maybe_default_order: bool = False
     ) -> None:
@@ -178,7 +216,14 @@ class NeuralPlayer(MetamonPlayer):
         # to the preceding policy order or reuse its hidden-trap evidence.
         self._pending_choice.pop(battle.battle_tag, None)
         self._model_choice[battle.battle_tag] = False
+        if self.search is not None:
+            self._t_request.setdefault(battle.battle_tag, time.time())
         await super()._handle_battle_request(battle, maybe_default_order)
+        if self.search is not None:
+            row = self._search_open.pop(battle.battle_tag, None)
+            if row is not None:
+                row["t_send"] = time.time()
+            self._t_request.pop(battle.battle_tag, None)
 
     def teampreview(self, battle: Any) -> str:
         """Record source, actual lead, order, and maximum predicted lead probability.
@@ -244,6 +289,8 @@ class NeuralPlayer(MetamonPlayer):
         if source != "model":
             self.fallbacks["team_preview"] += 1
         self.lead_sources[source] += 1
+        if self.search is not None:
+            self._frame_decided[battle.battle_tag] = True
         lead_index = int(order.removeprefix("/team ")[0]) - 1
         self.team_preview_records[battle.battle_tag] = {
             "source": source,
@@ -300,7 +347,8 @@ class NeuralPlayer(MetamonPlayer):
             scores = logits[0, 0].masked_fill(
                 ~torch.as_tensor(mask, device=self.device), -torch.inf
             )
-            if self.sample or self.collector is not None:
+            self.forward_count += 1
+            if self.sample or self.collector is not None or self.search is not None:
                 probabilities = torch.softmax(scores.float() / self.temperature, dim=-1)
             if self.sample:
                 if self.sampler is None:
@@ -325,6 +373,8 @@ class NeuralPlayer(MetamonPlayer):
                     ),
                     "fallback_reason": None,
                 }
+            if self.search is not None:
+                self._last_probs = probabilities.cpu().tolist()
             self.hidden[tag] = hidden
         self.latencies_ms.append((time.perf_counter() - start) * 1000)
         if not mask[action]:
@@ -340,6 +390,11 @@ class NeuralPlayer(MetamonPlayer):
 
         self.decisions += 1
         self.last_descriptor = None
+        if self.search is not None:
+            tag = battle.battle_tag
+            t_choose = time.time()
+            forwards_before = self.forward_count
+            search_row: dict[str, Any] | None = None
         if battle.reviving:
             order = self._fallback(battle, "revival_target")
         elif {move.id for move in battle.available_moves} in (
@@ -363,6 +418,8 @@ class NeuralPlayer(MetamonPlayer):
             if action is None:
                 order = self._fallback(battle, "all_masked")
             else:
+                if self.search is not None:
+                    action, search_row = self._search_decide(battle, action, mask)
                 order = UniversalAction(action).to_BattleOrder(battle)
                 if order is None:
                     raise RuntimeError("Masked-legal action failed conversion")
@@ -370,9 +427,38 @@ class NeuralPlayer(MetamonPlayer):
                     order = switch_by_party_slot(battle, order)
                 self._model_choice[battle.battle_tag] = True
         self._pending_choice[battle.battle_tag] = _protocol_choice_evidence(battle, order)
+        if self.search is not None:
+            if search_row is None:
+                search_row = {"category": "not_represented", "action": None, "c_action": None}
+            search_row.update(
+                t_request=self._t_request.get(tag, t_choose), t_choose=t_choose,
+                t_choice_returned=time.time(),
+                c_forwards=self.forward_count - forwards_before,
+                model_choice=bool(self._model_choice.get(tag, False)),
+                hidden_keys=len(self.hidden), turn=battle.turn)
+            self.search_rows.setdefault(tag, []).append(search_row)
+            self._search_open[tag] = search_row
+            self._frame_decided[tag] = True
         if self.collector is not None:
             self.collector.record(battle, order, self._behavior.pop(battle.battle_tag))
         return order
+
+    def _search_decide(
+        self, battle: Any, action: int, mask: np.ndarray
+    ) -> tuple[int, dict[str, Any]]:
+        """C's decision is made (one forward, memory advanced). Let the search layer propose a
+        different legal action; it never touches `self.hidden`."""
+        tag = battle.battle_tag
+        t_c_done = time.time()
+        if int(np.count_nonzero(mask)) < 2:
+            return action, {"category": "not_searched_single_legal", "action": action,
+                            "c_action": action, "t_c_done": t_c_done}
+        final, row = self.search.run(
+            self, battle, tag, action, mask, self._last_probs,
+            self._t_request.get(tag, t_c_done), self._frame_snap.get(tag),
+            self._frame_start.get(tag, 0), len(self.search_rows.get(tag, [])))
+        row["t_c_done"] = t_c_done
+        return final, row
 
     def neural_stats(self) -> dict[str, Any]:
         return {

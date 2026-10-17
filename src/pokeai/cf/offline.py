@@ -77,6 +77,28 @@ FRAMING_NOTES = [
 _T_LINE = re.compile(r"^\|t:\|\d+$")
 
 
+_ROLE_IDENT = re.compile(r"\bp([12])(?=[a-d]?: )")
+_ROLE_FIELD = re.compile(r"(?<=\|)p([12])(?=\|)")
+_ROLE_JSON = re.compile(r'("id":\s*")p([12])(?=")')
+
+
+def swap_roles(text: str) -> str:
+    """Exchange p1 <-> p2 in protocol text and `|request|` JSON (idents, side fields, side id).
+
+    BS1.1: the sim always seats the learner as p1; a live learner seated as p2 keeps its real
+    python state (role p2), so everything delivered to it is translated back to its real seat.
+    """
+    def flip_digit(d: str) -> str:
+        return "p2" if d == "1" else "p1"
+
+    def flip(m: re.Match[str]) -> str:
+        return flip_digit(m.group(1))
+
+    text = _ROLE_IDENT.sub(flip, text)
+    text = _ROLE_FIELD.sub(flip, text)
+    return _ROLE_JSON.sub(lambda m: m.group(1) + flip_digit(m.group(2)), text)
+
+
 def normalise_line(line: str) -> str:
     """Wall-clock `|t:|` protocol lines are the only content normalisation."""
     return "|t:|" if _T_LINE.match(line) else line
@@ -207,6 +229,9 @@ def make_player(spec: PlayerSpec, side: str, device: str = "cpu") -> Any:
 _SKIP_ATTRS = {
     "ps_client", "model", "encoder", "team_preview_model", "collector", "_battles",
     "_team", "sampler", "_logger",
+    # BS1.1 live-search bookkeeping (never part of a rollout root)
+    "search", "_frame_snap", "_frame_start", "_frame_decided", "_t_request", "search_rows",
+    "_search_open", "_last_probs",
 }
 _SCALARS = (bool, int, float, str, type(None))
 
@@ -304,6 +329,8 @@ class Checkpoint:
     sampler: dict[str, Any]
     turn: int
     info: dict[str, Any] = field(default_factory=dict)
+    learner_swap: bool = False
+    learner_names: dict[str, str] | None = None
 
 
 class OfflineMatch:
@@ -335,6 +362,9 @@ class OfflineMatch:
         self.script: dict[str, deque[str]] = {s: deque() for s in SIDES}
         self.script_mismatches: list[tuple[int, str, str, str]] = []
         self.record_probs = record_probs
+        self.learner_swap = False  # deliveries to p1 are translated to a real p2 seat
+        # account names the learner's own python battle knows (live server names)
+        self.learner_names: dict[str, str] | None = None
         self.turn = 0
         self.rejected: list[str] = []
         self._outbox: dict[str, list[tuple[str, str]]] = {s: [] for s in SIDES}
@@ -467,7 +497,7 @@ class OfflineMatch:
             end_data=copy.deepcopy(self.end_data), round_index=self.round_index,
             py_rng=dict(self.py_rng),
             sampler={s: g.get_state().clone() for s, g in self.samplers.items()},
-            turn=self.turn,
+            turn=self.turn, learner_swap=self.learner_swap, learner_names=self.learner_names,
         )
 
     @classmethod
@@ -476,6 +506,8 @@ class OfflineMatch:
         record_probs: bool = False,
     ) -> OfflineMatch:
         match = cls(sim, players, new_tag, record_probs=record_probs)
+        match.learner_swap = cp.learner_swap
+        match.learner_names = cp.learner_names
         sim.restore(cp.sim_key, new_tag)
         for side in SIDES:
             restore_player(players[side], cp.players[side], cp.tag, new_tag)
@@ -573,6 +605,11 @@ class OfflineMatch:
 
     async def _deliver(self, side: str, raw: str) -> None:
         player = self.players[side]
+        if side == "p1":
+            if self.learner_swap:
+                raw = swap_roles(raw)
+            for sim_name, live_name in (self.learner_names or {}).items():
+                raw = raw.replace(sim_name, live_name)
         random.setstate(self.py_rng[side])
         try:
             await player.ps_client._handle_message(raw)

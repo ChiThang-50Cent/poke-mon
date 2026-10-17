@@ -1,0 +1,201 @@
+{
+ "run_dir": "runs/w5-bs1-1a",
+ "valid_report": true,
+ "battles": 12,
+ "by_cell": {
+  "Grunt|C": {
+   "battles": 2,
+   "winners": {
+    "player": 2
+   }
+  },
+  "Grunt|C+search": {
+   "battles": 2,
+   "winners": {
+    "player": 2
+   }
+  },
+  "GymLeader|C": {
+   "battles": 2,
+   "winners": {
+    "player": 2
+   }
+  },
+  "GymLeader|C+search": {
+   "battles": 2,
+   "winners": {
+    "player": 1,
+    "opponent": 1
+   }
+  },
+  "C|C": {
+   "battles": 2,
+   "winners": {
+    "player": 2
+   }
+  },
+  "C|C+search": {
+   "battles": 2,
+   "winners": {
+    "player": 2
+   }
+  }
+ },
+ "errors": {
+  "battles": 12,
+  "timeouts": [],
+  "battle_errors": [],
+  "protocol_retries": 0
+ },
+ "agent_illegal_actions_by_cell": {
+  "Grunt|C": {
+   "player": 0
+  },
+  "Grunt|C+search": {
+   "player": 0
+  },
+  "GymLeader|C": {
+   "player": 0
+  },
+  "GymLeader|C+search": {
+   "player": 0
+  },
+  "C|C": {
+   "player": 0,
+   "opponent": 0
+  },
+  "C|C+search": {
+   "player": 0,
+   "opponent": 0
+  }
+ },
+ "latency": {
+  "decisions": 278,
+  "with_t_send": 278,
+  "missing_t_send": 0,
+  "deadline_s": 5.0,
+  "decisions_over_deadline": 0,
+  "end_to_end_s": {
+   "n": 278,
+   "p50": 4.532027840614319,
+   "p95": 4.702284562587738,
+   "max": 4.705312728881836,
+   "mean": 3.7070420680286214
+  },
+  "phases_s": {
+   "c_inference_and_state": {
+    "n": 278,
+    "p50": 0.003604292869567871,
+    "p95": 0.004980719089508055,
+    "max": 0.04012012481689453,
+    "mean": 0.003733942834593409
+   },
+   "c_done_to_search_start": {
+    "n": 276,
+    "p50": 5.245208740234375e-06,
+    "p95": 8.821487426757812e-06,
+    "max": 1.4781951904296875e-05,
+    "mean": 5.4758528004521905e-06
+   },
+   "search": {
+    "n": 276,
+    "p50": 4.529012203216553,
+    "p95": 4.698779881000519,
+    "max": 4.701786279678345,
+    "mean": 3.7295729975769487
+   },
+   "search_end_to_send": {
+    "n": 276,
+    "p50": 0.0005712509155273438,
+    "p95": 0.0006778240203857422,
+    "max": 0.0017523765563964844,
+    "mean": 0.00056241474289825
+   },
+   "non_search_choice_to_send": {
+    "n": 2,
+    "p50": 0.0001798868179321289,
+    "p95": 0.00018106698989868165,
+    "max": 0.0001811981201171875,
+    "mean": 0.0001798868179321289
+   }
+  }
+ },
+ "state_integrity": {
+  "battles": 6,
+  "per_decision_forward_violations": [],
+  "hidden_changed_by_search": [],
+  "cross_battle_state": [],
+  "cumulative_forward_counter_mismatch": [],
+  "pass": true,
+  "offline_replay_parity": "not run: live Showdown RNG is not seedable, so there is no offline replay of the logged observations; verified by per-decision forward counters, pre/post-search hidden-state digests and unit tests (tests/test_bs1_1_live.py)"
+ },
+ "search": {
+  "category_counts": {
+   "search_override": 38,
+   "search_fallback_no_signal": 180,
+   "search_fallback_unsupported": 58,
+   "not_searched_single_legal": 2
+  },
+  "decisions": 278,
+  "searched_decisions": 276,
+  "complete_pairs": {
+   "n": 276,
+   "p50": 12.0,
+   "p95": 56.0,
+   "max": 64,
+   "mean": 16.054347826086957
+  },
+  "rollouts": {
+   "n": 276,
+   "p50": 53.0,
+   "p95": 217.75,
+   "max": 256,
+   "mean": 66.75
+  },
+  "frac_searched_with_ge4_pairs": 0.7717391304347826,
+  "decisions_with_pairs": 218,
+  "unsupported_reasons": {
+   "pivot_switch_request": 11,
+   "pending_move:healingwish": 4,
+   "p2:move_state:futuresight": 1,
+   "pending_move:futuresight": 2,
+   "courtchange": 40
+  },
+  "decisions_with_unsupported_reason": 58,
+  "reconstruction_support_rate": 0.7898550724637681,
+  "hard_deadline_hit": 38,
+  "override_rate_of_searched": 0.13768115942028986,
+  "search_errors": [],
+  "illegal_in_rollouts": 0,
+  "protocol_retries_in_rollouts": 0,
+  "rollout_errors": [],
+  "by_learner_role": {
+   "p1": 104,
+   "p2": 172
+  },
+  "worker_restarts_max": 0
+ },
+ "gates": {
+  "L1_server_correctness": {
+   "timeouts_0": true,
+   "agent_illegal_0": true,
+   "unexpected_errors_0": true
+  },
+  "L2_timing": {
+   "zero_decisions_over_D": true
+  },
+  "L3_state_integrity": {
+   "pass": true
+  },
+  "L4_search_availability": {
+   "complete_pairs_recorded": true,
+   "categories_reported": true,
+   "frac_searched_with_ge4_pairs": 0.7717391304347826
+  },
+  "L1_pass": true,
+  "L2_pass": true,
+  "L3_pass": true,
+  "L4_pass": true,
+  "all_pass": true
+ }
+}

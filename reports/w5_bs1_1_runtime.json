@@ -1,0 +1,192 @@
+{
+ "runs": [
+  "runs/w5-bs1-1b-block1",
+  "runs/w5-bs1-1b-block2"
+ ],
+ "per_arm": {
+  "C": {
+   "battles": 60,
+   "wall_s_per_battle": {
+    "n": 60,
+    "p50": 0.24678728051367216,
+    "p95": 0.8717630546714645,
+    "max": 1.1011426470067818,
+    "mean": 0.33468187785086534
+   },
+   "decisions_per_battle": {
+    "n": 60,
+    "p50": 31.0,
+    "p95": 85.19999999999999,
+    "max": 172,
+    "mean": 37.18333333333333
+   },
+   "turns_per_battle": {
+    "n": 60,
+    "p50": 24.5,
+    "p95": 84.0,
+    "max": 169,
+    "mean": 31.85
+   }
+  },
+  "C+search": {
+   "battles": 60,
+   "wall_s_per_battle": {
+    "n": 60,
+    "p50": 102.56904096150538,
+    "p95": 380.5658936486487,
+    "max": 654.2773599390057,
+    "mean": 141.59017856948387
+   },
+   "decisions_per_battle": {
+    "n": 60,
+    "p50": 26.0,
+    "p95": 84.94999999999989,
+    "max": 142,
+    "mean": 34.28333333333333
+   },
+   "turns_per_battle": {
+    "n": 60,
+    "p50": 22.0,
+    "p95": 82.99999999999989,
+    "max": 140,
+    "mean": 30.25
+   }
+  }
+ },
+ "errors": {
+  "battles": 120,
+  "timeouts": [],
+  "battle_errors": [],
+  "protocol_retries": 0
+ },
+ "latency": {
+  "decisions": 2057,
+  "with_t_send": 2057,
+  "missing_t_send": 0,
+  "deadline_s": 5.0,
+  "decisions_over_deadline": 0,
+  "end_to_end_s": {
+   "n": 2057,
+   "p50": 4.526478052139282,
+   "p95": 4.703026914596558,
+   "max": 4.718664169311523,
+   "mean": 4.115099986780599
+  },
+  "phases_s": {
+   "c_inference_and_state": {
+    "n": 2057,
+    "p50": 0.003548860549926758,
+    "p95": 0.005152273178100585,
+    "max": 0.02675008773803711,
+    "mean": 0.003722097089004331
+   },
+   "c_done_to_search_start": {
+    "n": 2041,
+    "p50": 5.4836273193359375e-06,
+    "p95": 8.821487426757812e-06,
+    "max": 3.504753112792969e-05,
+    "mean": 5.741437120451639e-06
+   },
+   "search": {
+    "n": 2041,
+    "p50": 4.522687673568726,
+    "p95": 4.699268341064453,
+    "max": 4.703466415405273,
+    "mean": 4.143012484401421
+   },
+   "search_end_to_send": {
+    "n": 2041,
+    "p50": 0.0005702972412109375,
+    "p95": 0.0007116794586181641,
+    "max": 0.016864538192749023,
+    "mean": 0.000587286287987133
+   },
+   "non_search_choice_to_send": {
+    "n": 16,
+    "p50": 0.00016546249389648438,
+    "p95": 0.00021898746490478516,
+    "max": 0.00024509429931640625,
+    "mean": 0.00016866624355316162
+   }
+  }
+ },
+ "search": {
+  "category_counts": {
+   "search_fallback_no_signal": 1556,
+   "search_override": 335,
+   "not_searched_single_legal": 16,
+   "search_fallback_unsupported": 148,
+   "search_error": 2
+  },
+  "decisions": 2057,
+  "searched_decisions": 2039,
+  "complete_pairs": {
+   "n": 2039,
+   "p50": 20.0,
+   "p95": 64.0,
+   "max": 64,
+   "mean": 24.316331535066208
+  },
+  "rollouts": {
+   "n": 2039,
+   "p50": 85.0,
+   "p95": 256.0,
+   "max": 256,
+   "mean": 98.46689553702795
+  },
+  "frac_searched_with_ge4_pairs": 0.8974987739087789,
+  "decisions_with_pairs": 1885,
+  "unsupported_reasons": {
+   "pivot_switch_request": 54,
+   "pending_move:lunardance": 4,
+   "pending_move:healingwish": 9,
+   "p2:twoturnmove": 11,
+   "p1:lockedmove": 2,
+   "p1:volatile:throat chop": 5,
+   "p2:move_state:futuresight": 7,
+   "pending_move:futuresight": 9,
+   "p1:move_state:futuresight": 7,
+   "p1:move_state:wish": 16,
+   "pending_move:wish": 2,
+   "p2:move_state:outrage": 1,
+   "p2:lockedmove": 1,
+   "p1:twoturnmove": 10,
+   "side_condition_duration_exhausted:lightscreen": 1,
+   "side_condition_duration_exhausted:reflect": 2,
+   "courtchange": 10
+  },
+  "decisions_with_unsupported_reason": 151,
+  "reconstruction_support_rate": 0.927415399705738,
+  "hard_deadline_hit": 281,
+  "override_rate_of_searched": 0.16429622363903876,
+  "search_errors": [
+   "player.py\", line 415, in choose_move\n    action = self.select_action(\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/home/thangnc/code/en-tutor/src/pokeai/cf/offline.py\", line 422, in select_action\n    raise RuntimeError(f\"forced action {wanted} outside mask\")\nRuntimeError: forced action 2 outside mask\n\n",
+   "player.py\", line 415, in choose_move\n    action = self.select_action(\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/home/thangnc/code/en-tutor/src/pokeai/cf/offline.py\", line 422, in select_action\n    raise RuntimeError(f\"forced action {wanted} outside mask\")\nRuntimeError: forced action 1 outside mask\n\n"
+  ],
+  "illegal_in_rollouts": 0,
+  "protocol_retries_in_rollouts": 0,
+  "rollout_errors": [],
+  "by_learner_role": {
+   "p1": 969,
+   "p2": 1070
+  },
+  "worker_restarts_max": 0
+ },
+ "state_integrity": {
+  "battles": 60,
+  "per_decision_forward_violations": [],
+  "hidden_changed_by_search": [],
+  "cross_battle_state": [],
+  "cumulative_forward_counter_mismatch": [],
+  "pass": true,
+  "offline_replay_parity": "not run: live Showdown RNG is not seedable, so there is no offline replay of the logged observations; verified by per-decision forward counters, pre/post-search hidden-state digests and unit tests (tests/test_bs1_1_live.py)"
+ },
+ "wall_s_total_by_run": {
+  "runs/w5-bs1-1b-block1": 4466.3068932089955,
+  "runs/w5-bs1-1b-block2": 4071.5713203249907
+ },
+ "resources": {
+  "runs/w5-bs1-1b-block1": "Consumed 4h 52min 8.149s CPU time over 1h 14min 35.242s wall clock time, 5.6G memory peak.",
+  "runs/w5-bs1-1b-block2": "Consumed 4h 27min 17.572s CPU time over 1h 8min 530ms wall clock time, 5.6G memory peak."
+ }
+}

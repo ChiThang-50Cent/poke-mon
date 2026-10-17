@@ -34,6 +34,11 @@ class LearnerInfo:
     request: dict[str, Any]  # learner's pending request (parsed JSON)
     own_team: str  # packed team
     pending_p1_lines: list[str] = field(default_factory=list)
+    # True: lines/request above are in the canonical seat (learner = p1) but the learner's real
+    # python state sits at p2; deliveries to it are translated back (offline.swap_roles).
+    swapped: bool = False
+    # sim account name -> the live account name known to the learner's python battle
+    names: dict[str, str] | None = None
 
 
 @dataclass

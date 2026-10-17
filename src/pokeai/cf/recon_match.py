@@ -80,6 +80,8 @@ def build_world_root(
     Both players receive the public history; no request is delivered, so nobody acts.
     """
     match = OfflineMatch(sim, players, recon.tag)
+    match.learner_swap = info.swapped
+    match.learner_names = info.names
     match.seed_side("p1", seeds[0])
     match.seed_side("p2", seeds[1])
     restore_player(players["p1"], learner_snapshot, old_tag, recon.tag)
