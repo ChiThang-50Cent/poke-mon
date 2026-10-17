@@ -48,7 +48,7 @@ def make_payload(args: tuple[int, str, int, bool, int]) -> dict[str, Any]:
             raise RuntimeError("root decision not reproducible")
         cands = [c["slot"] for c in choose_candidates(cinfo, random.Random(seed * 7 + root_id))]
         payload = Payload(
-            root_id=root_id, opponent=opponent, seed=seed, info=info,
+            root_id=root_id, opp_model=opponent.lower(), seed=seed, info=info,
             learner_snapshot=root.checkpoint.players["p1"], old_tag=root.checkpoint.tag,
             mask=cinfo["mask"], candidates=cands, n_worlds=8, n_seeds=n_seeds)
         out.update(

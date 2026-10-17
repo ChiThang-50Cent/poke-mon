@@ -1,0 +1,45 @@
+{
+ "budget_s": 5.0,
+ "sched_stop_s": 4.7,
+ "roots": 100,
+ "wall_p50_s": 4.828578472137451,
+ "wall_p95_s": 4.999329173564911,
+ "wall_max_s": 5.001526355743408,
+ "pool_wall_max_s": 5.001490831375122,
+ "decisions_over_budget_plus_jitter": 0,
+ "decisions_hitting_hard_deadline": 5,
+ "recycled_workers": 0,
+ "pairs_p50": 28.5,
+ "pairs_p95": 64.0,
+ "rollouts_p50": 119.0,
+ "supported_roots": 91,
+ "unsupported_roots": 9,
+ "unsupported_reasons": {
+  "p1:move_state:wish": 2,
+  "p1:twoturnmove": 1,
+  "pivot_switch_request": 3,
+  "p2:move_state:futuresight": 1,
+  "pending_move:futuresight": 1,
+  "p2:twoturnmove": 1
+ },
+ "frac_ge4_pairs_all_roots": 0.91,
+ "frac_ge4_pairs_supported_roots": 1.0,
+ "override_rate": 0.31,
+ "fallback_rate": 0.69,
+ "fallback_reasons": {
+  "fallback:snr": 16,
+  "fallback:no_positive_delta": 44,
+  "fallback:few_pairs": 9,
+  "override": 31
+ },
+ "fallback_always_legal_c": true,
+ "illegal_actions": 0,
+ "unexpected_errors": 0,
+ "protocol_retries": 0,
+ "gate_M4": {
+  "max_wall_le_budget_plus_50ms": true,
+  "fallback_always_legal": true,
+  "ge4_pairs_on_ge90pct_supported": true,
+  "pass": true
+ }
+}

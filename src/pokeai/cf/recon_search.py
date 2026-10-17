@@ -9,17 +9,26 @@ same seeds (paired). A pair is complete only if all its candidates finished befo
 
 from __future__ import annotations
 
+import contextlib
 import gc
 import multiprocessing as mp
+import multiprocessing.connection as mp_connection
 import pickle
+import random
 import time
 import traceback
 from dataclasses import dataclass, field
+from types import SimpleNamespace
 from typing import Any
 
 import numpy as np
 
+from pokeai.cf.restore_check import TRAP_PREFIXES
+
 N_WORKERS = 4
+SCHED_MARGIN_S = 0.3  # stop scheduling new rollouts this long before the hard deadline
+OPP_MODELS = ("grunt", "gymleader", "mixture")
+HEURISTIC = {"grunt": "Grunt", "gymleader": "GymLeader"}
 MIN_PAIRS = 4
 SNR_MIN = 1.0
 
@@ -29,7 +38,7 @@ class Payload:
     """Everything the learner knows at the root (no oracle fields)."""
 
     root_id: int
-    opponent: str
+    opp_model: str  # SEARCH opponent model: grunt | gymleader | mixture (never the real one)
     seed: int
     info: Any  # LearnerInfo
     learner_snapshot: dict[str, Any]
@@ -90,6 +99,15 @@ def decide(
     return out
 
 
+def opponent_for_pair(payload: Payload, world: int, k: int) -> str:
+    """Heuristic opponent policy of one (world, seed) pair. Mixture: a seeded fair coin per pair,
+    the same for every candidate of the pair. Reads only the search parameter."""
+    if payload.opp_model == "mixture":
+        coin = random.Random(f"{payload.seed}:{payload.root_id}:mix:{world}:{k}").random()
+        return "Grunt" if coin < 0.5 else "GymLeader"
+    return HEURISTIC[payload.opp_model]
+
+
 # ------------------------------------------------------------------------------- workers
 def _worker_main(conn: Any) -> None:
     import torch
@@ -103,7 +121,7 @@ def _worker_main(conn: Any) -> None:
     sim = Sim()
     sampler = BeliefSampler(sim)
     players = {o: make_players(o, greedy_prefix=True) for o in ("GymLeader", "Grunt")}
-    conn.send(("ready", None))
+    conn.send(("ready", 0, None))
     gc.collect()
     gc.disable()  # cyclic-GC pauses (0.3-1 s on the 3 MB payload) would blow the budget
     while True:
@@ -111,20 +129,22 @@ def _worker_main(conn: Any) -> None:
         if msg[0] == "stop":
             sim.close()
             return
+        _, did, blob, pairs, sched_deadline, hard_deadline = msg
         try:
-            conn.send(("ok", _decide_chunk(sim, sampler, players, *msg[1:])))
+            snap = _decide_chunk(
+                sim, sampler, players, blob, pairs, sched_deadline, hard_deadline,
+                lambda new, snap, did=did: conn.send(("prog", did, new, snap)))
+            conn.send(("done", did, snap))
         except Exception:  # noqa: BLE001
-            conn.send(("error", traceback.format_exc()[-2000:]))
-        gc.collect()  # between decisions, outside the timed window (the pool waits for "idle")
-        conn.send(("idle", None))
+            conn.send(("error", did, traceback.format_exc()[-2000:]))
+        gc.collect()  # between decisions, outside the timed window
+        conn.send(("idle", did, None))
 
 
 def _decide_chunk(
     sim: Any, sampler: Any, players: dict[str, Any], blob: bytes,
-    pairs: list[tuple[int, int]], deadline: float,
+    pairs: list[tuple[int, int]], sched_deadline: float, hard_deadline: float, emit: Any,
 ) -> dict[str, Any]:
-    from types import SimpleNamespace
-
     from pokeai.cf.branching import rollout
     from pokeai.cf.cf1 import seed_triple
     from pokeai.cf.recon_match import build_world_root
@@ -133,23 +153,26 @@ def _decide_chunk(
     t_start = time.time()
     payload: Payload = pickle.loads(blob)
     load_s = time.time() - t_start
-    pl = players[payload.opponent]
-    cache: dict[int, Any] = {}
-    done: list[dict[str, Any]] = []
+    cache: dict[tuple[int, str], Any] = {}
     timing = {"load_s": load_s, "sample_s": 0.0, "reconstruct_s": 0.0, "pov_s": 0.0,
               "rollout_s": 0.0}
     roll_times: list[float] = []
-    n_rollouts = 0
-    unsupported: list[str] = []
-    errors: list[str] = []
-    illegal = 0
-    retries = 0
+    st: dict[str, Any] = {
+        "timing": timing, "n_rollouts": 0, "worlds_built": 0, "unsupported": [], "errors": [],
+        "illegal": 0, "retries": 0, "t_end": 0.0}
     keys = []
+
+    def can_start() -> bool:
+        now = time.time()
+        est = float(np.mean(roll_times) * 1.25) if roll_times else 0.0
+        return now < sched_deadline and now + est < hard_deadline
+
     try:
         for w, k in pairs:
-            if time.time() >= deadline:
+            if not can_start():
                 break
-            if w not in cache:
+            opp = opponent_for_pair(payload, w, k)
+            if (w, opp) not in cache:
                 try:
                     recon = reconstruct_world(
                         sim, sampler, payload.info,
@@ -159,96 +182,182 @@ def _decide_chunk(
                     timing["reconstruct_s"] += recon.timing["reconstruct_s"]
                     t = time.time()
                     cp = build_world_root(
-                        sim, pl, payload.learner_snapshot, payload.old_tag, payload.info, recon)
+                        sim, players[opp], payload.learner_snapshot, payload.old_tag,
+                        payload.info, recon)
                     timing["pov_s"] += time.time() - t
                     keys.append(cp.sim_key)
-                    cache[w] = SimpleNamespace(checkpoint=cp)
+                    cache[(w, opp)] = SimpleNamespace(checkpoint=cp)
+                    st["worlds_built"] += 1
                 except Unsupported as e:
-                    cache[w] = None
-                    unsupported.append(str(e))
-            if cache[w] is None:
+                    cache[(w, opp)] = None
+                    st["unsupported"].append(str(e))
+                emit([], st)
+            if cache[(w, opp)] is None:
                 continue
             outs = []
             complete = True
             for slot in payload.candidates:
-                est = float(np.mean(roll_times) * 1.25) if roll_times else 0.0
-                if time.time() + est >= deadline:
+                if not can_start():
                     complete = False
                     break
                 t = time.time()
-                r = rollout(sim, pl, cache[w], "p1", slot, seed_triple(payload.root_id, k),
-                            keep_signature=False)
+                r = rollout(sim, players[opp], cache[(w, opp)], "p1", slot,
+                            seed_triple(payload.root_id, k), keep_signature=False)
                 roll_times.append(time.time() - t)
                 timing["rollout_s"] += roll_times[-1]
-                n_rollouts += 1
+                st["n_rollouts"] += 1
                 outs.append(outcome(r.winner))
-                illegal += r.illegal_actions
+                st["illegal"] += r.illegal_actions
                 for e in r.errors:
-                    if e.startswith("protocol-retry:"):
-                        retries += 1
+                    if e.startswith(("protocol-retry:", *TRAP_PREFIXES)):
+                        st["retries"] += 1
                     else:
-                        errors.append(e)
+                        st["errors"].append(e)
             if not complete:
                 break
-            done.append({"world": w, "seed": k, "outcomes": outs})
+            emit([{"world": w, "seed": k, "outcomes": outs, "opp": opp}], st)
     finally:
         for key in keys:
             sim.drop_snapshot(key)
-    return {"pairs": done, "timing": timing, "n_rollouts": n_rollouts,
-            "worlds_built": sum(v is not None for v in cache.values()),
-            "unsupported": unsupported, "errors": errors, "illegal": illegal,
-            "retries": retries, "t_end": time.time()}
+    st["t_end"] = time.time()
+    return st
 
 
 class SearchPool:
-    """Four persistent search workers (one simulator driver each)."""
+    """Four persistent search workers (one simulator driver each) with a hard deadline.
 
-    def __init__(self, workers: int = N_WORKERS) -> None:
-        ctx = mp.get_context("spawn")
-        self.conns, self.procs = [], []
+    Every message carries the decision id; replies for any other id are discarded, so a late
+    worker can never leak into a later decision. A worker still busy at the next request keeps
+    its queued work; `settle()` (between decisions, untimed) waits for idle and recycles a
+    worker that does not come back.
+    """
+
+    def __init__(
+        self, workers: int = N_WORKERS, worker_target: Any = None
+    ) -> None:
+        self.ctx = mp.get_context("spawn")
+        self.target = worker_target or _worker_main
+        self.conns: list[Any] = []
+        self.procs: list[Any] = []
+        self.outstanding: list[int] = []
+        self.did = 0
         for _ in range(workers):
-            parent, child = ctx.Pipe()
-            proc = ctx.Process(target=_worker_main, args=(child,), daemon=True)
-            proc.start()
-            self.conns.append(parent)
-            self.procs.append(proc)
+            self._spawn()
         for conn in self.conns:
             assert conn.recv()[0] == "ready"
 
-    def decision(self, payload: Payload, budget_s: float) -> dict[str, Any]:
-        """One timed decision (wall clock starts here)."""
-        t0 = time.time()
-        deadline = t0 + budget_s
+    def _spawn(self, index: int | None = None) -> None:
+        parent, child = self.ctx.Pipe()
+        proc = self.ctx.Process(target=self.target, args=(child,), daemon=True)
+        proc.start()
+        if index is None:
+            self.conns.append(parent)
+            self.procs.append(proc)
+            self.outstanding.append(0)
+        else:
+            self.conns[index], self.procs[index], self.outstanding[index] = parent, proc, 0
+
+    def _poll(self, timeout: float, sink: Any = None) -> bool:
+        """Receive what is available; route by decision id. True if anything was received."""
+        got = False
+        for conn in mp_connection.wait(self.conns, timeout=max(timeout, 0.0)):
+            i = self.conns.index(conn)
+            while conn.poll():
+                kind, did, body = self._recv3(conn)
+                got = True
+                if kind == "idle":
+                    self.outstanding[i] = max(self.outstanding[i] - 1, 0)
+                elif sink is not None and did == self.did:
+                    sink(i, kind, body)
+        return got
+
+    @staticmethod
+    def _recv3(conn: Any) -> tuple[str, int, Any]:
+        msg = conn.recv()
+        if msg[0] == "prog":
+            return "prog", msg[1], (msg[2], msg[3])
+        return msg[0], msg[1], msg[2]
+
+    def settle(self, timeout: float = 10.0) -> int:
+        """Untimed, between decisions: wait until every worker is idle; recycle stragglers.
+        Returns the number of recycled workers."""
+        end = time.time() + timeout
+        while any(self.outstanding) and time.time() < end:
+            self._poll(end - time.time())
+        recycled = 0
+        for i, n in enumerate(self.outstanding):
+            if n:
+                self.procs[i].kill()
+                self.procs[i].join(timeout=5)
+                self._spawn(i)
+                assert self.conns[i].recv()[0] == "ready"
+                recycled += 1
+        return recycled
+
+    def decision(
+        self, payload: Payload, budget_s: float, t_request: float | None = None,
+        sched_margin_s: float = SCHED_MARGIN_S,
+    ) -> dict[str, Any]:
+        """One decision under a hard deadline. The clock starts at `t_request` (the arrival of
+        the decision request; default: now) and covers pickling, reconstruction, world sampling,
+        rollouts and finalisation. At t_request + budget the decision is returned with the
+        complete pairs received so far, without waiting for in-flight workers."""
+        t0 = time.time() if t_request is None else t_request
+        hard, sched = t0 + budget_s, t0 + budget_s - sched_margin_s
+        self._poll(0.0)  # absorb idle/stale messages that are already waiting
+        self.did += 1
+        did = self.did
         blob = pickle.dumps(payload)
         chunks = assignment(payload.n_worlds, payload.n_seeds, len(self.conns))
-        for conn, pairs in zip(self.conns, chunks, strict=True):
-            conn.send(("decide", blob, pairs, deadline))
+        for i, (conn, pairs) in enumerate(zip(self.conns, chunks, strict=True)):
+            conn.send(("decide", did, blob, pairs, sched, hard))
+            self.outstanding[i] += 1
         t_sent = time.time()
-        replies = []
-        for conn in self.conns:
-            status, body = conn.recv()
-            if status != "ok":
-                raise RuntimeError(body)
-            replies.append(body)
-        pairs = [p for r in replies for p in r["pairs"]]
+        n = len(self.conns)
+        pairs_by: list[list[dict[str, Any]]] = [[] for _ in range(n)]
+        snaps: list[dict[str, Any] | None] = [None] * n
+        done = [False] * n
+        error: list[str] = []
+
+        def sink(i: int, kind: str, body: Any) -> None:
+            if kind == "prog":
+                new, snap = body
+                pairs_by[i].extend(new)
+                snaps[i] = snap
+            elif kind == "done":
+                snaps[i] = body
+                done[i] = True
+            elif kind == "error":
+                error.append(body)
+                done[i] = True
+
+        while not all(done) and time.time() < hard:
+            self._poll(hard - time.time(), sink)
+        if error:
+            raise RuntimeError(error[0])
+        pairs = [p for chunk in pairs_by for p in chunk]
         choice = decide(payload.candidates, payload.mask, pairs)
         wall = time.time() - t0
-        for conn in self.conns:  # workers collect garbage between decisions, untimed
-            assert conn.recv()[0] == "idle"
+        have = [s for s in snaps if s is not None]
+        keys = ("load_s", "sample_s", "reconstruct_s", "pov_s", "rollout_s")
         return {
             "wall_s": wall, "dispatch_s": t_sent - t0, "choice": choice,
-            "n_rollouts": sum(r["n_rollouts"] for r in replies),
-            "worlds_built": sum(r["worlds_built"] for r in replies),
-            "timing": {k: [r["timing"][k] for r in replies] for k in replies[0]["timing"]},
-            "unsupported": [u for r in replies for u in r["unsupported"]],
-            "errors": [e for r in replies for e in r["errors"]],
-            "illegal": sum(r["illegal"] for r in replies),
-            "retries": sum(r["retries"] for r in replies),
-            "pairs": pairs,
+            "n_rollouts": sum(s["n_rollouts"] for s in have),
+            "worlds_built": sum(s["worlds_built"] for s in have),
+            "timing": {k: [s["timing"][k] for s in have] for k in keys},
+            "unsupported": [u for s in have for u in s["unsupported"]],
+            "errors": [e for s in have for e in s["errors"]],
+            "illegal": sum(s["illegal"] for s in have),
+            "retries": sum(s["retries"] for s in have),
+            "pairs": pairs, "workers_done": sum(done), "workers": n,
+            "hard_deadline_hit": not all(done),
         }
 
     def close(self) -> None:
         for conn in self.conns:
-            conn.send(("stop",))
+            with contextlib.suppress(Exception):
+                conn.send(("stop",))
         for proc in self.procs:
             proc.join(timeout=10)
+            if proc.is_alive():
+                proc.kill()

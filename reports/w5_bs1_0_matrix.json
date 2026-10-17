@@ -1,0 +1,606 @@
+{
+ "evaluation": "simulator value with a KNOWN real-opponent policy via true-snapshot rollouts (16 fresh seeds, a_search vs a_C paired, C-greedy continuation); NOT Showdown win rate. Real opponent C: its Python state is the real game state restored from the true snapshot (CF0.1 restore proof); the search never models C.",
+ "cells": {
+  "C|mixture": {
+   "roots": 80,
+   "delta": 0.028125,
+   "ci95": [
+    0.00859375,
+    0.0515625
+   ],
+   "ci_excludes_0": true,
+   "supported_only": {
+    "roots": 69,
+    "delta": 0.03260869565217391,
+    "ci95": [
+     0.009963768115942028,
+     0.058876811594202896
+    ]
+   },
+   "override_rate": 0.3125,
+   "fallback_rate": 0.6875,
+   "mean_delta_per_override": 0.09,
+   "overrides_positive": 16,
+   "overrides_negative": 3,
+   "unsupported_roots": 11,
+   "unsupported_reasons": {
+    "courtchange": 4,
+    "p2:twoturnmove": 2,
+    "p2:move_state:futuresight": 1,
+    "p1:twoturnmove": 1,
+    "pivot_switch_request": 1,
+    "pending_move:futuresight": 1,
+    "p1:move_state:futuresight": 1
+   },
+   "by_phase": {
+    "0-5": {
+     "roots": 12,
+     "mean_delta": 0.03125
+    },
+    "16-30": {
+     "roots": 24,
+     "mean_delta": 0.036458333333333336
+    },
+    "31+": {
+     "roots": 12,
+     "mean_delta": 0.026041666666666668
+    },
+    "6-15": {
+     "roots": 32,
+     "mean_delta": 0.021484375
+    }
+   },
+   "by_candidate_count": {
+    "2": {
+     "roots": 1,
+     "mean_delta": 0.0
+    },
+    "3": {
+     "roots": 3,
+     "mean_delta": 0.0
+    },
+    "4": {
+     "roots": 76,
+     "mean_delta": 0.029605263157894735
+    }
+   },
+   "wall_p50_s": 4.812161803245544,
+   "wall_p95_s": 4.958854246139526,
+   "wall_max_s": 5.001489877700806,
+   "pairs_p50": 26.0,
+   "role": "neural stress test"
+  },
+  "Grunt|grunt": {
+   "roots": 80,
+   "delta": 0.0375,
+   "ci95": [
+    0.006230468750000007,
+    0.0734375
+   ],
+   "ci_excludes_0": true,
+   "supported_only": {
+    "roots": 75,
+    "delta": 0.04,
+    "ci95": [
+     0.005833333333333334,
+     0.07752083333333303
+    ]
+   },
+   "override_rate": 0.3625,
+   "fallback_rate": 0.6375,
+   "mean_delta_per_override": 0.10344827586206896,
+   "overrides_positive": 14,
+   "overrides_negative": 3,
+   "unsupported_roots": 5,
+   "unsupported_reasons": {
+    "pivot_switch_request": 2,
+    "p1:move_state:futuresight": 1,
+    "p2:lockedmove": 1,
+    "p1:twoturnmove": 1
+   },
+   "by_phase": {
+    "0-5": {
+     "roots": 18,
+     "mean_delta": 0.027777777777777776
+    },
+    "16-30": {
+     "roots": 26,
+     "mean_delta": 0.026442307692307692
+    },
+    "31+": {
+     "roots": 1,
+     "mean_delta": 0.0
+    },
+    "6-15": {
+     "roots": 35,
+     "mean_delta": 0.05178571428571429
+    }
+   },
+   "by_candidate_count": {
+    "2": {
+     "roots": 3,
+     "mean_delta": 0.2916666666666667
+    },
+    "3": {
+     "roots": 6,
+     "mean_delta": -0.041666666666666664
+    },
+    "4": {
+     "roots": 71,
+     "mean_delta": 0.03345070422535211
+    }
+   },
+   "wall_p50_s": 4.801438927650452,
+   "wall_p95_s": 4.972889602184296,
+   "wall_max_s": 5.00160551071167,
+   "pairs_p50": 39.5,
+   "role": "positive control"
+  },
+  "Grunt|gymleader": {
+   "roots": 80,
+   "delta": 0.009375,
+   "ci95": [
+    -0.028125,
+    0.04296875
+   ],
+   "ci_excludes_0": false,
+   "supported_only": {
+    "roots": 75,
+    "delta": 0.01,
+    "ci95": [
+     -0.03,
+     0.04583333333333333
+    ]
+   },
+   "override_rate": 0.3125,
+   "fallback_rate": 0.6875,
+   "mean_delta_per_override": 0.03,
+   "overrides_positive": 10,
+   "overrides_negative": 6,
+   "unsupported_roots": 5,
+   "unsupported_reasons": {
+    "pivot_switch_request": 2,
+    "p1:move_state:futuresight": 1,
+    "p2:lockedmove": 1,
+    "p1:twoturnmove": 1
+   },
+   "by_phase": {
+    "0-5": {
+     "roots": 18,
+     "mean_delta": -0.04861111111111111
+    },
+    "16-30": {
+     "roots": 26,
+     "mean_delta": 0.028846153846153848
+    },
+    "31+": {
+     "roots": 1,
+     "mean_delta": 0.0
+    },
+    "6-15": {
+     "roots": 35,
+     "mean_delta": 0.025
+    }
+   },
+   "by_candidate_count": {
+    "2": {
+     "roots": 3,
+     "mean_delta": 0.0
+    },
+    "3": {
+     "roots": 6,
+     "mean_delta": -0.13541666666666666
+    },
+    "4": {
+     "roots": 71,
+     "mean_delta": 0.022007042253521125
+    }
+   },
+   "wall_p50_s": 4.795814275741577,
+   "wall_p95_s": 4.999188303947449,
+   "wall_max_s": 5.002176761627197,
+   "pairs_p50": 41.0,
+   "role": "mismatch stress"
+  },
+  "Grunt|mixture": {
+   "roots": 80,
+   "delta": 0.025,
+   "ci95": [
+    -0.00625,
+    0.0609375
+   ],
+   "ci_excludes_0": false,
+   "supported_only": {
+    "roots": 75,
+    "delta": 0.02666666666666667,
+    "ci95": [
+     -0.006666666666666667,
+     0.06418749999999969
+    ]
+   },
+   "override_rate": 0.3875,
+   "fallback_rate": 0.6125,
+   "mean_delta_per_override": 0.06451612903225806,
+   "overrides_positive": 12,
+   "overrides_negative": 7,
+   "unsupported_roots": 5,
+   "unsupported_reasons": {
+    "pivot_switch_request": 2,
+    "p1:move_state:futuresight": 1,
+    "p2:lockedmove": 1,
+    "p1:twoturnmove": 1
+   },
+   "by_phase": {
+    "0-5": {
+     "roots": 18,
+     "mean_delta": 0.027777777777777776
+    },
+    "16-30": {
+     "roots": 26,
+     "mean_delta": 0.026442307692307692
+    },
+    "31+": {
+     "roots": 1,
+     "mean_delta": 0.0
+    },
+    "6-15": {
+     "roots": 35,
+     "mean_delta": 0.023214285714285715
+    }
+   },
+   "by_candidate_count": {
+    "2": {
+     "roots": 3,
+     "mean_delta": 0.2916666666666667
+    },
+    "3": {
+     "roots": 6,
+     "mean_delta": -0.041666666666666664
+    },
+    "4": {
+     "roots": 71,
+     "mean_delta": 0.01936619718309859
+    }
+   },
+   "wall_p50_s": 4.7920050621032715,
+   "wall_p95_s": 5.00120906829834,
+   "wall_max_s": 5.002254009246826,
+   "pairs_p50": 39.5,
+   "role": "mixture on a heuristic opponent"
+  },
+  "GymLeader|grunt": {
+   "roots": 80,
+   "delta": 0.05546875,
+   "ci95": [
+    0.01796875,
+    0.1
+   ],
+   "ci_excludes_0": true,
+   "supported_only": {
+    "roots": 70,
+    "delta": 0.06339285714285714,
+    "ci95": [
+     0.02142857142857143,
+     0.11428571428571428
+    ]
+   },
+   "override_rate": 0.325,
+   "fallback_rate": 0.675,
+   "mean_delta_per_override": 0.17067307692307693,
+   "overrides_positive": 17,
+   "overrides_negative": 3,
+   "unsupported_roots": 10,
+   "unsupported_reasons": {
+    "pivot_switch_request": 6,
+    "p2:move_state:futuresight": 3,
+    "p1:twoturnmove": 1
+   },
+   "by_phase": {
+    "0-5": {
+     "roots": 14,
+     "mean_delta": 0.08928571428571429
+    },
+    "16-30": {
+     "roots": 20,
+     "mean_delta": 0.10625
+    },
+    "31+": {
+     "roots": 3,
+     "mean_delta": 0.0
+    },
+    "6-15": {
+     "roots": 43,
+     "mean_delta": 0.024709302325581394
+    }
+   },
+   "by_candidate_count": {
+    "2": {
+     "roots": 2,
+     "mean_delta": 0.0
+    },
+    "3": {
+     "roots": 5,
+     "mean_delta": 0.0
+    },
+    "4": {
+     "roots": 73,
+     "mean_delta": 0.06078767123287671
+    }
+   },
+   "wall_p50_s": 4.808449149131775,
+   "wall_p95_s": 5.0011559009552,
+   "wall_max_s": 5.001774311065674,
+   "pairs_p50": 31.5,
+   "role": "mismatch stress"
+  },
+  "GymLeader|gymleader": {
+   "roots": 80,
+   "delta": 0.05703125,
+   "ci95": [
+    0.01796875,
+    0.10234375
+   ],
+   "ci_excludes_0": true,
+   "supported_only": {
+    "roots": 70,
+    "delta": 0.06517857142857143,
+    "ci95": [
+     0.022321428571428572,
+     0.11696428571428572
+    ]
+   },
+   "override_rate": 0.2875,
+   "fallback_rate": 0.7125,
+   "mean_delta_per_override": 0.1983695652173913,
+   "overrides_positive": 14,
+   "overrides_negative": 2,
+   "unsupported_roots": 10,
+   "unsupported_reasons": {
+    "pivot_switch_request": 6,
+    "p2:move_state:futuresight": 3,
+    "p1:twoturnmove": 1
+   },
+   "by_phase": {
+    "0-5": {
+     "roots": 14,
+     "mean_delta": 0.08035714285714286
+    },
+    "16-30": {
+     "roots": 20,
+     "mean_delta": 0.10625
+    },
+    "31+": {
+     "roots": 3,
+     "mean_delta": 0.0
+    },
+    "6-15": {
+     "roots": 43,
+     "mean_delta": 0.030523255813953487
+    }
+   },
+   "by_candidate_count": {
+    "2": {
+     "roots": 2,
+     "mean_delta": 0.0
+    },
+    "3": {
+     "roots": 5,
+     "mean_delta": 0.0
+    },
+    "4": {
+     "roots": 73,
+     "mean_delta": 0.0625
+    }
+   },
+   "wall_p50_s": 4.786231160163879,
+   "wall_p95_s": 5.001347780227661,
+   "wall_max_s": 5.00175666809082,
+   "pairs_p50": 31.5,
+   "role": "positive control"
+  },
+  "GymLeader|mixture": {
+   "roots": 80,
+   "delta": 0.04453125,
+   "ci95": [
+    0.0078125,
+    0.08830078124999972
+   ],
+   "ci_excludes_0": true,
+   "supported_only": {
+    "roots": 70,
+    "delta": 0.05089285714285714,
+    "ci95": [
+     0.008928571428571428,
+     0.10178571428571428
+    ]
+   },
+   "override_rate": 0.2875,
+   "fallback_rate": 0.7125,
+   "mean_delta_per_override": 0.15489130434782608,
+   "overrides_positive": 14,
+   "overrides_negative": 3,
+   "unsupported_roots": 10,
+   "unsupported_reasons": {
+    "pivot_switch_request": 6,
+    "p2:move_state:futuresight": 3,
+    "p1:twoturnmove": 1
+   },
+   "by_phase": {
+    "0-5": {
+     "roots": 14,
+     "mean_delta": 0.05357142857142857
+    },
+    "16-30": {
+     "roots": 20,
+     "mean_delta": 0.10625
+    },
+    "31+": {
+     "roots": 3,
+     "mean_delta": 0.0
+    },
+    "6-15": {
+     "roots": 43,
+     "mean_delta": 0.015988372093023256
+    }
+   },
+   "by_candidate_count": {
+    "2": {
+     "roots": 2,
+     "mean_delta": 0.0
+    },
+    "3": {
+     "roots": 5,
+     "mean_delta": 0.0
+    },
+    "4": {
+     "roots": 73,
+     "mean_delta": 0.0488013698630137
+    }
+   },
+   "wall_p50_s": 4.781049609184265,
+   "wall_p95_s": 5.001228654384613,
+   "wall_max_s": 5.00177264213562,
+   "pairs_p50": 30.0,
+   "role": "mixture on a heuristic opponent"
+  }
+ },
+ "roots_per_real": {
+  "Grunt": 80,
+  "GymLeader": 80,
+  "C": 80
+ },
+ "primary_mixture_pooled_grunt_gymleader": {
+  "roots": 160,
+  "delta": 0.034765625,
+  "ci95": [
+   0.010546875,
+   0.06171875
+  ],
+  "ci_excludes_0": true,
+  "supported_only": {
+   "roots": 145,
+   "delta": 0.03836206896551724,
+   "ci95": [
+    0.010775862068965518,
+    0.06982758620689655
+   ]
+  },
+  "override_rate": 0.3375,
+  "fallback_rate": 0.6625,
+  "mean_delta_per_override": 0.10300925925925926,
+  "overrides_positive": 26,
+  "overrides_negative": 10,
+  "unsupported_roots": 15,
+  "unsupported_reasons": {
+   "pivot_switch_request": 8,
+   "p1:move_state:futuresight": 1,
+   "p2:lockedmove": 1,
+   "p1:twoturnmove": 2,
+   "p2:move_state:futuresight": 3
+  },
+  "by_phase": {
+   "0-5": {
+    "roots": 32,
+    "mean_delta": 0.0390625
+   },
+   "16-30": {
+    "roots": 46,
+    "mean_delta": 0.06114130434782609
+   },
+   "31+": {
+    "roots": 4,
+    "mean_delta": 0.0
+   },
+   "6-15": {
+    "roots": 78,
+    "mean_delta": 0.019230769230769232
+   }
+  },
+  "by_candidate_count": {
+   "2": {
+    "roots": 5,
+    "mean_delta": 0.175
+   },
+   "3": {
+    "roots": 11,
+    "mean_delta": -0.022727272727272728
+   },
+   "4": {
+    "roots": 144,
+    "mean_delta": 0.03428819444444445
+   }
+  },
+  "wall_p50_s": 4.784040451049805,
+  "wall_p95_s": 5.001228547096252,
+  "wall_max_s": 5.002254009246826,
+  "pairs_p50": 33.0
+ },
+ "primary_verdict": "PASS",
+ "paired_differences": {
+  "Grunt: matched - mismatched": {
+   "roots": 80,
+   "diff": 0.028125,
+   "ci95": [
+    -0.00390625,
+    0.06640625
+   ]
+  },
+  "Grunt: mixture - matched": {
+   "roots": 80,
+   "diff": -0.0125,
+   "ci95": [
+    -0.02578125,
+    -0.00078125
+   ]
+  },
+  "Grunt: mixture - mismatched": {
+   "roots": 80,
+   "diff": 0.015625,
+   "ci95": [
+    -0.01640625,
+    0.0546875
+   ]
+  },
+  "GymLeader: matched - mismatched": {
+   "roots": 80,
+   "diff": 0.0015625,
+   "ci95": [
+    -0.01875,
+    0.0234375
+   ]
+  },
+  "GymLeader: mixture - matched": {
+   "roots": 80,
+   "diff": -0.0125,
+   "ci95": [
+    -0.0375,
+    0.0078125
+   ]
+  },
+  "GymLeader: mixture - mismatched": {
+   "roots": 80,
+   "diff": -0.0109375,
+   "ci95": [
+    -0.02421875,
+    0.0
+   ]
+  }
+ },
+ "gate_M1": {
+  "unexpected_errors": 0,
+  "protocol_retries_hidden_trap": 1,
+  "illegal_actions": 0,
+  "illegal_chosen_actions": 0,
+  "fallback_always_legal_c": true,
+  "pass": true
+ },
+ "gate_M2": "PASS",
+ "gate_M3": {
+  "main_group_mixture_verdicts": {
+   "Grunt": "INCONCLUSIVE",
+   "GymLeader": "PASS"
+  },
+  "pass": true,
+  "real_C_cell_verdict": "PASS"
+ }
+}
