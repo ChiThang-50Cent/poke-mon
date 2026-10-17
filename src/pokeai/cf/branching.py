@@ -18,7 +18,7 @@ import time
 from dataclasses import dataclass, field
 from typing import Any
 
-from pokeai.cf.offline import SIDES, OfflineMatch, new_tag
+from pokeai.cf.offline import SIDES, OfflineMatch, json_digest, new_tag
 from pokeai.cf.restore_check import TakenCheckpoint, signature
 from pokeai.cf.sim import Sim, gen5_seed
 
@@ -78,6 +78,7 @@ class Rollout:
     errors: list[str]
     illegal_actions: int
     final_prng: str
+    sig_digest: str = ""
     signature: list[dict[str, Any]] = field(repr=False, default_factory=list)
     root_decisions: dict[str, Any] = field(default_factory=dict)
 
@@ -85,13 +86,24 @@ class Rollout:
 def rollout(
     sim: Sim, players: dict[str, Any], root: TakenCheckpoint, learner: str,
     candidate: int, seeds: dict[str, int], max_rounds: int = 600,
+    world: dict[str, Any] | None = None, learner_sample: bool | None = None,
+    keep_signature: bool = True,
 ) -> Rollout:
-    """One branch: `seeds` = {"sim": .., "opponent": .., "learner": ..}."""
+    """One branch: `seeds` = {"sim": .., "opponent": .., "learner": ..}.
+
+    `world` (CF1) transplants a sampled opponent world into the restored root;
+    `learner_sample` overrides the learner's sampling mode after the root restore
+    (restore rewrites scalar player attributes from the snapshot).
+    """
     opponent = "p2" if learner == "p1" else "p1"
     started = time.perf_counter()
     tag = new_tag()
     match = OfflineMatch.restore(sim, players, root.checkpoint, tag)
     try:
+        if learner_sample is not None:
+            players[learner].sample = learner_sample
+        if world is not None:
+            match.apply_world(world)
         sim.set_prng(tag, gen5_seed(seeds["sim"]))
         reseed(match, opponent, seeds["opponent"])
         reseed(match, learner, seeds["learner"])
@@ -112,7 +124,8 @@ def rollout(
                 getattr(players[s], "illegal_actions", 0) - illegal_before[s]
                 for s in SIDES
             ),
-            final_prng=final_prng, signature=sig,
+            final_prng=final_prng, sig_digest=json_digest(sig),
+            signature=sig if keep_signature else [],
             root_decisions={
                 s: [
                     {"message": d["message"], "model": d["model"]}

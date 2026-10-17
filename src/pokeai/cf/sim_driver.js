@@ -15,6 +15,8 @@ const readline = require("readline");
 const SIM = process.env.SHOWDOWN_SIM_DIR ||
   path.resolve(__dirname, "../../../third_party/metamon/server/pokemon-showdown/dist/sim");
 const { Battle, extractChannelMessages } = require(path.join(SIM, "battle"));
+const { Pokemon } = require(path.join(SIM, "pokemon"));
+const { TeamValidator, Dex, toID } = require(path.join(SIM, "index"));
 
 const battles = new Map(); // id -> { battle, out: [] }
 const snapshots = new Map(); // key -> JSON string
@@ -129,6 +131,158 @@ const handlers = {
     return {};
   },
 };
+
+
+// ---------------------------------------------------------------- CF1 belief support
+
+// Public HP display exactly as Pokemon.getHealth().shared (HP Percentage Mod).
+function publicPct(p) {
+  if (!p.hp) return 0;
+  let pct = Math.ceil((100 * p.hp) / p.maxhp);
+  if (pct === 100 && p.hp < p.maxhp) pct = 99;
+  return pct;
+}
+
+// Smallest-change inverse of publicPct for a new max HP.
+function hpForPct(pct, maxhp) {
+  if (pct === 0) return 0;
+  if (pct >= 100) return maxhp;
+  return Math.max(1, Math.floor((pct * maxhp) / 100));
+}
+
+function moveId(battle, name) {
+  const id = battle.dex.moves.get(name).id;
+  return id.startsWith("hiddenpower") ? "hiddenpower" : id;
+}
+
+function p2Roster(battle) {
+  return battle.sides[1].pokemon.map((p, index) => ({
+    index,
+    name: p.name,
+    species: Dex.species.get(p.baseSpecies.name.replace(/-Tera$/, "")).name,
+    current_species: p.species.name,
+    level: p.level,
+    gender: p.gender,
+    shiny: !!p.set.shiny,
+    legal_abilities: Object.values(
+      Dex.species.get(p.baseSpecies.name.replace(/-Tera$/, "")).abilities),
+    is_active: p.isActive,
+    fainted: !p.hp,
+  }));
+}
+
+function applyWorld(battle, world) {
+  const side = battle.sides[1];
+  const hp_maps = [];
+  for (const m of world.mons) {
+    const p = side.pokemon[m.index];
+    const oldMax = p.maxhp;
+    const pct = publicPct(p);
+    const set = {
+      name: p.name, species: p.baseSpecies.name, gender: p.gender || "N",
+      level: p.level, shiny: !!p.set.shiny, item: m.item || "", ability: m.ability,
+      moves: m.moves, nature: m.nature, evs: m.evs, ivs: m.ivs,
+      teraType: m.tera_type, happiness: p.set.happiness, pokeball: p.set.pokeball,
+    };
+    const fresh = new Pokemon(set, side);
+    p.set = fresh.set;
+    p.ppUps = fresh.ppUps;
+    p.hpType = fresh.hpType; p.hpPower = fresh.hpPower;
+    p.baseHpType = fresh.baseHpType; p.baseHpPower = fresh.baseHpPower;
+    p.baseStoredStats = fresh.baseStoredStats;
+    p.baseMaxhp = fresh.baseMaxhp;
+    if (!p.transformed) {
+      const stats = p.species.id === p.baseSpecies.id
+        ? fresh.storedStats : battle.spreadModify(p.species.baseStats, p.set);
+      for (const k of Object.keys(p.storedStats)) p.storedStats[k] = stats[k];
+    }
+    p.maxhp = fresh.baseMaxhp;
+    p.hp = hpForPct(pct, p.maxhp);
+    const oldBase = p.baseMoveSlots, oldCur = p.moveSlots;
+    const ids = m.moves.map((n) => moveId(battle, n));
+    const pick = (list, id, i) => {
+      const hit = list.find((x) => x.id === id);
+      return hit ? { ...hit } : { ...fresh.baseMoveSlots[i] };
+    };
+    p.baseMoveSlots = ids.map((id, i) => pick(oldBase, id, i));
+    p.moveSlots = ids.map((id, i) => pick(oldCur, id, i));
+    if (!m.keep_item) {
+      p.item = toID(m.item);
+      p.itemState = battle.initEffectState({ id: p.item, target: p });
+    }
+    if (!m.keep_ability) {
+      p.baseAbility = toID(m.ability);
+      p.ability = p.baseAbility;
+      p.abilityState = battle.initEffectState({ id: p.ability, target: p });
+    }
+    if (!m.keep_tera) p.teraType = m.tera_type;
+    if (p.isActive) p.updateSpeed();
+    hp_maps.push({ index: m.index, old_max: oldMax, new_max: p.maxhp, pct, hp: p.hp });
+  }
+  const reqs = battle.getRequests(battle.requestState);
+  side.activeRequest = reqs[1];
+  return { request: JSON.stringify(reqs[1]), hp_maps };
+}
+
+function publicView(battle) {
+  const sideView = (side) => ({
+    name: side.name,
+    conditions: Object.keys(side.sideConditions).sort(),
+    pokemon: side.pokemon.map((p) => ({
+      name: p.name, species: p.species.name, base_species: p.baseSpecies.name,
+      level: p.level, gender: p.gender, shiny: !!p.set.shiny,
+      hp_public: p.getHealth().shared, fainted: !p.hp, status: p.status,
+      boosts: p.boosts, volatiles: Object.keys(p.volatiles).sort(),
+      is_active: p.isActive, position: p.position, terastallized: p.terastallized || "",
+      types: p.getTypes ? p.getTypes() : p.types,
+    })),
+  });
+  return {
+    turn: battle.turn,
+    request_state: battle.requestState,
+    field: {
+      weather: battle.field.weather, terrain: battle.field.terrain,
+      pseudo: Object.keys(battle.field.pseudoWeather).sort(),
+    },
+    p1: sideView(battle.sides[0]), p2: sideView(battle.sides[1]),
+  };
+}
+
+function p2Full(battle) {
+  return battle.sides[1].pokemon.map((p, index) => ({
+    index, name: p.name, species: p.baseSpecies.name, item: p.item, ability: p.ability,
+    base_ability: p.baseAbility, moves: p.baseMoveSlots.map((x) => x.id),
+    current_moves: p.moveSlots.map((x) => x.id),
+    pp: p.moveSlots.map((x) => x.pp), nature: p.set.nature, evs: p.set.evs,
+    ivs: p.set.ivs, tera_type: p.teraType, terastallized: p.terastallized || "",
+    hp: p.hp, maxhp: p.maxhp, stats: p.storedStats,
+    set: { name: p.name, species: p.baseSpecies.name, gender: p.gender || "N",
+      level: p.level, shiny: !!p.set.shiny, item: p.set.item, ability: p.set.ability,
+      moves: p.set.moves, nature: p.set.nature, evs: p.set.evs, ivs: p.set.ivs,
+      teraType: p.set.teraType },
+  }));
+}
+
+Object.assign(handlers, {
+  roster(req) { return { roster: p2Roster(get(req.id).battle) }; },
+  public_log(req) {
+    const b = get(req.id).battle;
+    return { lines: extractChannelMessages(b.log.join("\n"), [1])[1] };
+  },
+  public_view(req) { return { view: publicView(get(req.id).battle) }; },
+  p2_full(req) { return { mons: p2Full(get(req.id).battle) }; },
+  apply_world(req) { return applyWorld(get(req.id).battle, req.world); },
+  validate(req) {
+    const validator = TeamValidator.get(req.formatid || "gen9ou");
+    return { errors: validator.validateTeam(JSON.parse(JSON.stringify(req.team))) };
+  },
+  move_info(req) {
+    return { moves: req.names.map((n) => {
+      const m = Dex.moves.get(n);
+      return { name: m.name, id: m.id, category: m.category };
+    }) };
+  },
+});
 
 const rl = readline.createInterface({ input: process.stdin, crlfDelay: Infinity });
 rl.on("line", (line) => {

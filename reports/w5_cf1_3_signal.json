@@ -1,0 +1,608 @@
+{
+ "roots": 400,
+ "belief_greedy": {
+  "G3": {
+   "roots": 380,
+   "mean_undefined_as_0": 0.20956951317976755,
+   "ci95": [
+    0.1597625537723268,
+    0.25866560282959805
+   ],
+   "mean_defined_only": 0.287496083062497,
+   "n_defined": 277,
+   "null_mean": 0.0001660234735278237,
+   "null_p95": 0.04181346992747845,
+   "null_p_value": 0.000999000999000999,
+   "top1_agreement": 0.3259502923976608,
+   "top1_chance": 0.2541666666666667,
+   "pass": true
+  },
+  "G4": {
+   "roots": 400,
+   "delta": 0.02578125,
+   "ci95": [
+    0.0121875,
+    0.03984765624999994
+   ],
+   "pass": true,
+   "fraction_a_star_ne_a_c": 0.4075,
+   "by_group": {
+    "opponent=C": {
+     "roots": 134,
+     "delta": 0.008395522388059701,
+     "ci95": [
+      -0.008395522388059701,
+      0.025186567164179104
+     ],
+     "pass": false,
+     "fraction_a_star_ne_a_c": 0.4664179104477612
+    },
+    "opponent=Grunt": {
+     "roots": 133,
+     "delta": 0.03148496240601504,
+     "ci95": [
+      0.007988721804511278,
+      0.05639097744360902
+     ],
+     "pass": true,
+     "fraction_a_star_ne_a_c": 0.39097744360902253
+    },
+    "opponent=GymLeader": {
+     "roots": 133,
+     "delta": 0.03759398496240601,
+     "ci95": [
+      0.010808270676691729,
+      0.0662593984962406
+     ],
+     "pass": true,
+     "fraction_a_star_ne_a_c": 0.36466165413533835
+    },
+    "phase=0-5": {
+     "roots": 82,
+     "delta": 0.04496951219512195,
+     "ci95": [
+      0.012195121951219513,
+      0.08081173780487777
+     ],
+     "pass": true,
+     "fraction_a_star_ne_a_c": 0.5426829268292683
+    },
+    "phase=16-30": {
+     "roots": 111,
+     "delta": 0.008445945945945946,
+     "ci95": [
+      -0.010135135135135136,
+      0.029842342342342343
+     ],
+     "pass": false,
+     "fraction_a_star_ne_a_c": 0.3108108108108108
+    },
+    "phase=31+": {
+     "roots": 36,
+     "delta": 0.022569444444444444,
+     "ci95": [
+      -0.013888888888888888,
+      0.06944444444444445
+     ],
+     "pass": false,
+     "fraction_a_star_ne_a_c": 0.2916666666666667
+    },
+    "phase=6-15": {
+     "roots": 171,
+     "delta": 0.02850877192982456,
+     "ci95": [
+      0.006578947368421052,
+      0.051535087719298246
+     ],
+     "pass": true,
+     "fraction_a_star_ne_a_c": 0.4298245614035088
+    },
+    "split=train": {
+     "roots": 320,
+     "delta": 0.0181640625,
+     "ci95": [
+      0.0046875,
+      0.0328125
+     ],
+     "pass": true,
+     "fraction_a_star_ne_a_c": 0.3890625
+    },
+    "split=val": {
+     "roots": 80,
+     "delta": 0.05625,
+     "ci95": [
+      0.0203125,
+      0.09609375
+     ],
+     "pass": true,
+     "fraction_a_star_ne_a_c": 0.48125
+    },
+    "forced_switch=False": {
+     "roots": 330,
+     "delta": 0.020833333333333332,
+     "ci95": [
+      0.007007575757575758,
+      0.03428030303030303
+     ],
+     "pass": true,
+     "fraction_a_star_ne_a_c": 0.38636363636363635
+    },
+    "forced_switch=True": {
+     "roots": 70,
+     "delta": 0.049107142857142856,
+     "ci95": [
+      0.008928571428571428,
+      0.09375
+     ],
+     "pass": true,
+     "fraction_a_star_ne_a_c": 0.5071428571428571
+    }
+   }
+  },
+  "delta_q_precision": {
+   "pairs": 1141,
+   "mean_se": 0.09526111038751522,
+   "mean_ci_width": 0.37342355271905975,
+   "fraction_ci_excluding_0": 0.14986853637160386
+  }
+ },
+ "oracle_greedy": {
+  "G3": {
+   "roots": 93,
+   "mean_undefined_as_0": 0.36497755434626483,
+   "ci95": [
+    0.26126941942240894,
+    0.4675753050489656
+   ],
+   "mean_defined_only": 0.4919262689014874,
+   "n_defined": 69,
+   "null_mean": 0.00042130637030997207,
+   "null_p95": 0.09079777201030055,
+   "null_p_value": 0.000999000999000999,
+   "top1_agreement": 0.40292712066905617,
+   "top1_chance": 0.25268817204301075,
+   "pass": true
+  },
+  "G4": {
+   "roots": 100,
+   "delta": 0.08375,
+   "ci95": [
+    0.04375,
+    0.12689062499999976
+   ],
+   "pass": true,
+   "fraction_a_star_ne_a_c": 0.39,
+   "by_group": {
+    "opponent=C": {
+     "roots": 34,
+     "delta": 0.003676470588235294,
+     "ci95": [
+      -0.027573529411764705,
+      0.03676470588235294
+     ],
+     "pass": false,
+     "fraction_a_star_ne_a_c": 0.35294117647058826
+    },
+    "opponent=Grunt": {
+     "roots": 33,
+     "delta": 0.19128787878787878,
+     "ci95": [
+      0.1041193181818182,
+      0.2879261363636357
+     ],
+     "pass": true,
+     "fraction_a_star_ne_a_c": 0.5454545454545454
+    },
+    "opponent=GymLeader": {
+     "roots": 33,
+     "delta": 0.058712121212121215,
+     "ci95": [
+      0.003787878787878788,
+      0.13636363636363635
+     ],
+     "pass": true,
+     "fraction_a_star_ne_a_c": 0.2727272727272727
+    },
+    "phase=0-5": {
+     "roots": 21,
+     "delta": 0.11904761904761904,
+     "ci95": [
+      0.02976190476190476,
+      0.23511904761904762
+     ],
+     "pass": true,
+     "fraction_a_star_ne_a_c": 0.47619047619047616
+    },
+    "phase=16-30": {
+     "roots": 22,
+     "delta": 0.03977272727272727,
+     "ci95": [
+      -0.014204545454545454,
+      0.11079545454545454
+     ],
+     "pass": false,
+     "fraction_a_star_ne_a_c": 0.25
+    },
+    "phase=31+": {
+     "roots": 12,
+     "delta": 0.15104166666666666,
+     "ci95": [
+      -0.0001302083333332889,
+      0.3489583333333333
+     ],
+     "pass": false,
+     "fraction_a_star_ne_a_c": 0.4166666666666667
+    },
+    "phase=6-15": {
+     "roots": 45,
+     "delta": 0.07083333333333333,
+     "ci95": [
+      0.019444444444444445,
+      0.12916666666666668
+     ],
+     "pass": true,
+     "fraction_a_star_ne_a_c": 0.4111111111111111
+    },
+    "split=train": {
+     "roots": 80,
+     "delta": 0.0734375,
+     "ci95": [
+      0.03125,
+      0.12109375
+     ],
+     "pass": true,
+     "fraction_a_star_ne_a_c": 0.39375
+    },
+    "split=val": {
+     "roots": 20,
+     "delta": 0.125,
+     "ci95": [
+      0.03125,
+      0.246875
+     ],
+     "pass": true,
+     "fraction_a_star_ne_a_c": 0.375
+    },
+    "forced_switch=False": {
+     "roots": 83,
+     "delta": 0.08734939759036145,
+     "ci95": [
+      0.04593373493975904,
+      0.13629518072289157
+     ],
+     "pass": true,
+     "fraction_a_star_ne_a_c": 0.3855421686746988
+    },
+    "forced_switch=True": {
+     "roots": 17,
+     "delta": 0.0661764705882353,
+     "ci95": [
+      -0.03308823529411765,
+      0.19117647058823528
+     ],
+     "pass": false,
+     "fraction_a_star_ne_a_c": 0.4117647058823529
+    }
+   }
+  },
+  "delta_q_precision": {
+   "pairs": 283,
+   "mean_se": 0.08205252263573533,
+   "mean_ci_width": 0.3216458887320825,
+   "fraction_ci_excluding_0": 0.17314487632508835
+  }
+ },
+ "belief_t1": {
+  "G3": {
+   "roots": 93,
+   "mean_undefined_as_0": 0.14258640771131778,
+   "ci95": [
+    0.045267096092934646,
+    0.24452685534311566
+   ],
+   "mean_defined_only": 0.18943622738789365,
+   "n_defined": 70,
+   "null_mean": -0.0002033354630029065,
+   "null_p95": 0.09225084510405483,
+   "null_p_value": 0.006993006993006993,
+   "top1_agreement": 0.33303464755077655,
+   "top1_chance": 0.25268817204301075,
+   "pass": true
+  },
+  "G4": {
+   "roots": 100,
+   "delta": 0.013125,
+   "ci95": [
+    -0.01125,
+    0.04
+   ],
+   "pass": false,
+   "fraction_a_star_ne_a_c": 0.46,
+   "by_group": {
+    "opponent=C": {
+     "roots": 34,
+     "delta": 0.012867647058823529,
+     "ci95": [
+      -0.025735294117647058,
+      0.06066176470588235
+     ],
+     "pass": false,
+     "fraction_a_star_ne_a_c": 0.4264705882352941
+    },
+    "opponent=Grunt": {
+     "roots": 33,
+     "delta": 0.017045454545454544,
+     "ci95": [
+      -0.026515151515151516,
+      0.06628787878787878
+     ],
+     "pass": false,
+     "fraction_a_star_ne_a_c": 0.4696969696969697
+    },
+    "opponent=GymLeader": {
+     "roots": 33,
+     "delta": 0.00946969696969697,
+     "ci95": [
+      -0.032196969696969696,
+      0.054924242424242424
+     ],
+     "pass": false,
+     "fraction_a_star_ne_a_c": 0.48484848484848486
+    },
+    "phase=0-5": {
+     "roots": 21,
+     "delta": -0.017857142857142856,
+     "ci95": [
+      -0.07738095238095238,
+      0.044642857142857144
+     ],
+     "pass": false,
+     "fraction_a_star_ne_a_c": 0.5
+    },
+    "phase=16-30": {
+     "roots": 22,
+     "delta": -0.008522727272727272,
+     "ci95": [
+      -0.019886363636363636,
+      0.002840909090909091
+     ],
+     "pass": false,
+     "fraction_a_star_ne_a_c": 0.3409090909090909
+    },
+    "phase=31+": {
+     "roots": 12,
+     "delta": 0.036458333333333336,
+     "ci95": [
+      -0.015625,
+      0.125
+     ],
+     "pass": false,
+     "fraction_a_star_ne_a_c": 0.3333333333333333
+    },
+    "phase=6-15": {
+     "roots": 45,
+     "delta": 0.03194444444444444,
+     "ci95": [
+      -0.009722222222222222,
+      0.07642361111111061
+     ],
+     "pass": false,
+     "fraction_a_star_ne_a_c": 0.5333333333333333
+    },
+    "split=train": {
+     "roots": 80,
+     "delta": -0.0078125,
+     "ci95": [
+      -0.03125,
+      0.01796875
+     ],
+     "pass": false,
+     "fraction_a_star_ne_a_c": 0.41875
+    },
+    "split=val": {
+     "roots": 20,
+     "delta": 0.096875,
+     "ci95": [
+      0.028125,
+      0.171875
+     ],
+     "pass": true,
+     "fraction_a_star_ne_a_c": 0.625
+    },
+    "forced_switch=False": {
+     "roots": 83,
+     "delta": 0.002259036144578313,
+     "ci95": [
+      -0.021837349397590362,
+      0.02786144578313253
+     ],
+     "pass": false,
+     "fraction_a_star_ne_a_c": 0.4397590361445783
+    },
+    "forced_switch=True": {
+     "roots": 17,
+     "delta": 0.0661764705882353,
+     "ci95": [
+      -0.011121323529411734,
+      0.15808823529411764
+     ],
+     "pass": false,
+     "fraction_a_star_ne_a_c": 0.5588235294117647
+    }
+   }
+  },
+  "delta_q_precision": {
+   "pairs": 283,
+   "mean_se": 0.10859716807484958,
+   "mean_ci_width": 0.42570089885341045,
+   "fraction_ci_excluding_0": 0.06713780918727916
+  }
+ },
+ "belief_vs_oracle_dQ": {
+  "pairs": 283,
+  "pearson": 0.5017680595665874,
+  "sign_agreement": 0.6554054054054054,
+  "pairs_both_nonzero": 148
+ },
+ "belief_vs_t1_dQ": {
+  "pairs": 283,
+  "pearson": 0.35816154746417267,
+  "sign_agreement": 0.6496815286624203,
+  "pairs_both_nonzero": 157
+ },
+ "belief_greedy_on_control_roots": {
+  "G3": {
+   "roots": 93,
+   "mean_undefined_as_0": 0.21732975695458184,
+   "ci95": [
+    0.11181363687501111,
+    0.31463551279430335
+   ],
+   "mean_defined_only": 0.28467137178557905,
+   "n_defined": 71,
+   "null_mean": -0.0015874871819792072,
+   "null_p95": 0.08568514949766964,
+   "null_p_value": 0.000999000999000999,
+   "top1_agreement": 0.3007765830346475,
+   "top1_chance": 0.25268817204301075,
+   "pass": true
+  },
+  "G4": {
+   "roots": 100,
+   "delta": 0.025625,
+   "ci95": [
+    -0.0025,
+    0.056875
+   ],
+   "pass": false,
+   "fraction_a_star_ne_a_c": 0.44,
+   "by_group": {
+    "opponent=C": {
+     "roots": 34,
+     "delta": 0.014705882352941176,
+     "ci95": [
+      -0.014705882352941176,
+      0.04595588235294118
+     ],
+     "pass": false,
+     "fraction_a_star_ne_a_c": 0.45588235294117646
+    },
+    "opponent=Grunt": {
+     "roots": 33,
+     "delta": 0.041666666666666664,
+     "ci95": [
+      -0.015151515151515152,
+      0.10606060606060606
+     ],
+     "pass": false,
+     "fraction_a_star_ne_a_c": 0.48484848484848486
+    },
+    "opponent=GymLeader": {
+     "roots": 33,
+     "delta": 0.020833333333333332,
+     "ci95": [
+      -0.028456439393939378,
+      0.08522727272727272
+     ],
+     "pass": false,
+     "fraction_a_star_ne_a_c": 0.3787878787878788
+    },
+    "phase=0-5": {
+     "roots": 21,
+     "delta": 0.06845238095238096,
+     "ci95": [
+      0.0,
+      0.15773809523809523
+     ],
+     "pass": false,
+     "fraction_a_star_ne_a_c": 0.6428571428571429
+    },
+    "phase=16-30": {
+     "roots": 22,
+     "delta": 0.03409090909090909,
+     "ci95": [
+      -0.005681818181818182,
+      0.08522727272727272
+     ],
+     "pass": false,
+     "fraction_a_star_ne_a_c": 0.3409090909090909
+    },
+    "phase=31+": {
+     "roots": 12,
+     "delta": 0.03125,
+     "ci95": [
+      -0.041666666666666664,
+      0.15104166666666666
+     ],
+     "pass": false,
+     "fraction_a_star_ne_a_c": 0.25
+    },
+    "phase=6-15": {
+     "roots": 45,
+     "delta": 0.0,
+     "ci95": [
+      -0.0375,
+      0.04170138888888838
+     ],
+     "pass": false,
+     "fraction_a_star_ne_a_c": 0.4444444444444444
+    },
+    "split=train": {
+     "roots": 80,
+     "delta": 0.01640625,
+     "ci95": [
+      -0.01171875,
+      0.05
+     ],
+     "pass": false,
+     "fraction_a_star_ne_a_c": 0.4125
+    },
+    "split=val": {
+     "roots": 20,
+     "delta": 0.0625,
+     "ci95": [
+      -0.009375,
+      0.146875
+     ],
+     "pass": false,
+     "fraction_a_star_ne_a_c": 0.55
+    },
+    "forced_switch=False": {
+     "roots": 83,
+     "delta": 0.02635542168674699,
+     "ci95": [
+      -0.0030120481927710845,
+      0.060240963855421686
+     ],
+     "pass": false,
+     "fraction_a_star_ne_a_c": 0.42771084337349397
+    },
+    "forced_switch=True": {
+     "roots": 17,
+     "delta": 0.022058823529411766,
+     "ci95": [
+      -0.051470588235294115,
+      0.1213235294117647
+     ],
+     "pass": false,
+     "fraction_a_star_ne_a_c": 0.5
+    }
+   }
+  },
+  "delta_q_precision": {
+   "pairs": 283,
+   "mean_se": 0.09330679417985299,
+   "mean_ci_width": 0.3657626331850238,
+   "fraction_ci_excluding_0": 0.13074204946996468
+  }
+ },
+ "split_counts": {
+  "train": 320,
+  "val": 80
+ },
+ "c_greedy_is_best_fraction": 0.5525,
+ "verdict": {
+  "G3_pass": true,
+  "G4_pass": true
+ }
+}

@@ -84,6 +84,29 @@ class Sim:
     def drop_snapshot(self, key: str) -> None:
         self._call(cmd="drop_snapshot", key=key)
 
+    def roster(self, battle_id: str) -> list[dict[str, Any]]:
+        return self._call(cmd="roster", id=battle_id)["roster"]
+
+    def public_log(self, battle_id: str) -> list[str]:
+        """The p1-channel lines of the battle log (what the learner has seen)."""
+        return self._call(cmd="public_log", id=battle_id)["lines"]
+
+    def public_view(self, battle_id: str) -> dict[str, Any]:
+        return self._call(cmd="public_view", id=battle_id)["view"]
+
+    def p2_full(self, battle_id: str) -> list[dict[str, Any]]:
+        """TRUE opponent sets/state. QA and oracle labels only, never the sampler."""
+        return self._call(cmd="p2_full", id=battle_id)["mons"]
+
+    def apply_world(self, battle_id: str, world: dict[str, Any]) -> dict[str, Any]:
+        return self._call(cmd="apply_world", id=battle_id, world=world)
+
+    def validate(self, team: list[dict[str, Any]], formatid: str = "gen9ou") -> Any:
+        return self._call(cmd="validate", team=team, formatid=formatid)["errors"]
+
+    def move_info(self, names: list[str]) -> list[dict[str, Any]]:
+        return self._call(cmd="move_info", names=names)["moves"]
+
     def close(self) -> None:
         if self._proc.poll() is None:
             assert self._proc.stdin is not None
