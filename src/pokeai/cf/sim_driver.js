@@ -16,7 +16,7 @@ const SIM = process.env.SHOWDOWN_SIM_DIR ||
   path.resolve(__dirname, "../../../third_party/metamon/server/pokemon-showdown/dist/sim");
 const { Battle, extractChannelMessages } = require(path.join(SIM, "battle"));
 const { Pokemon } = require(path.join(SIM, "pokemon"));
-const { TeamValidator, Dex, toID } = require(path.join(SIM, "index"));
+const { TeamValidator, Dex, toID, Teams } = require(path.join(SIM, "index"));
 
 const battles = new Map(); // id -> { battle, out: [] }
 const snapshots = new Map(); // key -> JSON string
@@ -269,6 +269,10 @@ Object.assign(handlers, {
     const b = get(req.id).battle;
     return { lines: extractChannelMessages(b.log.join("\n"), [1])[1] };
   },
+  stats() {
+    const m = process.memoryUsage();
+    return { battles: battles.size, snapshots: snapshots.size, rss: m.rss, heap: m.heapUsed };
+  },
   public_view(req) { return { view: publicView(get(req.id).battle) }; },
   p2_full(req) { return { mons: p2Full(get(req.id).battle) }; },
   apply_world(req) { return applyWorld(get(req.id).battle, req.world); },
@@ -283,6 +287,260 @@ Object.assign(handlers, {
     }) };
   },
 });
+
+
+// ------------------------------------------------------------ BS0 reconstruction
+// Builds a NEW battle at a decision point from a public-information spec (see
+// pokeai/cf/reconstruct.py). Nothing here reads another battle's state.
+const BOOST_KEYS = ["atk", "def", "spa", "spd", "spe", "accuracy", "evasion"];
+
+function freshBoosts() {
+  return { atk: 0, def: 0, spa: 0, spd: 0, spe: 0, accuracy: 0, evasion: 0 };
+}
+
+function setMonState(battle, side, p, m) {
+  // reset everything the lead switch-in / default construction may have touched
+  p.boosts = freshBoosts();
+  p.volatiles = {};
+  p.status = "";
+  p.statusState = battle.initEffectState({});
+  p.switchFlag = false;
+  p.forceSwitchFlag = false;
+  p.lastMove = null;
+  p.lastMoveUsed = null;
+  p.moveThisTurn = "";
+  p.moveLastTurnResult = undefined;
+  p.moveThisTurnResult = undefined;
+  p.newlySwitched = false;
+  p.attackedBy = [];
+  p.hurtThisTurn = null;
+  p.usedItemThisTurn = false;
+  p.statsRaisedThisTurn = false;
+  p.statsLoweredThisTurn = false;
+  p.beingCalledBack = false;
+  p.trapped = p.maybeTrapped = p.maybeDisabled = p.maybeLocked = false;
+  p.timesAttacked = m.times_attacked || 0;
+  if (m.ability !== undefined && m.ability !== null) {
+    p.ability = toID(m.ability);
+    p.abilityState = battle.initEffectState({ id: p.ability, target: p, ...(m.ability_state || {}) });
+  }
+  if (m.types && m.types.length) p.setType(m.types);
+  if (m.added_type) p.addedType = m.added_type;
+  if (m.item_exact !== undefined && toID(m.item_exact) !== p.item) {
+    p.lastItem = p.item;
+    p.item = toID(m.item_exact);
+    p.itemState = battle.initEffectState({ id: p.item, target: p });
+  }
+  if (m.item_gone && m.item_exact === undefined) {
+    p.lastItem = p.item;
+    p.item = "";
+    p.itemState = battle.initEffectState({ id: "", target: p });
+    if (m.item_knocked) p.itemKnockedOff = true;
+  }
+  for (const k of Object.keys(m.boosts || {})) p.boosts[k] = m.boosts[k];
+  for (const slot of p.baseMoveSlots) {
+    const key = slot.id;
+    if (m.pp_exact && m.pp_exact[key] !== undefined) slot.pp = m.pp_exact[key];
+    else if (m.pp_used && m.pp_used[key]) slot.pp = Math.max(0, slot.maxpp - m.pp_used[key]);
+  }
+  p.moveSlots = p.baseMoveSlots.slice();
+  p.activeTurns = m.active_turns || 0;
+  p.activeMoveActions = m.active_move_actions || 0;
+  if (m.last_move) {
+    const mv = battle.dex.getActiveMove(m.last_move);
+    p.lastMove = mv;
+    p.lastMoveUsed = mv;
+    p.lastMoveTargetLoc = 1;
+  }
+  if (m.forme && toID(m.forme) !== p.species.id && !m.terastallized) {
+    p.formeChange(toID(m.forme), null, true);
+    battle.log.length = battle.log.length;
+  }
+  if (m.hp_exact !== undefined && m.hp_exact !== null) p.hp = m.hp_exact;
+  else p.hp = hpForPct(m.pct, p.maxhp);
+  for (let i = 0; i < (m.regen || 0); i++) p.hp = Math.min(p.maxhp, p.hp + Math.floor(p.maxhp / 3));
+  if (m.fainted) {
+    p.hp = 0;
+    p.fainted = true;
+    p.isActive = false;
+    p.isStarted = false;
+    delete p.terastallized;
+    return;
+  }
+  if (m.status) {
+    p.status = toID(m.status);
+    p.statusState = battle.initEffectState({ id: p.status, target: p });
+    if (p.status === "slp") {
+      p.statusState.startTime = m.status_state.startTime;
+      p.statusState.time = m.status_state.time;
+    } else if (p.status === "tox") {
+      p.statusState.stage = m.status_state.stage;
+    }
+  }
+  for (const v of m.volatiles || []) {
+    const st = { ...v.state };
+    if (st.hp_quarter) { delete st.hp_quarter; st.hp = Math.floor(p.maxhp / 4); }
+    if (st.source_side) {
+      const foe = battle.sides[st.source_side === "p1" ? 0 : 1];
+      st.sourceSlot = `${st.source_side}a`;
+      st.source = foe.pokemon[0];
+      delete st.source_side;
+      if (v.id === "partiallytrapped") {
+        st.boundDivisor = st.source.hasItem("bindingband") ? 6 : 8;
+        st.sourceEffect = battle.dex.moves.get(st.move);
+      }
+    }
+    p.volatiles[v.id] = battle.initEffectState({ id: v.id, target: p, ...st });
+  }
+  if (m.terastallized) {
+    p.teraType = m.terastallized;
+    const log = battle.log.length;
+    battle.actions.terastallize(p);
+    battle.log.length = log;
+    // tera-triggered abilities (Embody Aspect, Tera Shell...) must not re-fire
+    p.boosts = freshBoosts();
+    for (const k of Object.keys(m.boosts || {})) p.boosts[k] = m.boosts[k];
+  }
+}
+
+function refreshRequestFlags(battle) {
+  // the per-turn block of Battle.endTurn that feeds the move request (no turn++/residuals)
+  for (const side of battle.sides) {
+    for (const pokemon of side.active) {
+      if (!pokemon || pokemon.fainted) continue;
+      pokemon.maybeDisabled = false;
+      pokemon.maybeLocked = false;
+      for (const moveSlot of pokemon.moveSlots) {
+        moveSlot.disabled = false;
+        moveSlot.disabledSource = "";
+      }
+      battle.runEvent("DisableMove", pokemon);
+      for (const moveSlot of pokemon.moveSlots) {
+        const activeMove = battle.dex.getActiveMove(moveSlot.id);
+        battle.singleEvent("DisableMove", activeMove, null, pokemon);
+        if (activeMove.flags["cantusetwice"] && pokemon.lastMove?.id === moveSlot.id) {
+          pokemon.disableMove(pokemon.lastMove.id);
+        }
+      }
+      pokemon.trapped = pokemon.maybeTrapped = false;
+      battle.runEvent("TrapPokemon", pokemon);
+      if (!pokemon.knownType || battle.dex.getImmunity("trapped", pokemon)) {
+        battle.runEvent("MaybeTrapPokemon", pokemon);
+      }
+      if (battle.gen > 2) {
+        for (const source of pokemon.foes()) {
+          const species = (source.illusion || source).species;
+          if (!species.abilities) continue;
+          for (const abilitySlot in species.abilities) {
+            const abilityName = species.abilities[abilitySlot];
+            if (abilityName === source.ability) continue;
+            if (abilitySlot === "H" && species.unreleasedHidden) continue;
+            const ability = battle.dex.abilities.get(abilityName);
+            if (battle.ruleTable.has("-ability:" + ability.id)) continue;
+            if (pokemon.knownType && !battle.dex.getImmunity("trapped", pokemon)) continue;
+            battle.singleEvent("FoeMaybeTrapPokemon", ability, {}, pokemon, source);
+          }
+        }
+      }
+    }
+  }
+}
+
+const reconHandlers = {
+  reconstruct(req) {
+    const slot = { battle: null, out: [] };
+    const battle = new Battle({
+      formatid: req.formatid || "gen9ou", seed: req.seed, rated: "", send: makeSend(slot),
+    });
+    slot.battle = battle;
+    battles.set(req.id, slot);
+    const own = Teams.unpack(req.p1.team);
+    const byName = new Map(own.map((s) => [
+      (!s.name || toID(s.name) === toID(s.species)) ? Dex.species.get(s.species).baseSpecies : s.name, s]));
+    const ordered = req.p1.order.map((n) => {
+      const s = byName.get(n);
+      if (!s) throw new Error(`own team has no ${n}`);
+      return s;
+    });
+    ordered.forEach((s, i) => { s.gender = req.p1.genders[i]; });
+    battle.sendUpdates();
+    battle.setPlayer("p1", { name: req.p1.name, avatar: "170", team: ordered });
+    battle.sendUpdates();
+    battle.setPlayer("p2", { name: req.p2.name, avatar: "2", team: req.p2.team });
+    battle.sendUpdates();
+    battle.choose("p1", "team 123456");
+    battle.choose("p2", "team 123456");
+    battle.sendUpdates();
+    drain(slot);
+    // ---- patch the public/sampled state
+    battle.turn = req.turn;
+    battle.field.weather = "";
+    battle.field.weatherState = battle.initEffectState({});
+    battle.field.terrain = "";
+    battle.field.terrainState = battle.initEffectState({});
+    battle.field.pseudoWeather = {};
+    for (const side of battle.sides) {
+      side.sideConditions = {};
+      side.slotConditions = [{}];
+    }
+    for (let si = 0; si < 2; si++) {
+      const side = battle.sides[si];
+      const mons = req.mons[si === 0 ? "p1" : "p2"];
+      mons.forEach((m, i) => setMonState(battle, side, side.pokemon[i], m));
+      const sd = req.sides[si === 0 ? "p1" : "p2"];
+      if (sd.tera_used) side.pokemon.forEach((q) => { q.canTerastallize = null; });
+      side.totalFainted = sd.total_fainted;
+      side.pokemonLeft = side.pokemon.filter((p) => !p.fainted).length;
+      side.faintedLastTurn = sd.fainted_last_turn ? side.pokemon.find((p) => p.fainted) : null;
+      for (const [id, st] of Object.entries(sd.conditions)) {
+        side.sideConditions[id] = battle.initEffectState({ id, target: side, ...st });
+      }
+    }
+    const refPoke = (r) => (r ? battle.sides[r.side === "p1" ? 0 : 1].pokemon[r.index] : null);
+    const f = req.field;
+    if (f.weather) {
+      battle.field.weather = f.weather.id;
+      battle.field.weatherState = battle.initEffectState({
+        id: f.weather.id, target: battle.field, source: refPoke(f.weather.source),
+        sourceSlot: f.weather.source ? `${f.weather.source.side}a` : undefined,
+        duration: f.weather.duration,
+      });
+    }
+    if (f.terrain) {
+      battle.field.terrain = f.terrain.id;
+      battle.field.terrainState = battle.initEffectState({
+        id: f.terrain.id, target: battle.field, source: refPoke(f.terrain.source),
+        sourceSlot: f.terrain.source ? `${f.terrain.source.side}a` : undefined,
+        duration: f.terrain.duration,
+      });
+    }
+    for (const [id, st] of Object.entries(f.pseudo || {})) {
+      battle.field.pseudoWeather[id] = battle.initEffectState({
+        id, target: battle.field, source: refPoke(st.source), sourceSlot: st.source ? `${st.source.side}a` : undefined,
+        duration: st.duration,
+      });
+    }
+    battle.updateSpeed();
+    refreshRequestFlags(battle);
+    battle.prng.setSeed(req.prng);
+    if (req.rqid !== undefined) battle.rqid = req.rqid - 1;
+    battle.requestState = "";
+    if (req.request_state === "switch") {
+      for (const sid of req.switch_sides) {
+        const p = battle.sides[sid === "p1" ? 0 : 1].pokemon[0];
+        p.switchFlag = true;
+        if (p.fainted) p.status = "fnt"; // fainted-this-turn mons keep fnt until replaced
+      }
+      battle.makeRequest("switch");
+    } else {
+      battle.makeRequest("move");
+    }
+    battle.log.push("|recon|"); // sendUpdates only emits requests when the log advanced
+    battle.sendUpdates();
+    return { events: drain(slot) };
+  },
+};
+Object.assign(handlers, reconHandlers);
 
 const rl = readline.createInterface({ input: process.stdin, crlfDelay: Infinity });
 rl.on("line", (line) => {

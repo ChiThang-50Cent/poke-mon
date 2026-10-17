@@ -1,0 +1,57 @@
+{
+ "roots": 100,
+ "root_errors": 0,
+ "worlds": 300,
+ "supported_worlds": 270,
+ "supported_world_fraction": 0.9,
+ "fully_supported_roots": 90,
+ "supported_root_fraction": 0.9,
+ "unsupported_reasons": {
+  "pivot_switch_request": 12,
+  "p2:move_state:futuresight": 6,
+  "p1:move_state:futuresight": 3,
+  "pending_move:healingwish": 3,
+  "p2:typechange_volatile": 3,
+  "p2:lockedmove": 3
+ },
+ "request_mismatch_worlds": 0,
+ "view_mismatch_worlds": 0,
+ "mask_mismatch_worlds": 0,
+ "by_phase": {
+  "6-15": 46,
+  "16-30": 19,
+  "0-5": 30,
+  "31+": 5
+ },
+ "by_opponent": {
+  "GymLeader": 50,
+  "Grunt": 50
+ },
+ "forced_switch_roots": 22,
+ "request_diff_paths": {},
+ "view_diff_paths": {},
+ "wall_s": 24.992029979010113,
+ "supported_fraction_by_phase": {
+  "0-5": 0.8666666666666667,
+  "16-30": 0.9473684210526315,
+  "31+": 0.6,
+  "6-15": 0.9347826086956522
+ },
+ "unsupported_root_reasons": {
+  "pivot_switch_request": 4,
+  "p2:move_state:futuresight": 2,
+  "p1:move_state:futuresight": 1,
+  "pending_move:healingwish": 1,
+  "p2:typechange_volatile": 1,
+  "p2:lockedmove": 1
+ },
+ "mean_reconstruct_s": 0.003568588989178857,
+ "mean_sample_s": 0.013087809248827399,
+ "gate_S1": {
+  "a_request_100pct": true,
+  "b_mask_100pct": true,
+  "c_public_view_100pct": true,
+  "supported_fraction_ge_0.8": true,
+  "pass": true
+ }
+}

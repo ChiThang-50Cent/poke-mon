@@ -103,6 +103,8 @@ class NeuralPlayer(MetamonPlayer):
         self._hidden_before: dict[str, Any] = {}
         self._pending_choice: dict[str, dict[str, Any]] = {}
         self._public_log: dict[str, deque[str]] = {}
+        # BS0: the learner's complete public protocol history per battle (never truncated)
+        self.history: dict[str, list[str]] = {}
         self.protocol_retries: dict[str, list[dict[str, Any]]] = {}
         self.decisions = 0
         self.last_server_error: str | None = None
@@ -125,6 +127,7 @@ class NeuralPlayer(MetamonPlayer):
         self._hidden_before.pop(battle.battle_tag, None)
         self._pending_choice.pop(battle.battle_tag, None)
         self._public_log.pop(battle.battle_tag, None)
+        self.history.pop(battle.battle_tag, None)
         super()._battle_finished_callback(battle)
 
     async def _handle_battle_message(self, split_messages: list[list[str]]) -> None:
@@ -132,9 +135,11 @@ class NeuralPlayer(MetamonPlayer):
 
         tag = split_messages[0][0].removeprefix(">")
         public_log = self._public_log.setdefault(tag, deque(maxlen=40))
+        history = self.history.setdefault(tag, [])
         for message in split_messages[1:]:
             if len(message) > 1 and message[1] != "request":
                 public_log.append("|".join(message))
+                history.append("|".join(message))
                 if self.collector is not None:
                     self.collector.events.append(message)
             if len(message) > 2 and message[1] == "error":

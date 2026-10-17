@@ -50,6 +50,7 @@ def policy(value_head: bool = False) -> NeuralPlayer:
     player._hidden_before = {}
     player._pending_choice = {}
     player._public_log = {}
+    player.history = {}
     player.protocol_retries = {}
     player.illegal_actions = 0
     player.last_server_error = None

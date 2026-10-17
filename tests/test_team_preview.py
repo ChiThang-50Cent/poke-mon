@@ -39,6 +39,7 @@ def preview_player(model=None):
     player.lead_sources = Counter()
     player.team_preview_records = {}
     player.protocol_retries = {}
+    player.history = {}
     player.latencies_ms = []
     player.illegal_actions = 0
     player.unknown_tokens = 0

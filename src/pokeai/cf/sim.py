@@ -57,6 +57,10 @@ class Sim:
             cmd="create", id=battle_id, seed=seed, p1=p1, p2=p2, formatid=formatid
         )["events"]
 
+    def reconstruct(self, battle_id: str, spec: dict[str, Any]) -> list[dict[str, Any]]:
+        """New battle at a decision point from a public-information spec (BS0.1)."""
+        return self._call(cmd="reconstruct", id=battle_id, **spec)["events"]
+
     def choose(self, battle_id: str, side: str, choice: str) -> dict[str, Any]:
         return self._call(cmd="choose", id=battle_id, side=side, choice=choice)
 
@@ -83,6 +87,11 @@ class Sim:
 
     def drop_snapshot(self, key: str) -> None:
         self._call(cmd="drop_snapshot", key=key)
+
+    def stats(self) -> dict[str, int]:
+        """Driver bookkeeping: live battles, stored snapshots, process memory."""
+        response = self._call(cmd="stats")
+        return {k: response[k] for k in ("battles", "snapshots", "rss", "heap")}
 
     def roster(self, battle_id: str) -> list[dict[str, Any]]:
         return self._call(cmd="roster", id=battle_id)["roster"]

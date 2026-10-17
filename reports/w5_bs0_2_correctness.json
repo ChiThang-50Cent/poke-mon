@@ -1,0 +1,41 @@
+{
+ "roots": 80,
+ "root_errors": 0,
+ "worlds": 320,
+ "supported_worlds": 292,
+ "unsupported_reasons": {
+  "p2:move_state:futuresight (+2)": 12,
+  "p1:move_state:futuresight (+2)": 4,
+  "pivot_switch_request": 12
+ },
+ "rollouts": 2540,
+ "deterministic_worlds": 292,
+ "root_inputs_equal_true_worlds": 292,
+ "root_inputs_equal_across_candidates": 292,
+ "pov_violation_worlds": 0,
+ "pov_violation_examples": [],
+ "illegal_actions": 0,
+ "protocol_retries": {},
+ "unexpected_errors": [],
+ "unexpected_error_count": 0,
+ "mean_rollout_wall_s": 0.1336767384719125,
+ "by_opponent": {
+  "GymLeader": 40,
+  "Grunt": 40
+ },
+ "by_phase": {
+  "6-15": 37,
+  "16-30": 20,
+  "0-5": 19,
+  "31+": 4
+ },
+ "wall_s": 113.86581557500176,
+ "gate_S2": {
+  "deterministic_all": true,
+  "root_inputs_invariant_and_equal_true": true,
+  "pov_violations_0": true,
+  "illegal_actions_0": true,
+  "unexpected_errors_0": true,
+  "pass": true
+ }
+}

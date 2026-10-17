@@ -1,0 +1,203 @@
+{
+ "budgets": {
+  "0.5": {
+   "roots": 100,
+   "wall_p50_s": 0.4902956485748291,
+   "wall_p95_s": 0.8573436498641968,
+   "wall_max_s": 1.1009798049926758,
+   "dispatch_p50_s": 0.06949806213378906,
+   "pairs_p50": 0.0,
+   "pairs_p95": 11.199999999999989,
+   "rollouts_p50": 6.5,
+   "rollouts_p95": 52.74999999999996,
+   "rollouts_mean": 13.23,
+   "frac_roots_ge4_pairs": 0.21,
+   "frac_roots_ge4_pairs_supported_only": 0.22580645161290322,
+   "fallback_rate": 0.99,
+   "override_rate": 0.01,
+   "fallback_reasons": {
+    "fallback:few_pairs": 79,
+    "fallback:no_positive_delta": 16,
+    "fallback:snr": 4,
+    "override": 1
+   },
+   "unsupported_roots": 7,
+   "illegal_actions": 0,
+   "protocol_retries": 0,
+   "unexpected_errors": 0,
+   "components": {
+    "load_s": {
+     "sum_p50": 0.17915213108062744,
+     "sum_p95": 0.1989792227745056,
+     "critical_path_p50": 0.04808378219604492,
+     "critical_path_p95": 0.05704272985458373
+    },
+    "sample_s": {
+     "sum_p50": 0.04429969549528323,
+     "sum_p95": 0.08859350445418385,
+     "critical_path_p50": 0.013803817491861992,
+     "critical_path_p95": 0.03131558455643243
+    },
+    "reconstruct_s": {
+     "sum_p50": 0.014274611981818452,
+     "sum_p95": 0.026172635590774006,
+     "critical_path_p50": 0.004570489501929842,
+     "critical_path_p95": 0.00836688243871322
+    },
+    "pov_s": {
+     "sum_p50": 0.05201411247253418,
+     "sum_p95": 0.11865360736846922,
+     "critical_path_p50": 0.015365004539489746,
+     "critical_path_p95": 0.04330950975418089
+    },
+    "rollout_s": {
+     "sum_p50": 1.1380846500396729,
+     "sum_p95": 1.5638796687126155,
+     "critical_path_p50": 0.3275117874145508,
+     "critical_path_p95": 0.7064865708351135
+    }
+   },
+   "all_actions_legal": true,
+   "fallback_always_legal_c": true,
+   "gate": {
+    "ge4_pairs_on_ge90pct_roots": false,
+    "p95_le_budget_plus_10pct": false,
+    "fallback_always_legal_c": true,
+    "pass": false
+   }
+  },
+  "2.0": {
+   "roots": 100,
+   "wall_p50_s": 1.9586100578308105,
+   "wall_p95_s": 2.1870625972747804,
+   "wall_max_s": 2.266035795211792,
+   "dispatch_p50_s": 0.06960415840148926,
+   "pairs_p50": 11.0,
+   "pairs_p95": 62.099999999999994,
+   "rollouts_p50": 47.5,
+   "rollouts_p95": 252.2,
+   "rollouts_mean": 72.7,
+   "frac_roots_ge4_pairs": 0.87,
+   "frac_roots_ge4_pairs_supported_only": 0.9354838709677419,
+   "fallback_rate": 0.76,
+   "override_rate": 0.24,
+   "fallback_reasons": {
+    "override": 24,
+    "fallback:no_positive_delta": 50,
+    "fallback:few_pairs": 13,
+    "fallback:snr": 13
+   },
+   "unsupported_roots": 7,
+   "illegal_actions": 0,
+   "protocol_retries": 0,
+   "unexpected_errors": 0,
+   "components": {
+    "load_s": {
+     "sum_p50": 0.1850602626800537,
+     "sum_p95": 0.20540453195571898,
+     "critical_path_p50": 0.049964070320129395,
+     "critical_path_p95": 0.05772509574890136
+    },
+    "sample_s": {
+     "sum_p50": 0.07575205698958598,
+     "sum_p95": 0.09741753971611615,
+     "critical_path_p50": 0.0218880670145154,
+     "critical_path_p95": 0.03033270594460191
+    },
+    "reconstruct_s": {
+     "sum_p50": 0.023350040457444265,
+     "sum_p95": 0.02926808960182825,
+     "critical_path_p50": 0.007048722531180829,
+     "critical_path_p95": 0.008830524700169916
+    },
+    "pov_s": {
+     "sum_p50": 0.09359610080718994,
+     "sum_p95": 0.12722800970077514,
+     "critical_path_p50": 0.026176929473876953,
+     "critical_path_p95": 0.040429818630218495
+    },
+    "rollout_s": {
+     "sum_p50": 6.963153958320618,
+     "sum_p95": 7.26894781589508,
+     "critical_path_p50": 1.7917566299438477,
+     "critical_path_p95": 2.0086794972419737
+    }
+   },
+   "all_actions_legal": true,
+   "fallback_always_legal_c": true,
+   "gate": {
+    "ge4_pairs_on_ge90pct_roots": false,
+    "p95_le_budget_plus_10pct": true,
+    "fallback_always_legal_c": true,
+    "pass": false
+   }
+  },
+  "5.0": {
+   "roots": 100,
+   "wall_p50_s": 4.927662491798401,
+   "wall_p95_s": 5.077766180038452,
+   "wall_max_s": 5.486532926559448,
+   "dispatch_p50_s": 0.06870567798614502,
+   "pairs_p50": 32.0,
+   "pairs_p95": 64.0,
+   "rollouts_p50": 129.0,
+   "rollouts_p95": 256.0,
+   "rollouts_mean": 148.78,
+   "frac_roots_ge4_pairs": 0.93,
+   "frac_roots_ge4_pairs_supported_only": 1.0,
+   "fallback_rate": 0.67,
+   "override_rate": 0.33,
+   "fallback_reasons": {
+    "override": 33,
+    "fallback:snr": 14,
+    "fallback:no_positive_delta": 46,
+    "fallback:few_pairs": 7
+   },
+   "unsupported_roots": 7,
+   "illegal_actions": 0,
+   "protocol_retries": 0,
+   "unexpected_errors": 0,
+   "components": {
+    "load_s": {
+     "sum_p50": 0.18384122848510742,
+     "sum_p95": 0.19696255922317502,
+     "critical_path_p50": 0.049932241439819336,
+     "critical_path_p95": 0.05811537504196167
+    },
+    "sample_s": {
+     "sum_p50": 0.07568083902879152,
+     "sum_p95": 0.09671027843724005,
+     "critical_path_p50": 0.022059739494579844,
+     "critical_path_p95": 0.031706166638468855
+    },
+    "reconstruct_s": {
+     "sum_p50": 0.02297560298757162,
+     "sum_p95": 0.028161921937135046,
+     "critical_path_p50": 0.006846463496913202,
+     "critical_path_p95": 0.008943712309701368
+    },
+    "pov_s": {
+     "sum_p50": 0.08913171291351318,
+     "sum_p95": 0.12212204933166504,
+     "critical_path_p50": 0.02570962905883789,
+     "critical_path_p95": 0.03763117790222168
+    },
+    "rollout_s": {
+     "sum_p50": 18.699856162071228,
+     "sum_p95": 19.164405024051668,
+     "critical_path_p50": 4.757692813873291,
+     "critical_path_p95": 4.915576875209808
+    }
+   },
+   "all_actions_legal": true,
+   "fallback_always_legal_c": true,
+   "gate": {
+    "ge4_pairs_on_ge90pct_roots": true,
+    "p95_le_budget_plus_10pct": true,
+    "fallback_always_legal_c": true,
+    "pass": true
+   }
+  }
+ },
+ "gate_S3_any_budget": true
+}
