@@ -50,7 +50,9 @@ Unsupported reasons, requal: pivot_switch_request 89, move_state:wish 51 (p1 19,
 The smoke coverage is lower than BS1.2b's; the sample is 12 battles and 59 of the 75 unsupported decisions are `courtchange`, which this change does not touch. The requal (n=120) is at or above BS1.2b, so there is no coverage drop. Seeds differ, so the comparison is descriptive.
 
 ## Tests
-83 passed: `tests/test_bs0_recon.py`, `test_bs1_1_live.py`, `test_bs1_2b_fixes.py`, `test_bs1_deadline.py`, `test_cf_offline.py`, `test_bs1_2_lanes.py`, `test_bs_rc1_claim.py`, `test_bs1_3p_fix.py`. The full suite was not run.
+83 passed: `tests/test_bs0_recon.py`, `test_bs1_1_live.py`, `test_bs1_2b_fixes.py`, `test_bs1_deadline.py`, `test_cf_offline.py`, `test_bs1_2_lanes.py`, `test_bs_rc1_claim.py`, `test_bs1_3p_fix.py`. The full suite was not run by the subagent.
+
+Integrator addendum: before commit 17e609a the integrator ran the full suite on this code: `pytest -m "not server"` 442 passed, `pytest -m server` 4 passed, `ruff check src scripts tests` clean (after 4 lint-only fixes in `tests/test_bs1_3p_fix.py`). See `reports/w5_bs1_4_preflight.md` § Full test suite.
 
 ## Known limits
 * Benched mons that already entered earlier in the live battle do not carry once-per-battle ability flags (same as before the change).

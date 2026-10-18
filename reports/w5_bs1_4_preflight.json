@@ -1,0 +1,125 @@
+{
+ "pool": "data/teams_w5_bs14/heldout",
+ "teams": 200,
+ "seed": 20261901,
+ "source_count": 43764,
+ "validation": {
+  "command": "node pokemon-showdown validate-team gen9ou",
+  "server_git_commit": "d62d3a39878f7ef1c6e1cfbd84e8feb2ce7a9fdd",
+  "candidates_drawn": 206,
+  "validated": 200,
+  "rejected_reasons": {
+   "excluded:ordered_sha256": 6
+  }
+ },
+ "disjointness": {
+  "normalizations": {
+   "ordered_sha256": "TeamSet.join_team(TeamSet.parse_showdown_team(text))",
+   "canonical_sha256": "sorted multiset of per-Pokemon join_team([mon]) hashes"
+  },
+  "excluded_pools": {
+   "data/teams/gen9ou": 211,
+   "data/teams_w5/collect/gen9ou": 1000,
+   "data/teams_w5/dev/gen9ou": 200,
+   "data/teams_w5/heldout/gen9ou": 200,
+   "competitive": 16,
+   "old_w4_selection_seed20261016": 200,
+   "old_w4_pool_files": 211
+  },
+  "intersections": {
+   "data/teams/gen9ou": {
+    "files": 211,
+    "ordered_sha256": 0,
+    "canonical_sha256": 0
+   },
+   "data/teams_w5/collect/gen9ou": {
+    "files": 1000,
+    "ordered_sha256": 0,
+    "canonical_sha256": 0
+   },
+   "data/teams_w5/dev/gen9ou": {
+    "files": 200,
+    "ordered_sha256": 0,
+    "canonical_sha256": 0
+   },
+   "data/teams_w5/heldout/gen9ou": {
+    "files": 200,
+    "ordered_sha256": 0,
+    "canonical_sha256": 0
+   },
+   "competitive": {
+    "files": 16,
+    "ordered_sha256": 0,
+    "canonical_sha256": 0
+   },
+   "old_w4_selection_seed20261016": {
+    "files": 200,
+    "ordered_sha256": 0,
+    "canonical_sha256": 0
+   },
+   "old_w4_pool_files": {
+    "files": 211,
+    "ordered_sha256": 0,
+    "canonical_sha256": 0
+   }
+  },
+  "within_pool": {
+   "teams": 200,
+   "distinct_ordered_sha256": 200,
+   "distinct_canonical_sha256": 200
+  }
+ },
+ "config": "configs/w5_bs14.yaml",
+ "config_diff": {
+  "pool": [
+   "data/teams_w5/heldout",
+   "data/teams_w5_bs14/heldout"
+  ],
+  "run.seed": [
+   20261501,
+   20261911
+  ],
+  "run.out_prefix": [
+   "w5-bs-rc1",
+   "w5-bs14"
+  ],
+  "fail_dir": [
+   "runs/w5-bs-rc1-new-class",
+   "runs/w5-bs14-new-class"
+  ],
+  "run.release_manifest": [
+   "reports/w5_bs_rc1_manifest.json",
+   "reports/w5_bs14_manifest.json"
+  ],
+  "header comments": "lines 1,4,5"
+ },
+ "manifest": {
+  "file": "reports/w5_bs14_manifest.json",
+  "label": "BS1.4 evaluation bundle on RC4 code 17e609a",
+  "sections": {
+   "git": 3,
+   "c_checkpoint": 5,
+   "preview_checkpoint": 1,
+   "tokenizer": 6,
+   "belief_sampler_data": 92,
+   "code_live_path": 21,
+   "scripts": 10,
+   "sim_driver_js": 1,
+   "showdown": 4,
+   "benchmark_config": 4,
+   "team_pool": 4,
+   "versions": 5
+  },
+  "team_pool_files": 201,
+  "config_sha256": "886597eb9388219f2d9d1f8704b304afacc86b34e1a1a5b139a07d0bdb73a3d7",
+  "team_manifest_sha256": "4a4696d9e2fe38d0081ebd9ce966ee78da93a5e19653d04267ab165d58975399"
+ },
+ "verify_real_bundle": {
+  "problems": [
+   "manifest was generated from a dirty tree"
+  ],
+  "note": "all other checks pass; regenerate after the integrator commits"
+ },
+ "final_started_json_or_windows_in_new_pool": 0,
+ "battles_or_rollouts_run_on_new_pool": 0
+}

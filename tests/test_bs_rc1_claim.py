@@ -102,7 +102,7 @@ def test_a_crash_while_writing_leaves_no_claim(pool, monkeypatch):
 
 def test_final_requires_a_release_manifest():
     with pytest.raises(ValueError, match="release_manifest"):
-        verify_release({"run": {"final": True}})
+        verify_release({"run": {"final": True}}, "configs/w5_bs_rc1.yaml")
 
 
 def test_a_changed_frozen_file_blocks_the_release(tmp_path):
@@ -112,7 +112,7 @@ def test_a_changed_frozen_file_blocks_the_release(tmp_path):
     path = tmp_path / "manifest.json"
     path.write_text(json.dumps(manifest))
     with pytest.raises(RuntimeError, match=f"changed {name}"):
-        verify_release({"run": {"release_manifest": str(path)}})
+        verify_release({"run": {"release_manifest": str(path)}}, "configs/w5_bs_rc1.yaml")
 
 
 def test_the_driver_verifies_before_launching_any_lane(tmp_path, monkeypatch):

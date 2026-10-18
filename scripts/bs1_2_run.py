@@ -34,7 +34,7 @@ def main() -> None:
         sys.path.insert(0, str(Path(__file__).resolve().parent))
         from evaluate_w5 import verify_release
 
-        verify_release(config)  # fail before any lane starts or any claim exists
+        verify_release(config, args.config)  # fail before any lane starts or any claim exists
     t0 = time.time()
     log = ROOT / f"{prefix}-projections.jsonl"
     done_pairs = 0

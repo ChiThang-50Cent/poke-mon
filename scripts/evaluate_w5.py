@@ -72,14 +72,16 @@ def claim_pool(pool: Path, final: bool, config: dict,
         raise ValueError("--final requires the heldout pool")
 
 
-def verify_release(config: dict) -> None:
-    """A final (heldout) run must match its frozen release manifest exactly, before any claim."""
+def verify_release(config: dict, config_path: Path | str, pool: Path | str | None = None) -> None:
+    """A final (heldout) run must match its frozen bundle exactly, before any claim: the code and
+    model hashes, the config FILE actually passed (path, sha256, parsed content), and the exact
+    team files of the pool actually used."""
     path = config.get("run", {}).get("release_manifest")
     if not path:
         raise ValueError("--final requires run.release_manifest in the config")
-    from bs_rc1_manifest import verify
+    from bs14_manifest import verify_bundle
 
-    problems = verify(Path(path))
+    problems = verify_bundle(Path(path), config_path, config, pool)
     if problems:
         raise RuntimeError("release manifest mismatch; refusing the heldout claim:\n"
                            + "\n".join(problems))
@@ -136,7 +138,7 @@ async def evaluate(args):
     if args.lanes > 1 or args.pairs:
         window = (args.lane, args.lanes, *(args.pairs or (0, battles // 2)))
     if args.final:
-        verify_release(config)
+        verify_release(config, args.config, pool)
     claim_pool(pool, args.final, effective, window)
     model_configs = [*arms.values(), *config["opponents"].values()]
     report = {
