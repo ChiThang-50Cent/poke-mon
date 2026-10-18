@@ -62,3 +62,11 @@ Integrator runs (resource wrapper, `OMP_NUM_THREADS=1`):
 | BS1.4 preparation (this bundle; after 10 lint autofixes in `scripts/bs14_manifest.py` and `tests/test_bs14_prep.py`, no behaviour change), run 2026-10-18 23:38 UTC+7 | 456 passed | 4 passed | clean |
 
 The RC4 QA report's "83 targeted tests; full suite not run" was the subagent's statement before the integrator's full run; an addendum there now points here.
+
+## Final bundle verification (integrator, clean tree)
+
+* Code / config / pool commit: `6f9e4dfadf896c7bb97f3673d5565091192e1bf9`; `src/` identical to tag `w5-bs-rc4` (code 17e609a), RC4 tag unchanged.
+* `reports/w5_bs14_manifest.json` regenerated on the clean tree (manifest `git.commit` = 6f9e4df, no uncommitted tracked files); team pool section freezes 201 files (200 teams + `gen9ou/manifest.json`).
+* `verify_release(config, "configs/w5_bs14.yaml")`, run in a process that imported `evaluate_w5` and `bs1_2_run` (the driver/lane context): **PASS, 0 problems**.
+* `data/teams_w5_bs14/heldout/` contains only `gen9ou/`: no `final.started.json`, no window files, no `final.lock`.
+* Bundle tag: `w5-bs14-eval` (on the manifest commit). BS1.4 is NOT approved to run.
