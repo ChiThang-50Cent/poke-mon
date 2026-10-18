@@ -1,7 +1,7 @@
 {
- "release_candidate": "RC1 (C + belief search, no tag)",
+ "release_candidate": "RC2 (C + belief search; tag w5-bs-rc2)",
  "git": {
-  "commit": "adb03a1d622721d332478fd24926b067c855457b",
+  "commit": "3da6288cfd551bcd2bff86c7e44a989e08cbca7e",
   "uncommitted_tracked_files": [],
   "note": "files are hashed below regardless of commit state"
  },
@@ -139,14 +139,14 @@
   "src/pokeai/env/teams.py": "366564a567e12070399d54cee794a73e47ae8a830986eecc95544c910a33f706"
  },
  "scripts": {
-  "scripts/evaluate_w5.py": "6ba573f27a873a1379bd63aaff524fc91efce059d63bee601fcdba2d47935d99",
+  "scripts/evaluate_w5.py": "2b9077dbb670d5404e53da957b82ea4b17671f0f0bfc57ce63d2de8da1612063",
   "scripts/evaluate_w4_5.py": "71c5197565d6c551571d8d12be37366747fd57cbf2399ac9f9e405c41634c8fd",
-  "scripts/bs1_2_run.py": "f9656f19b8a2328b3af334c4cefee5ae0beea6507ce1609e39ada85b7d39b7b8",
+  "scripts/bs1_2_run.py": "65216c7b3a1f9ba7b7544a6b6bbdb0d8f4c726e0c3182d440a90d53c7e967428",
   "scripts/bs1_2_report.py": "f3654f2dac0f7a5ff42867c84a585e1c24e4a096da58257b5937efbc033c88a2",
   "scripts/bs1_1_report.py": "2311403fb791b70150c1e23d563202fa9a417994dac8054a73fe6ef32e37c60d",
   "scripts/bs1_2b_qa.py": "a2d795e034bb48cbf39db5f28d85bc550fafc98e76a3b9e7a4bf5a0becd31596",
   "scripts/bs1_2b_golden.py": "fa7b02435fd8abd251869f0da4ce9990fa5f159d1450d7b1147f3d7be4024d17",
-  "scripts/bs_rc1_manifest.py": "58ae221a487a4a9b4a71acb822ab2bd1ea4b4c93ec5ee5b0ee03990fc8c3a035"
+  "scripts/bs_rc1_manifest.py": "57f881d9b6071c43365ec3334a1f687b35e427b2a4527e9fde2bee22902a0fb9"
  },
  "sim_driver_js": {
   "src/pokeai/cf/sim_driver.js": "381f5351069a12db21b00169ac5ff6e908f5dddd7cd0873cc4b312eee966939e"
@@ -159,10 +159,11 @@
  },
  "benchmark_config": {
   "file": "configs/w5_bs_rc1.yaml",
-  "sha256": "266936f119b81ba3415167bea6720479d59fb6bbb28a1efbe93f099c4998eaaa",
+  "sha256": "9eeff61afc5c8e91a0c05966c5dce97e10db0127fb3fdb1daf2f4eeda163fbf2",
   "parsed": {
    "run": {
     "final": true,
+    "release_manifest": "reports/w5_bs_rc1_manifest.json",
     "seed": 20261501,
     "lanes": 2,
     "block_pairs": [
