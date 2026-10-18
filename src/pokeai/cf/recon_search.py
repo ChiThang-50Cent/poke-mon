@@ -25,6 +25,10 @@ import numpy as np
 
 from pokeai.cf.restore_check import TRAP_PREFIXES
 
+# BS1.2b: protocol-parser failures of a reconstructed rollout (metamon `ForwardException`
+# family, e.g. Metronome calling a multi-turn move). They are properties of the simulated
+# stream, not of the live battle: the whole (world, seed) pair is dropped for EVERY candidate.
+
 N_WORKERS = 4
 SCHED_MARGIN_S = 0.3  # stop scheduling new rollouts this long before the hard deadline
 OPP_MODELS = ("grunt", "gymleader", "mixture")
@@ -141,10 +145,20 @@ def _worker_main(conn: Any) -> None:
         conn.send(("idle", did, None))
 
 
+def world_root_mask(sim: Any, players: dict[str, Any], checkpoint: Any) -> list[int] | None:
+    """The learner's root mask inside a reconstructed world (None: no represented decision)."""
+    from pokeai.cf.branching import candidate_actions
+
+    info = candidate_actions(sim, players, SimpleNamespace(checkpoint=checkpoint), "p1")
+    return None if info is None else [int(x) for x in info["mask"]]
+
+
 def _decide_chunk(
     sim: Any, sampler: Any, players: dict[str, Any], blob: bytes,
     pairs: list[tuple[int, int]], sched_deadline: float, hard_deadline: float, emit: Any,
 ) -> dict[str, Any]:
+    from metamon.backend.replay_parser.exceptions import ForwardException
+
     from pokeai.cf.branching import rollout
     from pokeai.cf.cf1 import seed_triple
     from pokeai.cf.recon_match import build_world_root
@@ -159,7 +173,8 @@ def _decide_chunk(
     roll_times: list[float] = []
     st: dict[str, Any] = {
         "timing": timing, "n_rollouts": 0, "worlds_built": 0, "unsupported": [], "errors": [],
-        "illegal": 0, "retries": 0, "t_end": 0.0, "rounds": 0, "turns": 0}
+        "illegal": 0, "retries": 0, "t_end": 0.0, "rounds": 0, "turns": 0,
+        "world_rejected_mask": 0, "mask_rejects": [], "dropped_pairs": 0, "dropped": []}
     keys = []
 
     def can_start() -> bool:
@@ -186,8 +201,24 @@ def _decide_chunk(
                         payload.info, recon)
                     timing["pov_s"] += time.time() - t
                     keys.append(cp.sim_key)
-                    cache[(w, opp)] = SimpleNamespace(checkpoint=cp)
                     st["worlds_built"] += 1
+                    # every live-legal candidate must be legal in this world, else the world
+                    # is rejected for ALL candidates (paired integrity)
+                    try:
+                        wmask = world_root_mask(sim, players[opp], cp)
+                    except ForwardException as e:
+                        wmask = None
+                        st["dropped"].append(f"root:{type(e).__name__}")
+                    bad = [c for c in payload.candidates if wmask is None or not wmask[c]]
+                    if bad:
+                        st["world_rejected_mask"] += 1
+                        st["unsupported"].append("world_rejected_mask")
+                        st["mask_rejects"].append({
+                            "world": w, "opp": opp, "candidates": list(payload.candidates),
+                            "bad": bad, "live_mask": list(payload.mask), "world_mask": wmask})
+                        cache[(w, opp)] = None
+                    else:
+                        cache[(w, opp)] = SimpleNamespace(checkpoint=cp)
                 except Unsupported as e:
                     cache[(w, opp)] = None
                     st["unsupported"].append(str(e))
@@ -196,13 +227,18 @@ def _decide_chunk(
                 continue
             outs = []
             complete = True
+            dropped: str | None = None
             for slot in payload.candidates:
                 if not can_start():
                     complete = False
                     break
                 t = time.time()
-                r = rollout(sim, players[opp], cache[(w, opp)], "p1", slot,
-                            seed_triple(payload.root_id, k), keep_signature=False)
+                try:
+                    r = rollout(sim, players[opp], cache[(w, opp)], "p1", slot,
+                                seed_triple(payload.root_id, k), keep_signature=False)
+                except ForwardException as e:
+                    dropped = f"{type(e).__name__}: {str(e)[:200]}"
+                    break
                 roll_times.append(time.time() - t)
                 timing["rollout_s"] += roll_times[-1]
                 st["n_rollouts"] += 1
@@ -215,6 +251,11 @@ def _decide_chunk(
                         st["retries"] += 1
                     else:
                         st["errors"].append(e)
+            if dropped is not None:  # the pair is lost for every candidate (paired integrity)
+                st["dropped_pairs"] += 1
+                st["dropped"].append(dropped)
+                emit([], st)
+                continue
             if not complete:
                 break
             emit([{"world": w, "seed": k, "outcomes": outs, "opp": opp}], st)
@@ -408,6 +449,10 @@ class SearchPool:
             "rounds": sum(s.get("rounds", 0) for s in have),
             "turns": sum(s.get("turns", 0) for s in have),
             "retries": sum(s["retries"] for s in have),
+            "world_rejected_mask": sum(s.get("world_rejected_mask", 0) for s in have),
+            "mask_rejects": [m for s in have for m in s.get("mask_rejects", [])],
+            "dropped_pairs": sum(s.get("dropped_pairs", 0) for s in have),
+            "dropped": [x for s in have for x in s.get("dropped", [])],
             "pairs": pairs, "workers_done": sum(done), "workers": n,
             "hard_deadline_hit": not all(done),
         }

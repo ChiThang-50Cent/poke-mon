@@ -202,7 +202,8 @@ def decision_result(override_slot=None, n_pairs=8, unsupported=()):
                    "reason": "override" if override_slot is not None else "fallback:snr",
                    "stats": []},
         "n_rollouts": 10, "worlds_built": 4, "unsupported": list(unsupported), "illegal": 0,
-        "retries": 0, "rounds": 0, "turns": 0, "errors": [], "hard_deadline_hit": False, "workers_done": 4,
+        "retries": 0, "rounds": 0, "turns": 0, "world_rejected_mask": 0,
+        "mask_rejects": [], "dropped_pairs": 0, "dropped": [], "errors": [], "hard_deadline_hit": False, "workers_done": 4,
         "wall_s": 1.0, "timing": {}, "pairs": [{"opp": "Grunt"}]}
 
 
@@ -254,9 +255,9 @@ def test_workers_not_ready_uses_c_immediately_without_waiting():
 
 
 def test_search_exception_keeps_c_action_and_is_categorised():
-    pool = StubPool(raises=RuntimeError("boom"))
+    pool = StubPool(raises=RuntimeError("boom"))  # unknown class (BS1.2b: new class)
     _, action, row, _ = run_layer(pool)
-    assert action == 1 and row["category"] == "search_error" and "boom" in row["error"]
+    assert action == 1 and row["category"] == "search_error_new_class" and "boom" in row["error"]
 
 
 def test_candidate_legal_live_but_outside_reconstructed_mask_falls_back_to_c():

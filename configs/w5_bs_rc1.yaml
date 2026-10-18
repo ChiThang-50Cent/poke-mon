@@ -1,0 +1,49 @@
+# W5.BS-RC1 frozen release-candidate config for the one-shot heldout benchmark (BS1.3). NOT RUN.
+# Same design as BS1.2: 100 battles / arm / opponent = 50 team pairs, both directions, both arms,
+# alternating challenger, 4 pair-blocks (12/13/12/13) x 2 lanes x 4 search workers.
+# Run:  uv run python scripts/bs1_2_run.py --config configs/w5_bs_rc1.yaml   (adds --final)
+# One-shot: the first (lane, block) window claims data/teams_w5/heldout/final.started.json with this
+# exact config; later windows must carry the identical config and each window runs once.
+run:
+  final: true
+  seed: 20261501
+  lanes: 2
+  block_pairs: [[0, 12], [12, 25], [25, 37], [37, 50]]
+  budget_h: 16
+  out_prefix: w5-bs-rc1
+reference_arm: C
+pool: data/teams_w5/heldout
+battles: 100
+arms:
+  C:
+    model_dir: models/pokedecision-v1-value
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+  C+search:
+    model_dir: models/pokedecision-v1-value
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+    battle_timeout_s: 3600  # 5 s/decision x up to ~700 decisions; the default 120 s is infeasible for search
+    search:
+      deadline_s: 5.0
+      margin_s: 0.3
+      min_budget_s: 0.5
+      opp_model: mixture
+      n_worlds: 8
+      n_seeds: 8
+      workers: 4
+      seed: 20261101
+      fail_fast: true
+      fail_dir: runs/w5-bs-rc1-new-class
+opponents:
+  Grunt:
+    baseline: Grunt
+  GymLeader:
+    baseline: GymLeader
+  C:
+    model_dir: models/pokedecision-v1-value
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true

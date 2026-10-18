@@ -76,6 +76,8 @@ UNSUPPORTED_MOVE_STATE = {
     "transform", "mimic", "imprison", "substitute_never",
 }
 CHOICE = {"choiceband", "choicespecs", "choicescarf"}
+ITEM_RECEIVED = {"trick", "switcheroo", "bestow", "thief", "covet", "pickpocket", "magician",
+                 "symbiosis"}
 PROTECT_MOVES = {
     "protect", "detect", "kingsshield", "spikyshield", "banefulbunker", "obstruct",
     "silktrap", "burningbulwark", "endure", "wideguard", "quickguard", "maxguard",
@@ -627,6 +629,14 @@ class Tracker:
         mon.volatiles[vid] = Volatile(vid, self.s.turn, self.s.post, extra)
         if vid == "leechseed":
             mon.volatiles[vid].extra["source_side"] = "p2" if side == "p1" else "p1"
+
+    def _h_item(self, args, tags, frm, of) -> None:
+        """An item RECEIVED mid-stint (Trick / Switcheroo / Bestow / Thief / Covet / Pickpocket /
+        Magician / Symbiosis): a Choice lock starts with the first move executed after the
+        acquisition, not with the first move of the stint (BS1.2b: Trick'd Choice Scarf)."""
+        found = self._mon(args[0])
+        if found and found[1].active and frm and to_id(frm.split(":", 1)[-1]) in ITEM_RECEIVED:
+            found[1].stint_moves = []
 
     def _h_enditem(self, args, tags, frm, of) -> None:
         found = self._mon(args[0])

@@ -1,0 +1,45 @@
+# W5.BS1.2b dev requalification: 120 battles (20/arm/opponent = 10 team pairs both directions both arms)
+reference_arm: C
+pool: data/teams_w5/dev
+battles: 20
+arms:
+  C:
+    model_dir: models/pokedecision-v1-value
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+  C+search:
+    model_dir: models/pokedecision-v1-value
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+    battle_timeout_s: 3600
+    search:
+      deadline_s: 5.0
+      margin_s: 0.3
+      min_budget_s: 0.5
+      opp_model: mixture
+      n_worlds: 8
+      n_seeds: 8
+      workers: 4
+      seed: 20261101
+      fail_fast: true
+      fail_dir: runs/w5-bs1-2b-requal/new_class
+opponents:
+  Grunt:
+    baseline: Grunt
+  GymLeader:
+    baseline: GymLeader
+  C:
+    model_dir: models/pokedecision-v1-value
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+run:
+  seed: 20261411
+  lanes: 2
+  block_pairs:
+  - - 0
+    - 10
+  budget_h: 16
+  out_prefix: w5-bs1-2b-requal

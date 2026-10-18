@@ -1,0 +1,1133 @@
+{
+ "smoke": {
+  "stage": "smoke",
+  "battles": 12,
+  "valid_reports": true,
+  "model_illegal_actions": 0,
+  "engineering": {
+   "per_arm": {
+    "C": {
+     "battles": 6,
+     "wall_s_per_battle": {
+      "n": 6,
+      "p50": 0.6727737465116661,
+      "p95": 1.3131465992482845,
+      "max": 1.458733442996163,
+      "mean": 0.6941505845073456
+     },
+     "decisions_per_battle": {
+      "n": 6,
+      "p50": 27.5,
+      "p95": 82.25,
+      "max": 89,
+      "mean": 42.5
+     }
+    },
+    "C+search": {
+     "battles": 6,
+     "wall_s_per_battle": {
+      "n": 6,
+      "p50": 145.7270721574896,
+      "p95": 554.0040778639886,
+      "max": 653.6049798129825,
+      "mean": 225.11998615466777
+     },
+     "decisions_per_battle": {
+      "n": 6,
+      "p50": 42.0,
+      "p95": 148.0,
+      "max": 177,
+      "mean": 59.333333333333336
+     }
+    }
+   },
+   "errors": {
+    "battles": 12,
+    "timeouts": [],
+    "battle_errors": [],
+    "protocol_retries": 0
+   },
+   "latency": {
+    "decisions": 356,
+    "with_t_send": 356,
+    "missing_t_send": 0,
+    "deadline_s": 5.0,
+    "decisions_over_deadline": 0,
+    "end_to_end_s": {
+     "n": 356,
+     "p50": 4.541055202484131,
+     "p95": 4.705073535442352,
+     "max": 4.70712685585022,
+     "mean": 3.7766075328494724
+    },
+    "phases_s": {
+     "c_inference_and_state": {
+      "n": 356,
+      "p50": 0.0037587881088256836,
+      "p95": 0.005082845687866211,
+      "max": 0.008075714111328125,
+      "mean": 0.003733568646934595
+     },
+     "c_done_to_search_start": {
+      "n": 356,
+      "p50": 6.67572021484375e-06,
+      "p95": 1.1563301086425781e-05,
+      "max": 2.5987625122070312e-05,
+      "mean": 7.0132566302010186e-06
+     },
+     "search": {
+      "n": 356,
+      "p50": 4.536024212837219,
+      "p95": 4.701044797897339,
+      "max": 4.7034993171691895,
+      "mean": 3.7723029061649624
+     },
+     "search_end_to_send": {
+      "n": 356,
+      "p50": 0.0005528926849365234,
+      "p95": 0.0006995797157287598,
+      "max": 0.004530906677246094,
+      "mean": 0.00056404478094551
+     },
+     "non_search_choice_to_send": {
+      "n": 0,
+      "p50": null,
+      "p95": null,
+      "max": null,
+      "mean": null
+     }
+    }
+   },
+   "search": {
+    "category_counts": {
+     "search_override": 37,
+     "search_fallback_no_signal": 244,
+     "search_fallback_unsupported": 75
+    },
+    "decisions": 356,
+    "searched_decisions": 356,
+    "complete_pairs": {
+     "n": 356,
+     "p50": 13.0,
+     "p95": 62.25,
+     "max": 64,
+     "mean": 16.120786516853933
+    },
+    "rollouts": {
+     "n": 356,
+     "p50": 56.5,
+     "p95": 192.0,
+     "max": 256,
+     "mean": 66.47752808988764
+    },
+    "frac_searched_with_ge4_pairs": 0.7893258426966292,
+    "decisions_with_pairs": 281,
+    "unsupported_reasons": {
+     "p2:move_state:futuresight": 45,
+     "p1:move_state:wish": 8,
+     "pivot_switch_request": 21,
+     "pending_move:wish": 1
+    },
+    "decisions_with_unsupported_reason": 75,
+    "reconstruction_support_rate": 0.7893258426966292,
+    "hard_deadline_hit": 50,
+    "override_rate_of_searched": 0.10393258426966293,
+    "search_errors": [],
+    "illegal_in_rollouts": 0,
+    "protocol_retries_in_rollouts": 0,
+    "rollout_errors": [],
+    "by_learner_role": {
+     "p1": 257,
+     "p2": 99
+    },
+    "worker_restarts_max": 0
+   },
+   "state_integrity": {
+    "battles": 6,
+    "per_decision_forward_violations": [],
+    "hidden_changed_by_search": [],
+    "cross_battle_state": [],
+    "cumulative_forward_counter_mismatch": [],
+    "pass": true,
+    "offline_replay_parity": "not run: live Showdown RNG is not seedable, so there is no offline replay of the logged observations; verified by per-decision forward counters, pre/post-search hidden-state digests and unit tests (tests/test_bs1_1_live.py)"
+   }
+  },
+  "new_class_exceptions": 0,
+  "known_class_search_errors_by_category": {},
+  "decisions_over_deadline": 0,
+  "decisions": 356,
+  "worlds_rejected_by_mask": 0,
+  "decisions_with_rejected_worlds": 0,
+  "pairs_dropped_parser": 0,
+  "dropped_reasons": {},
+  "mask_rejects_logged": [],
+  "resources": "run-p2084321-i2118055.scope: Consumed 1h 34min 3.175s CPU time over 15min 14.245s wall clock time, 10.9G memory peak.",
+  "cpu_hours": 1.567548611111111,
+  "winners_descriptive_only": {
+   "Grunt|C": {
+    "opponent": 1,
+    "player": 1
+   },
+   "Grunt|C+search": {
+    "player": 2
+   },
+   "GymLeader|C": {
+    "opponent": 1,
+    "player": 1
+   },
+   "GymLeader|C+search": {
+    "player": 2
+   },
+   "C|C": {
+    "opponent": 1,
+    "player": 1
+   },
+   "C|C+search": {
+    "player": 2
+   }
+  },
+  "gates": {
+   "all_battles_valid": true,
+   "zero_new_class_exceptions": true,
+   "zero_decisions_over_5s": true,
+   "state_integrity": true,
+   "fixed_classes_zero": true
+  }
+ },
+ "requal": {
+  "stage": "requal",
+  "battles": 120,
+  "valid_reports": true,
+  "model_illegal_actions": 0,
+  "engineering": {
+   "per_arm": {
+    "C": {
+     "battles": 60,
+     "wall_s_per_battle": {
+      "n": 60,
+      "p50": 0.3466069939895533,
+      "p95": 0.9831544509099329,
+      "max": 1.2850747749907896,
+      "mean": 0.4311233831618059
+     },
+     "decisions_per_battle": {
+      "n": 60,
+      "p50": 30.5,
+      "p95": 73.1,
+      "max": 81,
+      "mean": 35.333333333333336
+     }
+    },
+    "C+search": {
+     "battles": 60,
+     "wall_s_per_battle": {
+      "n": 60,
+      "p50": 118.11372858998948,
+      "p95": 363.08522303217615,
+      "max": 531.2071057079593,
+      "mean": 152.4928610943413
+     },
+     "decisions_per_battle": {
+      "n": 60,
+      "p50": 31.0,
+      "p95": 90.29999999999998,
+      "max": 116,
+      "mean": 38.833333333333336
+     }
+    }
+   },
+   "errors": {
+    "battles": 120,
+    "timeouts": [],
+    "battle_errors": [],
+    "protocol_retries": 0
+   },
+   "latency": {
+    "decisions": 2330,
+    "with_t_send": 2330,
+    "missing_t_send": 0,
+    "deadline_s": 5.0,
+    "decisions_over_deadline": 0,
+    "end_to_end_s": {
+     "n": 2330,
+     "p50": 4.52313494682312,
+     "p95": 4.702222216129303,
+     "max": 4.706702470779419,
+     "mean": 3.9088694642030117
+    },
+    "phases_s": {
+     "c_inference_and_state": {
+      "n": 2323,
+      "p50": 0.003783702850341797,
+      "p95": 0.005378222465515137,
+      "max": 0.012306690216064453,
+      "mean": 0.003854471293698597
+     },
+     "c_done_to_search_start": {
+      "n": 2297,
+      "p50": 7.152557373046875e-06,
+      "p95": 1.0967254638671875e-05,
+      "max": 2.1457672119140625e-05,
+      "mean": 7.296002943929922e-06
+     },
+     "search": {
+      "n": 2297,
+      "p50": 4.520745515823364,
+      "p95": 4.697555065155029,
+      "max": 4.700605154037476,
+      "mean": 3.9605399260689085
+     },
+     "search_end_to_send": {
+      "n": 2297,
+      "p50": 0.0005657672882080078,
+      "p95": 0.0007355213165283201,
+      "max": 0.004588127136230469,
+      "mean": 0.000574765228218341
+     },
+     "non_search_choice_to_send": {
+      "n": 33,
+      "p50": 0.0002086162567138672,
+      "p95": 0.00029096603393554684,
+      "max": 0.0004467964172363281,
+      "mean": 0.00020279306353944722
+     }
+    }
+   },
+   "search": {
+    "category_counts": {
+     "search_fallback_no_signal": 1614,
+     "search_override": 362,
+     "search_fallback_unsupported": 321,
+     "not_searched_single_legal": 26,
+     "not_represented": 7
+    },
+    "decisions": 2330,
+    "searched_decisions": 2297,
+    "complete_pairs": {
+     "n": 2297,
+     "p50": 16.0,
+     "p95": 64.0,
+     "max": 64,
+     "mean": 21.501088376142796
+    },
+    "rollouts": {
+     "n": 2297,
+     "p50": 71.0,
+     "p95": 256.0,
+     "max": 256,
+     "mean": 87.7043970396169
+    },
+    "frac_searched_with_ge4_pairs": 0.847627340008707,
+    "decisions_with_pairs": 1972,
+    "unsupported_reasons": {
+     "pivot_switch_request": 100,
+     "side_condition_duration_exhausted:lightscreen": 3,
+     "pending_move:healingwish": 8,
+     "p2:move_state:futuresight": 19,
+     "pending_move:futuresight": 8,
+     "p1:move_state:futuresight": 20,
+     "p1:move_state:wish": 63,
+     "pending_move:wish": 8,
+     "p2:move_state:doomdesire": 3,
+     "pending_move:doomdesire": 2,
+     "courtchange": 59,
+     "p2:move_state:healingwish": 1,
+     "p2:move_state:outrage": 2,
+     "p2:lockedmove": 2,
+     "p1:lockedmove": 13,
+     "p2:move_state:wish": 13
+    },
+    "decisions_with_unsupported_reason": 324,
+    "reconstruction_support_rate": 0.8602525032651285,
+    "hard_deadline_hit": 250,
+    "override_rate_of_searched": 0.15759686547670876,
+    "search_errors": [],
+    "illegal_in_rollouts": 0,
+    "protocol_retries_in_rollouts": 0,
+    "rollout_errors": [],
+    "by_learner_role": {
+     "p1": 1097,
+     "p2": 1200
+    },
+    "worker_restarts_max": 0
+   },
+   "state_integrity": {
+    "battles": 60,
+    "per_decision_forward_violations": [],
+    "hidden_changed_by_search": [],
+    "cross_battle_state": [],
+    "cumulative_forward_counter_mismatch": [],
+    "pass": true,
+    "offline_replay_parity": "not run: live Showdown RNG is not seedable, so there is no offline replay of the logged observations; verified by per-decision forward counters, pre/post-search hidden-state digests and unit tests (tests/test_bs1_1_live.py)"
+   }
+  },
+  "new_class_exceptions": 0,
+  "known_class_search_errors_by_category": {},
+  "decisions_over_deadline": 0,
+  "decisions": 2330,
+  "worlds_rejected_by_mask": 0,
+  "decisions_with_rejected_worlds": 0,
+  "pairs_dropped_parser": 0,
+  "dropped_reasons": {},
+  "mask_rejects_logged": [],
+  "resources": "bs12b-requal2.service: Consumed 10h 20min 54.551s CPU time over 1h 29min 23.306s wall clock time, 10.8G memory peak.",
+  "cpu_hours": 10.34848638888889,
+  "winners_descriptive_only": {
+   "Grunt|C": {
+    "player": 15,
+    "opponent": 5
+   },
+   "Grunt|C+search": {
+    "player": 19,
+    "opponent": 1
+   },
+   "GymLeader|C": {
+    "opponent": 6,
+    "player": 14
+   },
+   "GymLeader|C+search": {
+    "player": 19,
+    "opponent": 1
+   },
+   "C|C": {
+    "player": 12,
+    "opponent": 8
+   },
+   "C|C+search": {
+    "player": 15,
+    "opponent": 5
+   }
+  },
+  "gates": {
+   "all_battles_valid": true,
+   "zero_new_class_exceptions": true,
+   "zero_decisions_over_5s": true,
+   "state_integrity": true,
+   "fixed_classes_zero": true
+  }
+ },
+ "smoke_prefix": {
+  "stage": "smoke_prefix",
+  "battles": 12,
+  "valid_reports": true,
+  "model_illegal_actions": 0,
+  "engineering": {
+   "per_arm": {
+    "C": {
+     "battles": 6,
+     "wall_s_per_battle": {
+      "n": 6,
+      "p50": 0.8088637754990486,
+      "p95": 1.2383359805025975,
+      "max": 1.2866525200079195,
+      "mean": 0.7661998450009074
+     },
+     "decisions_per_battle": {
+      "n": 6,
+      "p50": 55.0,
+      "p95": 86.75,
+      "max": 94,
+      "mean": 52.833333333333336
+     }
+    },
+    "C+search": {
+     "battles": 6,
+     "wall_s_per_battle": {
+      "n": 6,
+      "p50": 187.63841282548674,
+      "p95": 509.62333824575035,
+      "max": 603.9737754770031,
+      "mean": 234.67326389299706
+     },
+     "decisions_per_battle": {
+      "n": 6,
+      "p50": 50.0,
+      "p95": 137.5,
+      "max": 162,
+      "mean": 62.5
+     }
+    }
+   },
+   "errors": {
+    "battles": 12,
+    "timeouts": [],
+    "battle_errors": [],
+    "protocol_retries": 0
+   },
+   "latency": {
+    "decisions": 375,
+    "with_t_send": 375,
+    "missing_t_send": 0,
+    "deadline_s": 5.0,
+    "decisions_over_deadline": 0,
+    "end_to_end_s": {
+     "n": 375,
+     "p50": 4.533935070037842,
+     "p95": 4.70460889339447,
+     "max": 4.7064526081085205,
+     "mean": 3.73816162554423
+    },
+    "phases_s": {
+     "c_inference_and_state": {
+      "n": 375,
+      "p50": 0.0038022994995117188,
+      "p95": 0.0053406238555908205,
+      "max": 0.008548974990844727,
+      "mean": 0.003788283030192057
+     },
+     "c_done_to_search_start": {
+      "n": 374,
+      "p50": 6.9141387939453125e-06,
+      "p95": 1.2159347534179688e-05,
+      "max": 3.123283386230469e-05,
+      "mean": 7.246904832156584e-06
+     },
+     "search": {
+      "n": 374,
+      "p50": 4.529353737831116,
+      "p95": 4.700685346126557,
+      "max": 4.703020095825195,
+      "mean": 3.7437799627130683
+     },
+     "search_end_to_send": {
+      "n": 374,
+      "p50": 0.0005707740783691406,
+      "p95": 0.0007479071617126462,
+      "max": 0.0009615421295166016,
+      "mean": 0.0005695539362290327
+     },
+     "non_search_choice_to_send": {
+      "n": 1,
+      "p50": 0.0002684593200683594,
+      "p95": 0.0002684593200683594,
+      "max": 0.0002684593200683594,
+      "mean": 0.0002684593200683594
+     }
+    }
+   },
+   "search": {
+    "category_counts": {
+     "search_fallback_no_signal": 264,
+     "search_fallback_unsupported": 76,
+     "search_override": 34,
+     "not_searched_single_legal": 1
+    },
+    "decisions": 375,
+    "searched_decisions": 374,
+    "complete_pairs": {
+     "n": 374,
+     "p50": 8.0,
+     "p95": 64.0,
+     "max": 64,
+     "mean": 13.596256684491978
+    },
+    "rollouts": {
+     "n": 374,
+     "p50": 38.0,
+     "p95": 256.0,
+     "max": 256,
+     "mean": 57.037433155080215
+    },
+    "frac_searched_with_ge4_pairs": 0.7727272727272727,
+    "decisions_with_pairs": 298,
+    "unsupported_reasons": {
+     "pivot_switch_request": 38,
+     "p2:move_state:futuresight": 35,
+     "pending_move:futuresight": 3
+    },
+    "decisions_with_unsupported_reason": 76,
+    "reconstruction_support_rate": 0.7967914438502673,
+    "hard_deadline_hit": 58,
+    "override_rate_of_searched": 0.09090909090909091,
+    "search_errors": [],
+    "illegal_in_rollouts": 0,
+    "protocol_retries_in_rollouts": 0,
+    "rollout_errors": [],
+    "by_learner_role": {
+     "p1": 236,
+     "p2": 138
+    },
+    "worker_restarts_max": 0
+   },
+   "state_integrity": {
+    "battles": 6,
+    "per_decision_forward_violations": [],
+    "hidden_changed_by_search": [],
+    "cross_battle_state": [],
+    "cumulative_forward_counter_mismatch": [],
+    "pass": true,
+    "offline_replay_parity": "not run: live Showdown RNG is not seedable, so there is no offline replay of the logged observations; verified by per-decision forward counters, pre/post-search hidden-state digests and unit tests (tests/test_bs1_1_live.py)"
+   }
+  },
+  "new_class_exceptions": 0,
+  "known_class_search_errors_by_category": {},
+  "decisions_over_deadline": 0,
+  "decisions": 375,
+  "worlds_rejected_by_mask": 0,
+  "decisions_with_rejected_worlds": 0,
+  "pairs_dropped_parser": 0,
+  "dropped_reasons": {},
+  "mask_rejects_logged": [],
+  "resources": "run-p2035864-i2049919.scope: Consumed 1h 37min 30.272s CPU time over 16min 59.605s wall clock time, 10.9G memory peak.",
+  "cpu_hours": 1.6250755555555556,
+  "winners_descriptive_only": {
+   "Grunt|C": {
+    "player": 2
+   },
+   "Grunt|C+search": {
+    "player": 2
+   },
+   "GymLeader|C": {
+    "opponent": 1,
+    "player": 1
+   },
+   "GymLeader|C+search": {
+    "player": 2
+   },
+   "C|C": {
+    "opponent": 1,
+    "player": 1
+   },
+   "C|C+search": {
+    "player": 2
+   }
+  },
+  "gates": {
+   "all_battles_valid": true,
+   "zero_new_class_exceptions": true,
+   "zero_decisions_over_5s": true,
+   "state_integrity": true,
+   "fixed_classes_zero": true
+  }
+ },
+ "requal_prefix": {
+  "stage": "requal_prefix",
+  "battles": 120,
+  "valid_reports": true,
+  "model_illegal_actions": 0,
+  "engineering": {
+   "per_arm": {
+    "C": {
+     "battles": 60,
+     "wall_s_per_battle": {
+      "n": 60,
+      "p50": 0.33229486050549895,
+      "p95": 0.9637500832221121,
+      "max": 1.4865707700082567,
+      "mean": 0.4139069125177533
+     },
+     "decisions_per_battle": {
+      "n": 60,
+      "p50": 30.0,
+      "p95": 68.59999999999997,
+      "max": 99,
+      "mean": 36.28333333333333
+     }
+    },
+    "C+search": {
+     "battles": 60,
+     "wall_s_per_battle": {
+      "n": 60,
+      "p50": 111.25077275300282,
+      "p95": 299.69004075426017,
+      "max": 438.61298802300007,
+      "mean": 151.18663692856643
+     },
+     "decisions_per_battle": {
+      "n": 60,
+      "p50": 31.0,
+      "p95": 82.54999999999997,
+      "max": 120,
+      "mean": 37.583333333333336
+     }
+    }
+   },
+   "errors": {
+    "battles": 120,
+    "timeouts": [],
+    "battle_errors": [],
+    "protocol_retries": 0
+   },
+   "latency": {
+    "decisions": 2255,
+    "with_t_send": 2255,
+    "missing_t_send": 0,
+    "deadline_s": 5.0,
+    "decisions_over_deadline": 0,
+    "end_to_end_s": {
+     "n": 2255,
+     "p50": 4.53067684173584,
+     "p95": 4.7022827625274655,
+     "max": 4.713561058044434,
+     "mean": 4.004653376539108
+    },
+    "phases_s": {
+     "c_inference_and_state": {
+      "n": 2240,
+      "p50": 0.0038819313049316406,
+      "p95": 0.00545048713684082,
+      "max": 0.008891105651855469,
+      "mean": 0.003915966089282717
+     },
+     "c_done_to_search_start": {
+      "n": 2206,
+      "p50": 7.3909759521484375e-06,
+      "p95": 1.1205673217773438e-05,
+      "max": 2.956390380859375e-05,
+      "mean": 7.5177506544540285e-06
+     },
+     "search": {
+      "n": 2206,
+      "p50": 4.529088258743286,
+      "p95": 4.6977458000183105,
+      "max": 4.708845138549805,
+      "mean": 4.089025152669857
+     },
+     "search_end_to_send": {
+      "n": 2206,
+      "p50": 0.0005767345428466797,
+      "p95": 0.000752568244934082,
+      "max": 0.005877971649169922,
+      "mean": 0.0005851847846618265
+     },
+     "non_search_choice_to_send": {
+      "n": 49,
+      "p50": 0.00021696090698242188,
+      "p95": 0.0002707958221435547,
+      "max": 0.0007832050323486328,
+      "mean": 0.00022935867309570312
+     }
+    }
+   },
+   "search": {
+    "category_counts": {
+     "search_fallback_no_signal": 1577,
+     "search_override": 391,
+     "not_searched_single_legal": 34,
+     "search_fallback_unsupported": 238,
+     "not_represented": 15
+    },
+    "decisions": 2255,
+    "searched_decisions": 2206,
+    "complete_pairs": {
+     "n": 2206,
+     "p50": 16.0,
+     "p95": 64.0,
+     "max": 64,
+     "mean": 21.31097008159565
+    },
+    "rollouts": {
+     "n": 2206,
+     "p50": 70.0,
+     "p95": 256.0,
+     "max": 256,
+     "mean": 87.23254759746146
+    },
+    "frac_searched_with_ge4_pairs": 0.8748866727107888,
+    "decisions_with_pairs": 1968,
+    "unsupported_reasons": {
+     "pivot_switch_request": 110,
+     "side_condition_duration_exhausted:lightscreen": 3,
+     "p2:move_state:futuresight": 14,
+     "pending_move:futuresight": 6,
+     "p1:move_state:futuresight": 6,
+     "p2:move_state:doomdesire": 2,
+     "p1:move_state:wish": 21,
+     "pending_move:wish": 10,
+     "courtchange": 30,
+     "world_rejected_mask": 2,
+     "p1:twoturnmove": 2,
+     "pending_move:healingwish": 6,
+     "p2:move_state:outrage": 2,
+     "p2:lockedmove": 3,
+     "p1:lockedmove": 2,
+     "p2:move_state:wish": 22
+    },
+    "decisions_with_unsupported_reason": 241,
+    "reconstruction_support_rate": 0.8930190389845875,
+    "hard_deadline_hit": 247,
+    "override_rate_of_searched": 0.17724388032638258,
+    "search_errors": [],
+    "illegal_in_rollouts": 0,
+    "protocol_retries_in_rollouts": 1,
+    "rollout_errors": [],
+    "by_learner_role": {
+     "p1": 1054,
+     "p2": 1152
+    },
+    "worker_restarts_max": 0
+   },
+   "state_integrity": {
+    "battles": 60,
+    "per_decision_forward_violations": [],
+    "hidden_changed_by_search": [],
+    "cross_battle_state": [],
+    "cumulative_forward_counter_mismatch": [],
+    "pass": true,
+    "offline_replay_parity": "not run: live Showdown RNG is not seedable, so there is no offline replay of the logged observations; verified by per-decision forward counters, pre/post-search hidden-state digests and unit tests (tests/test_bs1_1_live.py)"
+   }
+  },
+  "new_class_exceptions": 0,
+  "known_class_search_errors_by_category": {},
+  "decisions_over_deadline": 0,
+  "decisions": 2255,
+  "worlds_rejected_by_mask": 32,
+  "decisions_with_rejected_worlds": 2,
+  "pairs_dropped_parser": 0,
+  "dropped_reasons": {},
+  "mask_rejects_logged": [
+   {
+    "world": 0,
+    "opp": "Grunt",
+    "bad": [
+     1,
+     5,
+     4
+    ],
+    "live_mask": [
+     0,
+     1,
+     0,
+     0,
+     1,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "world_mask": null,
+    "battle": "battle-gen9ou-73800",
+    "turn": 54,
+    "role": "p2"
+   },
+   {
+    "world": 4,
+    "opp": "GymLeader",
+    "bad": [
+     1,
+     5,
+     4
+    ],
+    "live_mask": [
+     0,
+     1,
+     0,
+     0,
+     1,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "world_mask": null,
+    "battle": "battle-gen9ou-73800",
+    "turn": 54,
+    "role": "p2"
+   },
+   {
+    "world": 0,
+    "opp": "GymLeader",
+    "bad": [
+     1,
+     5,
+     4
+    ],
+    "live_mask": [
+     0,
+     1,
+     0,
+     0,
+     1,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "world_mask": null,
+    "battle": "battle-gen9ou-73800",
+    "turn": 54,
+    "role": "p2"
+   },
+   {
+    "world": 0,
+    "opp": "Grunt",
+    "bad": [
+     1,
+     5,
+     4
+    ],
+    "live_mask": [
+     0,
+     1,
+     0,
+     0,
+     1,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "world_mask": null,
+    "battle": "battle-gen9ou-73800",
+    "turn": 55,
+    "role": "p2"
+   },
+   {
+    "world": 4,
+    "opp": "Grunt",
+    "bad": [
+     1,
+     5,
+     4
+    ],
+    "live_mask": [
+     0,
+     1,
+     0,
+     0,
+     1,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "world_mask": null,
+    "battle": "battle-gen9ou-73800",
+    "turn": 55,
+    "role": "p2"
+   },
+   {
+    "world": 0,
+    "opp": "GymLeader",
+    "bad": [
+     1,
+     5,
+     4
+    ],
+    "live_mask": [
+     0,
+     1,
+     0,
+     0,
+     1,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "world_mask": null,
+    "battle": "battle-gen9ou-73800",
+    "turn": 55,
+    "role": "p2"
+   }
+  ],
+  "resources": "bs12b-requal.service: Consumed 10h 16min 506ms CPU time over 1h 24min 39.084s wall clock time, 11G memory peak.",
+  "cpu_hours": 10.266807222222223,
+  "winners_descriptive_only": {
+   "Grunt|C": {
+    "player": 18,
+    "opponent": 2
+   },
+   "Grunt|C+search": {
+    "player": 19,
+    "opponent": 1
+   },
+   "GymLeader|C": {
+    "opponent": 6,
+    "player": 14
+   },
+   "GymLeader|C+search": {
+    "player": 20
+   },
+   "C|C": {
+    "player": 12,
+    "opponent": 8
+   },
+   "C|C+search": {
+    "player": 14,
+    "opponent": 6
+   }
+  },
+  "gates": {
+   "all_battles_valid": true,
+   "zero_new_class_exceptions": true,
+   "zero_decisions_over_5s": true,
+   "state_integrity": true,
+   "fixed_classes_zero": true
+  }
+ },
+ "golden_trace_parity": {
+  "roots": 240,
+  "identical_untouched": 230,
+  "touched": [
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     19
+    ],
+    "reasons": [
+     "item received mid-stint (choice-lock fix): 2"
+    ],
+    "old_action": 5,
+    "new_action": 5,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     32
+    ],
+    "reasons": [
+     "item received mid-stint (choice-lock fix): 2"
+    ],
+    "old_action": 0,
+    "new_action": 0,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     38
+    ],
+    "reasons": [
+     "item received mid-stint (choice-lock fix): 1"
+    ],
+    "old_action": 2,
+    "new_action": 2,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     42
+    ],
+    "reasons": [
+     "item received mid-stint (choice-lock fix): 2"
+    ],
+    "old_action": 6,
+    "new_action": 6,
+    "old_pairs": 0,
+    "new_pairs": 0,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     57
+    ],
+    "reasons": [
+     "item received mid-stint (choice-lock fix): 1"
+    ],
+    "old_action": 1,
+    "new_action": 1,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     53
+    ],
+    "reasons": [
+     "item received mid-stint (choice-lock fix): 2"
+    ],
+    "old_action": 5,
+    "new_action": 5,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     16
+    ],
+    "reasons": [
+     "item received mid-stint (choice-lock fix): 2"
+    ],
+    "old_action": 1,
+    "new_action": 1,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     4
+    ],
+    "reasons": [
+     "item received mid-stint (choice-lock fix): 1"
+    ],
+    "old_action": 4,
+    "new_action": 4,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     35
+    ],
+    "reasons": [
+     "item received mid-stint (choice-lock fix): 1"
+    ],
+    "old_action": 2,
+    "new_action": 2,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     47
+    ],
+    "reasons": [
+     "item received mid-stint (choice-lock fix): 1"
+    ],
+    "old_action": 5,
+    "new_action": 5,
+    "old_pairs": 0,
+    "new_pairs": 0,
+    "mask_rejects": []
+   }
+  ],
+  "unexplained": 0,
+  "decision_changed": [],
+  "decision_change_rate": 0.0,
+  "PASS": true
+ }
+}

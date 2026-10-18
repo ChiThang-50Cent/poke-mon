@@ -35,7 +35,27 @@ CATEGORIES = (
     "search_skipped_workers",
     "search_skipped_no_snapshot",
     "search_error",
+    "search_error_new_class",
 )
+
+# BS1.2b exception allowlist: the only search exceptions that are known and safely handled (the
+# decision falls back to C's legal action). Both classes were FIXED in BS1.2b, so any
+# occurrence is reported by category (target 0); anything else is a NEW class and aborts the run.
+KNOWN_ERRORS: tuple[tuple[str, str], ...] = (
+    ("forced_action_outside_mask", r"RuntimeError: forced action \d+ outside mask"),
+    ("parser_forward_exception",
+     r"replay_parser\.exceptions\.\w+: Exception on Replay Forward-Fill"),
+)
+
+
+def classify_error(text: str) -> str | None:
+    """Name of the known allowlisted class of a traceback, else None (= new class)."""
+    import re
+
+    for name, pattern in KNOWN_ERRORS:
+        if re.search(pattern, text):
+            return name
+    return None
 
 
 @dataclass(frozen=True)
@@ -48,6 +68,8 @@ class SearchSettings:
     n_seeds: int = 8
     workers: int = 4
     seed: int = 20261101
+    fail_fast: bool = True  # a NEW exception class aborts the run (after C's action is returned)
+    fail_dir: str | None = None  # where the new-class evidence (traceback + root payload) goes
 
     @classmethod
     def from_dict(cls, raw: dict[str, Any] | None) -> SearchSettings:
@@ -98,6 +120,8 @@ class LiveSearch:
         self.settings = settings
         self._pool = pool
         self.counts: dict[str, int] = {}
+        self.abort_reason: str | None = None
+        self._payload: Any = None
 
     @property
     def pool(self) -> Any:
@@ -114,6 +138,7 @@ class LiveSearch:
         """Return (final action, log row). Never raises: any failure keeps C's legal action."""
         cfg = self.settings
         t_start = time.time()
+        self._payload = None
         row: dict[str, Any] = {
             "t_request": t_request, "t_search_start": t_start, "category": None,
             "c_action": c_action, "action": c_action, "budget_s": None,
@@ -136,12 +161,51 @@ class LiveSearch:
                         player, battle, tag, c_action, mask, probs, t_request, snapshot,
                         pending_start, decision_no, budget, t_start, row)
         except Exception as exc:  # noqa: BLE001 - fail-safe: C's action
-            row["category"] = "search_error"
+            full = traceback.format_exc()
+            known = classify_error(full)
+            row["category"] = "search_error" if known else "search_error_new_class"
+            row["error_class"] = known or "NEW"
             row["error_cause"] = f"{type(exc).__name__}: {exc}"[:300]
-            row["error"] = traceback.format_exc()[-1500:]
+            row["error"] = full[-1500:]
+            if known is None:
+                self._new_class(row, full, tag)
         row["t_search_end"] = time.time()
         self._count(row["category"])
         return c_action, row
+
+    def _new_class(self, row: dict[str, Any], full: str, tag: str) -> None:
+        """Log the evidence of an unknown exception class and flag the run to abort."""
+        cfg = self.settings
+        if cfg.fail_dir:
+            from pathlib import Path
+
+            out = Path(cfg.fail_dir)
+            out.mkdir(parents=True, exist_ok=True)
+            stem = f"new_class_{zlib.crc32(tag.encode()):08x}_{int(time.time())}"
+            (out / f"{stem}.txt").write_text(full)
+            if self._payload is not None:
+                (out / f"{stem}.payload.pkl").write_bytes(pickle.dumps(self._payload))
+            row["evidence"] = str(out / stem)
+        if cfg.fail_fast:
+            self.abort_reason = f"new search exception class: {row['error_cause']}"
+
+    MAX_FORENSICS = 40
+
+    def _keep_forensics(self, payload: Any, tag: str, decision_no: int, d: dict[str, Any]) -> None:
+        """Persist the root payload of a decision with rejected worlds / dropped pairs: the world
+        construction is a deterministic function of the payload, so it is exactly reproducible."""
+        from pathlib import Path
+
+        out = Path(self.settings.fail_dir) / "forensics"
+        out.mkdir(parents=True, exist_ok=True)
+        if len(list(out.glob("*.payload.pkl"))) >= self.MAX_FORENSICS:
+            return
+        stem = f"{zlib.crc32(tag.encode()):08x}_{decision_no}"
+        (out / f"{stem}.payload.pkl").write_bytes(pickle.dumps(payload))
+        (out / f"{stem}.json").write_text(json.dumps({
+            "tag": tag, "decision_no": decision_no, "mask_rejects": d["mask_rejects"],
+            "dropped": d["dropped"], "world_rejected_mask": d["world_rejected_mask"],
+            "dropped_pairs": d["dropped_pairs"]}))
 
     def _search(
         self, player: Any, battle: Any, tag: str, c_action: int, mask: Any, probs: Any,
@@ -207,9 +271,12 @@ class LiveSearch:
             root_id=root_id, opp_model=cfg.opp_model, seed=cfg.seed, info=info,
             learner_snapshot=snapshot, old_tag=tag, mask=mask_list, candidates=candidates,
             n_worlds=cfg.n_worlds, n_seeds=cfg.n_seeds)
+        self._payload = payload
         row["hidden_before"] = hidden_digest(player.hidden.get(tag))
         d = self.pool.decision(payload, budget, t_request=t_start)
         row["hidden_after"] = hidden_digest(player.hidden.get(tag))
+        if (d["world_rejected_mask"] or d["dropped_pairs"]) and cfg.fail_dir:
+            self._keep_forensics(payload, tag, decision_no, d)
         choice = d["choice"]
         row.update(
             n_pairs=choice["n_pairs"], n_rollouts=d["n_rollouts"], reason=choice["reason"],
@@ -218,7 +285,9 @@ class LiveSearch:
             illegal=d["illegal"], retries=d["retries"], rounds=d["rounds"], turns=d["turns"], rollout_errors=d["errors"][:3],
             hard_deadline_hit=d["hard_deadline_hit"], workers_done=d["workers_done"],
             pool_wall_s=d["wall_s"], timing=d["timing"], restarts=self.pool.restarts,
-            opps=sorted({p["opp"] for p in d["pairs"]}))
+            opps=sorted({p["opp"] for p in d["pairs"]}),
+            world_rejected_mask=d["world_rejected_mask"], mask_rejects=d["mask_rejects"][:3],
+            dropped_pairs=d["dropped_pairs"], dropped=d["dropped"][:3])
         action = choice["action"]
         if not mask_list[action]:  # cannot happen (decide() asserts the C fallback is legal)
             action = c_action

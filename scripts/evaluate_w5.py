@@ -19,8 +19,13 @@ from pokeai.env.runner import RunConfig, run_battles
 from pokeai.repro import source_fingerprint
 
 
-def claim_pool(pool: Path, final: bool, config: dict) -> None:
-    """Claim heldout globally, not relative to the user-selected report path."""
+def claim_pool(pool: Path, final: bool, config: dict,
+               window: tuple[int, int, int, int] | None = None) -> None:
+    """Claim heldout globally, not relative to the user-selected report path.
+
+    BS1.2b: one frozen config may be executed as several (lane, lanes, pair-start, pair-stop)
+    windows of the same schedule. The first window creates the one-shot claim; later windows must
+    carry the IDENTICAL config and each window can be taken exactly once."""
     manifest = json.loads((pool / "gen9ou/manifest.json").read_text())
     role = manifest["role"]
     if role not in ("dev", "heldout"):
@@ -28,9 +33,18 @@ def claim_pool(pool: Path, final: bool, config: dict) -> None:
     if role == "heldout":
         if not final:
             raise ValueError("heldout pool requires --final; never use for selection")
-        with (pool / "final.started.json").open("x") as stream:
-            json.dump({"purpose": "one-shot final W5 benchmark", "config": config}, stream)
-            stream.write("\n")
+        claim = pool / "final.started.json"
+        try:
+            with claim.open("x") as stream:
+                json.dump({"purpose": "one-shot final W5 benchmark", "config": config}, stream)
+                stream.write("\n")
+        except FileExistsError:
+            if window is None or json.loads(claim.read_text())["config"] != config:
+                raise
+        if window is not None:
+            lane, lanes, start, stop = window
+            with (pool / f"final.window.{lane}of{lanes}.{start}-{stop}.json").open("x") as f:
+                json.dump({"config": config}, f)
     elif final:
         raise ValueError("--final requires the heldout pool")
 
@@ -82,7 +96,10 @@ async def evaluate(args):
         raise FileExistsError(f"Preserve existing report: {output}")
     output.parent.mkdir(parents=True, exist_ok=True)
     effective = {**config, "arms": arms, "pool": str(pool), "battles": battles}
-    claim_pool(pool, args.final, effective)
+    window = None
+    if args.lanes > 1 or args.pairs:
+        window = (args.lane, args.lanes, *(args.pairs or (0, battles // 2)))
+    claim_pool(pool, args.final, effective, window)
     model_configs = [*arms.values(), *config["opponents"].values()]
     report = {
         "valid": False, "config": effective, "seed": args.seed,

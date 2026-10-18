@@ -348,6 +348,30 @@ def _counted_baseline(name: str) -> type:
     return CountedBaseline
 
 
+async def _gather_lanes(coroutines: list[Any], live_search: Any) -> None:
+    """Run the battle lanes; BS1.2b fail-fast: a NEW search exception class (C's action was
+    already returned in time) cancels every lane and raises, keeping the logged battles."""
+    lanes = [asyncio.ensure_future(c) for c in coroutines]
+
+    async def watch_abort() -> None:
+        while not all(task.done() for task in lanes):
+            if live_search is not None and live_search.abort_reason:
+                for task in lanes:
+                    task.cancel()
+                return
+            await asyncio.sleep(0.05)
+
+    watcher = asyncio.ensure_future(watch_abort())
+    try:
+        await asyncio.gather(*lanes)
+    except asyncio.CancelledError:
+        if live_search is not None and live_search.abort_reason:
+            raise RuntimeError(f"ABORT: {live_search.abort_reason}") from None
+        raise
+    finally:
+        watcher.cancel()
+
+
 def lane_indices(
     battles: int, lane: list[int] | None, window: list[int] | None = None
 ) -> list[int]:
@@ -679,8 +703,8 @@ async def _run_on_poke_loop(
                 if cleanup_errors:
                     raise RuntimeError("; ".join(cleanup_errors))
 
-        await asyncio.gather(
-            *(lane() for _ in range(min(config.concurrent, config.battles)))
+        await _gather_lanes(
+            [lane() for _ in range(min(config.concurrent, config.battles))], live_search
         )
     summary_config = _config_dict(config)
     if not config.save_trajectories:
