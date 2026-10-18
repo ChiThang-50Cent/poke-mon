@@ -1,4 +1,4 @@
-"""Freeze manifest of the C + belief search release candidate (tag `w5-bs-rc2`).
+"""Freeze manifest of the C + belief search release candidate (tag `w5-bs-rc3`).
 
 `verify(path)` re-hashes everything the manifest froze; a final heldout run refuses to claim the
 pool unless it returns no problems."""
@@ -42,23 +42,34 @@ def run(*cmd: str, cwd: Path = ROOT) -> str:
     return subprocess.run(cmd, cwd=cwd, capture_output=True, text=True, check=False).stdout.strip()
 
 
-def live_path_modules() -> list[Path]:
-    """Every src/pokeai module imported by the live path (player, search layer, workers)."""
-    import importlib
+LIVE_MODULES = (
+    "pokeai.agents.neural_player", "pokeai.agents.live_search", "pokeai.env.runner",
+    "pokeai.cf.recon_search", "pokeai.cf.recon_world", "pokeai.cf.recon_match",
+    "pokeai.cf.offline", "pokeai.cf.branching", "pokeai.cf.cf1", "pokeai.cf.belief",
+    "pokeai.cf.rollouts", "pokeai.cf.sim", "pokeai.cf.restore_check",
+    "evaluate_w5", "bs1_2_run",  # the lane / driver entrypoints and everything they import
+)
 
-    for name in (
-        "pokeai.agents.neural_player", "pokeai.agents.live_search", "pokeai.env.runner",
-        "pokeai.cf.recon_search", "pokeai.cf.recon_world", "pokeai.cf.recon_match",
-        "pokeai.cf.offline", "pokeai.cf.branching", "pokeai.cf.cf1", "pokeai.cf.belief",
-        "pokeai.cf.rollouts", "pokeai.cf.sim", "pokeai.cf.restore_check",
-    ):
-        importlib.import_module(name)
-    files = []
-    for module in list(sys.modules.values()):
-        f = getattr(module, "__file__", None)
-        if f and Path(f).resolve().is_relative_to(ROOT / "src" / "pokeai"):
-            files.append(Path(f).resolve())
-    return sorted(set(files))
+
+def live_path_modules() -> list[Path]:
+    """Every src/pokeai module imported by the live path (player, search layer, workers, lane
+    and driver entrypoints), computed in a FRESH interpreter so the result never depends on
+    what the calling process happened to import."""
+    script = (
+        "import importlib, json, sys\n"
+        "from pathlib import Path\n"
+        f"sys.path[:0] = [{str(ROOT / 'scripts')!r}, {str(ROOT / 'src')!r}]\n"
+        f"for name in {LIVE_MODULES!r}:\n"
+        "    importlib.import_module(name)\n"
+        f"root = Path({str(ROOT / 'src' / 'pokeai')!r})\n"
+        "files = {str(Path(m.__file__).resolve()) for m in list(sys.modules.values())\n"
+        "         if getattr(m, '__file__', None)\n"
+        "         and Path(m.__file__).resolve().is_relative_to(root)}\n"
+        "print(json.dumps(sorted(files)))\n"
+    )
+    out = subprocess.run([sys.executable, "-c", script], cwd=ROOT, capture_output=True,
+                         text=True, check=True).stdout
+    return [Path(p) for p in json.loads(out.splitlines()[-1])]
 
 
 def belief_data_files() -> list[Path]:
@@ -147,7 +158,7 @@ def main() -> None:
 
     status = run("git", "status", "--porcelain", "--untracked-files=no").splitlines()
     manifest = {
-        "release_candidate": "RC2 (C + belief search; tag w5-bs-rc2)",
+        "release_candidate": "RC3 (C + belief search; tag w5-bs-rc3)",
         "git": {"commit": run("git", "rev-parse", "HEAD"), "uncommitted_tracked_files": status,
                 "note": "files are hashed below regardless of commit state"},
         "c_checkpoint": {rel(p): sha(p) for p in sorted(c_dir.iterdir()) if p.is_file()},

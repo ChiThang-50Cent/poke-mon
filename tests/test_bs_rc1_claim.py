@@ -127,3 +127,17 @@ def test_the_driver_verifies_before_launching_any_lane(tmp_path, monkeypatch):
         bs1_2_run.main()
     assert launched == []
     assert not list(tmp_path.glob("*.json"))
+
+
+def test_frozen_live_closure_includes_the_entrypoints_whatever_the_caller_imported():
+    """BS1.3 pre-claim abort: the driver imports evaluate_w5 (-> env.collector, repro); a module
+    list taken from the caller's sys.modules flagged them as unfrozen. The closure is now computed
+    in a fresh interpreter and includes the lane/driver entrypoints."""
+    from bs_rc1_manifest import live_path_modules
+
+    names = {str(p.relative_to(ROOT)) for p in live_path_modules()}
+    assert {"src/pokeai/env/collector.py", "src/pokeai/repro.py",
+            "src/pokeai/agents/live_search.py", "src/pokeai/cf/recon_search.py"} <= names
+    import pokeai.env.collector  # noqa: F401 - the caller importing more must not change it
+
+    assert {str(p.relative_to(ROOT)) for p in live_path_modules()} == names
