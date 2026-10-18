@@ -64,6 +64,50 @@ def sample_world(
     return tracker, order2, know, world
 
 
+class WorldRejectedState(Unsupported):
+    """The reconstructed engine state is not the decision boundary of the live request."""
+
+
+def world_invariant_violations(
+    inv: dict[str, Any], request: dict[str, Any], spec: dict[str, Any]
+) -> list[str]:
+    """Layer 2: engine invariants of a reconstructed root versus the live request.
+
+    Normal move root (verified against a genuine battle): turn open at its start (`midTurn`
+    false), empty action queue, nothing pending, a move request on both sides, live active mons.
+    Forced-switch root: the turn's residual already ran (`midTurn` true, empty queue), the
+    fainted active of each switch side carries the switch flag and the forceSwitch request.
+    """
+    forced = "forceSwitch" in request
+    switch_sides = set(spec["switch_sides"]) if forced else set()
+    bad: list[str] = []
+
+    def check(ok: bool, what: str) -> None:
+        if not ok:
+            bad.append(what)
+
+    check(not inv["ended"], "ended")
+    check(inv["midTurn"] is forced, f"midTurn={inv['midTurn']} (expected {forced})")
+    check(inv["queue"] == 0, f"queue={inv['queue']}")
+    check(inv["faintQueue"] == 0, f"faintQueue={inv['faintQueue']}")
+    check(inv["requestState"] == ("switch" if forced else "move"),
+          f"requestState={inv['requestState']!r}")
+    for side in inv["sides"]:
+        sid = side["id"]
+        flagged = sid in switch_sides
+        want = ["forceSwitch"] if flagged else ["wait"] if forced else ["active"]
+        check(side["request"] == want, f"{sid} request {side['request']} (expected {want})")
+        check(side["switchFlags"] == int(flagged), f"{sid} switchFlags={side['switchFlags']}")
+        check(side["activeFainted"] is flagged, f"{sid} activeFainted={side['activeFainted']}")
+        check(side["faintedThisTurn"] is flagged, f"{sid} faintedThisTurn")
+        check(side["pokemonLeft"] == side["aliveCount"], f"{sid} pokemonLeft/alive")
+        check(not flagged or side["pokemonLeft"] >= 1, f"{sid} no replacement")
+        check(not side["choiceError"], f"{sid} choiceError")
+        for mon in side["active"]:
+            check(mon is not None and mon["isActive"] is not flagged, f"{sid} active mon state")
+    return bad
+
+
 def reconstruct_world(
     sim: Sim, sampler: BeliefSampler, info: LearnerInfo, world_seed: int, battle_seed: int,
     tag: str | None = None,
@@ -80,6 +124,10 @@ def reconstruct_world(
     )
     tag = tag or new_tag()
     events = sim.reconstruct(tag, spec)
+    violations = world_invariant_violations(sim.invariants(tag), info.request, spec)
+    if violations:
+        sim.destroy(tag)
+        raise WorldRejectedState("; ".join(violations))
     t2 = time.perf_counter()
     import json
 
@@ -128,4 +176,7 @@ def learner_probe(
     return model
 
 
-__all__ = ["LearnerInfo", "Recon", "Unsupported", "learner_probe", "reconstruct_world"]
+__all__ = [
+    "LearnerInfo", "Recon", "Unsupported", "WorldRejectedState", "learner_probe",
+    "reconstruct_world", "world_invariant_violations",
+]

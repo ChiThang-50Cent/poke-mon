@@ -463,15 +463,37 @@ const reconHandlers = {
       return s;
     });
     ordered.forEach((s, i) => { s.gender = req.p1.genders[i]; });
+    // Inert-lead bootstrap: the real start-of-battle runs only to put both leads in play. Their
+    // item and ability are blanked during it so no entry effect (Intimidate, Eject Pack,
+    // terrain/weather setters, seeds, Imposter...) can fire or consume anything, and restored
+    // from the sampled/own sets before the public state is patched. Leads are team slot 0.
+    const leadSets = { p1: ordered[0], p2: req.p2.team[0] };
+    const inert = (s) => ({ ...s, item: "", ability: "" });
+    ordered[0] = inert(ordered[0]);
+    const p2Team = req.p2.team.map((s, i) => (i === 0 ? inert(s) : s));
     battle.sendUpdates();
     battle.setPlayer("p1", { name: req.p1.name, avatar: "170", team: ordered });
     battle.sendUpdates();
-    battle.setPlayer("p2", { name: req.p2.name, avatar: "2", team: req.p2.team });
+    battle.setPlayer("p2", { name: req.p2.name, avatar: "2", team: p2Team });
     battle.sendUpdates();
     battle.choose("p1", "team 123456");
     battle.choose("p2", "team 123456");
     battle.sendUpdates();
     drain(slot);
+    battle.sides.forEach((side, si) => {
+      const p = side.pokemon[0];
+      const set = leadSets[si === 0 ? "p1" : "p2"];
+      p.set.item = set.item;
+      p.set.ability = set.ability;
+      p.baseAbility = toID(set.ability);
+      p.ability = p.baseAbility;
+      p.abilityState = battle.initEffectState({ id: p.ability, target: p });
+      p.item = toID(set.item);
+      p.itemState = battle.initEffectState({ id: p.item, target: p });
+      // once-per-battle entry boosts the lead has already received (its boost is public state)
+      if (p.ability === "dauntlessshield") p.shieldBoost = true;
+      if (p.ability === "intrepidsword") p.swordBoost = true;
+    });
     // ---- patch the public/sampled state
     battle.turn = req.turn;
     battle.field.weather = "";
@@ -491,7 +513,9 @@ const reconHandlers = {
       if (sd.tera_used) side.pokemon.forEach((q) => { q.canTerastallize = null; });
       side.totalFainted = sd.total_fainted;
       side.pokemonLeft = side.pokemon.filter((p) => !p.fainted).length;
-      side.faintedLastTurn = sd.fainted_last_turn ? side.pokemon.find((p) => p.fainted) : null;
+      const forcedHere = req.request_state === "switch" && req.switch_sides.includes(side.id);
+      side.faintedLastTurn = sd.fainted_last_turn
+        ? (side.pokemon.find((p, i) => p.fainted && !(forcedHere && i === 0)) || null) : null;
       for (const [id, st] of Object.entries(sd.conditions)) {
         side.sideConditions[id] = battle.initEffectState({ id, target: side, ...st });
       }
@@ -527,10 +551,16 @@ const reconHandlers = {
     battle.requestState = "";
     if (req.request_state === "switch") {
       for (const sid of req.switch_sides) {
-        const p = battle.sides[sid === "p1" ? 0 : 1].pokemon[0];
+        const side = battle.sides[sid === "p1" ? 0 : 1];
+        const p = side.pokemon[0];
         p.switchFlag = true;
         if (p.fainted) p.status = "fnt"; // fainted-this-turn mons keep fnt until replaced
+        side.faintedThisTurn = p;
       }
+      // Engine boundary of a forced replacement (verified against a genuine battle): the turn's
+      // residual already ran, the queue is empty and the turn is still open (midTurn = true), so
+      // the next choice runs the switch and Battle.endTurn, with no second residual.
+      battle.midTurn = true;
       battle.makeRequest("switch");
     } else {
       battle.makeRequest("move");
@@ -538,6 +568,27 @@ const reconHandlers = {
     battle.log.push("|recon|"); // sendUpdates only emits requests when the log advanced
     battle.sendUpdates();
     return { events: drain(slot) };
+  },
+  // Engine facts that define a decision boundary (checked by pokeai.cf.recon_world).
+  invariants(req) {
+    const b = get(req.id).battle;
+    return {
+      invariants: {
+        turn: b.turn, midTurn: b.midTurn, ended: b.ended, requestState: b.requestState,
+        queue: b.queue.list.length, faintQueue: b.faintQueue.length,
+        sides: b.sides.map((s) => ({
+          id: s.id,
+          request: s.activeRequest ? Object.keys(s.activeRequest).filter(
+            (k) => ["wait", "forceSwitch", "active", "teamPreview"].includes(k)) : null,
+          rqid: s.activeRequest ? s.activeRequest.rqid : null,
+          active: s.active.map((p) => (p ? { fainted: p.fainted, hp: p.hp, switchFlag: p.switchFlag, isActive: p.isActive } : null)),
+          switchFlags: s.pokemon.filter((p) => p.switchFlag).length,
+          activeFainted: s.active.some((p) => p && p.fainted),
+          pokemonLeft: s.pokemonLeft, aliveCount: s.pokemon.filter((p) => !p.fainted).length,
+          faintedThisTurn: !!s.faintedThisTurn, choiceError: s.choice.error,
+        })),
+      },
+    };
   },
 };
 Object.assign(handlers, reconHandlers);

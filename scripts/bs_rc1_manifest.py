@@ -1,4 +1,4 @@
-"""Freeze manifest of the C + belief search release candidate (tag `w5-bs-rc3`).
+"""Freeze manifest of the C + belief search release candidate (tag `w5-bs-rc4`).
 
 `verify(path)` re-hashes everything the manifest froze; a final heldout run refuses to claim the
 pool unless it returns no problems."""
@@ -158,7 +158,7 @@ def main() -> None:
 
     status = run("git", "status", "--porcelain", "--untracked-files=no").splitlines()
     manifest = {
-        "release_candidate": "RC3 (C + belief search; tag w5-bs-rc3)",
+        "release_candidate": "RC4 (C + belief search; tag w5-bs-rc4; NOT approved for heldout)",
         "git": {"commit": run("git", "rev-parse", "HEAD"), "uncommitted_tracked_files": status,
                 "note": "files are hashed below regardless of commit state"},
         "c_checkpoint": {rel(p): sha(p) for p in sorted(c_dir.iterdir()) if p.is_file()},

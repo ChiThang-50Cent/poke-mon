@@ -31,6 +31,8 @@ CATEGORIES = (
     "search_override",
     "search_fallback_no_signal",
     "search_fallback_unsupported",
+    "search_fallback_rollout_stalled",
+    "search_fallback_rollout_horizon",
     "search_skipped_budget",
     "search_skipped_workers",
     "search_skipped_no_snapshot",
@@ -205,7 +207,10 @@ class LiveSearch:
         (out / f"{stem}.json").write_text(json.dumps({
             "tag": tag, "decision_no": decision_no, "mask_rejects": d["mask_rejects"],
             "dropped": d["dropped"], "world_rejected_mask": d["world_rejected_mask"],
-            "dropped_pairs": d["dropped_pairs"]}))
+            "dropped_pairs": d["dropped_pairs"],
+            "world_rejected_state": d.get("world_rejected_state", 0),
+            "state_rejects": d.get("state_rejects", []),
+            "rollout_aborts": d.get("rollout_aborts", [])}, default=str))
 
     def _search(
         self, player: Any, battle: Any, tag: str, c_action: int, mask: Any, probs: Any,
@@ -275,7 +280,8 @@ class LiveSearch:
         row["hidden_before"] = hidden_digest(player.hidden.get(tag))
         d = self.pool.decision(payload, budget, t_request=t_start)
         row["hidden_after"] = hidden_digest(player.hidden.get(tag))
-        if (d["world_rejected_mask"] or d["dropped_pairs"]) and cfg.fail_dir:
+        if (d["world_rejected_mask"] or d["dropped_pairs"] or d.get("world_rejected_state")
+                or d.get("rollout_aborts")) and cfg.fail_dir:
             self._keep_forensics(payload, tag, decision_no, d)
         choice = d["choice"]
         row.update(
@@ -287,11 +293,22 @@ class LiveSearch:
             pool_wall_s=d["wall_s"], timing=d["timing"], restarts=self.pool.restarts,
             opps=sorted({p["opp"] for p in d["pairs"]}),
             world_rejected_mask=d["world_rejected_mask"], mask_rejects=d["mask_rejects"][:3],
-            dropped_pairs=d["dropped_pairs"], dropped=d["dropped"][:3])
+            dropped_pairs=d["dropped_pairs"], dropped=d["dropped"][:3],
+            world_rejected_state=d.get("world_rejected_state", 0),
+            state_rejects=d.get("state_rejects", [])[:3],
+            rollout_aborts=[{k: a.get(k) for k in (
+                "kind", "world", "seed", "opp", "candidate", "round_index", "turn",
+                "request_state", "unchanged_rounds", "last_errors")}
+                for a in d.get("rollout_aborts", [])[:3]])
         action = choice["action"]
         if not mask_list[action]:  # cannot happen (decide() asserts the C fallback is legal)
             action = c_action
-        if choice["override"]:
+        if d.get("rollout_aborts"):
+            row["category"] = (
+                "search_fallback_rollout_stalled"
+                if choice["reason"] == "fallback:rollout_stalled"
+                else "search_fallback_rollout_horizon")
+        elif choice["override"]:
             row["category"] = "search_override"
         elif d["unsupported"] and choice["n_pairs"] == 0:
             row["category"] = "search_fallback_unsupported"

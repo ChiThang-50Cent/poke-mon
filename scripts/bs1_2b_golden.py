@@ -64,7 +64,8 @@ def run(shard: int, shards: int, out: str) -> None:
                          r"Covet|Pickpocket|Magician|Symbiosis)\b")
         row = {"item_acquired_lines": sum(1 for x in payload.info.lines if acq.match(x)),
                "src": item["src"], "root": item["root"], "turn": item["turn"],
-               "candidates": payload.candidates, "opp_model": payload.opp_model}
+               "candidates": payload.candidates, "opp_model": payload.opp_model,
+               "forced_root": "forceSwitch" in payload.info.request}
         emitted: list[dict] = []
         far = time.time() + 10**6
         t = time.time()
@@ -76,8 +77,13 @@ def run(shard: int, shards: int, out: str) -> None:
             row["errors"] = st["errors"]
             row["retries"] = st["retries"]
             row["illegal"] = st["illegal"]
-            for key in ("world_rejected_mask", "dropped_pairs"):
+            for key in ("world_rejected_mask", "dropped_pairs", "world_rejected_state"):
                 row[key] = st.get(key, 0)
+            row["state_rejects"] = st.get("state_rejects", [])
+            row["rollout_aborts"] = [
+                {k: a.get(k) for k in ("kind", "world", "seed", "opp", "candidate", "round_index",
+                                       "turn", "request_state", "unchanged_rounds")}
+                for a in st.get("rollout_aborts", [])]
             row["mask_rejects"] = st.get("mask_rejects", [])
             row["dropped"] = st.get("dropped", [])
         except Exception:  # noqa: BLE001 - the old tree raises on mask mismatches
@@ -94,7 +100,11 @@ def run(shard: int, shards: int, out: str) -> None:
     Path(out).write_text(json.dumps(results))
 
 
-def compare(old_glob: str, new_glob: str) -> dict:
+def compare(old_glob: str, new_glob: str, effects: str | None = None) -> dict:
+    # BS1.3-P: (src, root) -> bootstrap entry effects found in the OLD bootstrap's worlds
+    entry = {}
+    if effects:
+        entry = {(r["src"], r["root"]): r["effects"] for r in json.loads(Path(effects).read_text())}
     def load(pattern: str) -> dict:
         rows = {}
         for f in sorted(Path().glob(pattern)):
@@ -114,6 +124,17 @@ def compare(old_glob: str, new_glob: str) -> dict:
             reasons.append(f"worlds rejected by mask: {n['world_rejected_mask']}")
         if n.get("item_acquired_lines"):
             reasons.append(f"item received mid-stint (choice-lock fix): {n['item_acquired_lines']}")
+        if n.get("world_rejected_state"):
+            reasons.append(f"worlds rejected by state invariants: {n['world_rejected_state']}")
+        ng = [u for u in n.get("unsupported", []) if u == "neutralizing_gas_active"]
+        if ng:
+            reasons.append(f"worlds unsupported (neutralizing_gas_active): {len(ng)}")
+        if n.get("rollout_aborts"):
+            reasons.append(f"rollout aborted ({n['rollout_aborts'][0]['kind']}): whole decision -> C")
+        if n.get("forced_root"):
+            reasons.append("forced-switch root (no second residual after the replacement)")
+        if entry.get(key):
+            reasons.append(f"old bootstrap entry effects: {sorted(set(entry[key]))[:4]}")
         if n.get("dropped_pairs"):
             reasons.append(f"pairs dropped (parser): {n['dropped_pairs']}")
         same_pairs = o["pairs"] == n["pairs"]
@@ -153,13 +174,14 @@ def main() -> None:
     ap.add_argument("--out")
     ap.add_argument("--old", default="runs/w5-bs1-2b-golden/old_s*.json")
     ap.add_argument("--new", default="runs/w5-bs1-2b-golden/new_s*.json")
+    ap.add_argument("--effects")
     args = ap.parse_args()
     if args.stage == "prepare":
         prepare(args.per_source)
     elif args.stage == "run":
         run(args.shard, args.shards, args.out)
     else:
-        res = compare(args.old, args.new)
+        res = compare(args.old, args.new, args.effects)
         Path(args.out or OUT / "compare.json").write_text(json.dumps(res, indent=1))
         print(json.dumps({k: res[k] for k in res if k != "touched"}), len(res["touched"]))
 

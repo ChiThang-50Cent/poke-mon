@@ -82,6 +82,10 @@ class Sim:
     def info(self, battle_id: str) -> dict[str, Any]:
         return self._call(cmd="info", id=battle_id)
 
+    def invariants(self, battle_id: str) -> dict[str, Any]:
+        """Engine facts defining a decision boundary (turn, midTurn, queue, requests, flags)."""
+        return self._call(cmd="invariants", id=battle_id)["invariants"]
+
     def destroy(self, battle_id: str) -> None:
         self._call(cmd="destroy", id=battle_id)
 

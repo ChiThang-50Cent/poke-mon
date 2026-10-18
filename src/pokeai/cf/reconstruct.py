@@ -840,6 +840,15 @@ def build_spec(
     for move, turn, side in s.recent:
         if s.turn - turn <= 3:
             reasons.append(f"pending_move:{move}")
+    # An active Neutralizing Gas holder suppresses every other ability for as long as it stays
+    # in; that persistent engine state is not rebuilt (the bootstrap starts both leads inert).
+    active_p1 = next((e for _m, e in pairs1 if e.get("active")), None)
+    for ability in (
+        to_id((active_p1 or {}).get("ability") or (active_p1 or {}).get("baseAbility") or ""),
+        to_id(world["mons"][0]["ability"] or "") if not order2[0].fainted else "",
+    ):
+        if ability == "neutralizinggas":
+            reasons.append("neutralizing_gas_active")
     if reasons:
         raise Unsupported(min(set(reasons)) + (
             "" if len(set(reasons)) == 1 else f" (+{len(set(reasons)) - 1})"))

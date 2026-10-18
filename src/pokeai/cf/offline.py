@@ -333,6 +333,29 @@ class Checkpoint:
     learner_names: dict[str, str] | None = None
 
 
+# Consecutive delivery rounds with an unchanged progress fingerprint that prove a deadlock. One
+# unchanged round is already a fixed point of the harness (nothing delivered, nothing
+# submitted); K = 4 leaves headroom for scripted/retried orders and is locked by
+# tests/test_bs1_3p_fix.py.
+STALL_K = 4
+
+
+class RolloutAborted(RuntimeError):
+    """A rollout could not be played to its end; carries the forensic `record`."""
+
+    def __init__(self, message: str, record: dict[str, Any]) -> None:
+        super().__init__(message)
+        self.record = record
+
+
+class RolloutStalled(RolloutAborted):
+    """The harness is deadlocked: the progress fingerprint no longer changes."""
+
+
+class RolloutHorizonExceeded(RolloutAborted):
+    """`max_rounds` delivery rounds elapsed without a proven stall (censored rollout)."""
+
+
 class OfflineMatch:
     """One live battle (sim id == tag suffix) between two offline players."""
 
@@ -716,13 +739,56 @@ class OfflineMatch:
     def finished(self) -> bool:
         return self.ended and not any(e["t"] in ("update", "sideupdate") for e in self.pending)
 
+    def progress_fingerprint(self, record: RoundRecord) -> tuple[Any, ...]:
+        """Everything that can change the course of the match after one delivery round: the
+        engine turn and request phase, both sides' open requests (rqid, type), the events still
+        pending, the orders just submitted and the harness' waiting-for-choice flags."""
+        info = self.sim.info(self.tag)
+        requests = tuple(
+            None if r is None else (r.get("rqid"), tuple(
+                k for k in ("wait", "forceSwitch", "active", "teamPreview") if k in r))
+            for r in info["requests"])
+        pending = tuple(
+            (e["t"], e.get("side"), hash(json.dumps(e.get("omni") or e.get("data"), sort_keys=True)))
+            for e in self.pending)
+        wait = tuple((s, self.wait[s].get("rqid"), str(self.wait[s]["is_wait"]),
+                      self.wait[s].get("choice")) for s in SIDES)
+        return (info["turn"], info["requestState"], bool(info["ended"]), requests, pending,
+                tuple(record.submitted), wait)
+
+    def stall_record(self, fingerprint: tuple[Any, ...], repeats: int) -> dict[str, Any]:
+        """Forensic evidence of a stalled or horizon-censored match."""
+        lines = [ln for rec in self.rounds[-STALL_K * 4:] for om in rec.omni for ln in om]
+        return {
+            "round_index": self.round_index, "turn": fingerprint[0],
+            "request_state": fingerprint[1], "requests": fingerprint[3],
+            "pending": [p[:2] for p in fingerprint[4]], "wait": fingerprint[6],
+            "unchanged_rounds": repeats, "last_protocol_lines": lines[-50:],
+            "last_errors": [e for rec in self.rounds[-STALL_K * 2:] for e in rec.errors][-6:],
+        }
+
     def play(self, max_rounds: int = 2000, hook: Any = None) -> None:
+        """Run to the end. Raises `RolloutStalled` when the progress fingerprint stays unchanged
+        for `STALL_K` consecutive rounds (a proven deadlock: no round can change it), and
+        `RolloutHorizonExceeded` when `max_rounds` delivery rounds pass without a proven stall
+        (the rollout is censored: its outcome is unknown, not lost)."""
+        last: tuple[Any, ...] | None = None
+        repeats = 0
         while not self.finished:
             if self.round_index >= max_rounds:
-                raise RuntimeError("battle exceeded max_rounds")
+                raise RolloutHorizonExceeded(
+                    "battle exceeded max_rounds",
+                    self.stall_record(last, repeats) if last else {"round_index": self.round_index})
             if hook is not None:
                 hook(self)
-            self.step()
+            record = self.step()
+            fingerprint = self.progress_fingerprint(record)
+            repeats = repeats + 1 if fingerprint == last else 1
+            last = fingerprint
+            if repeats >= STALL_K:
+                raise RolloutStalled(
+                    f"battle stalled: progress fingerprint unchanged for {repeats} rounds",
+                    self.stall_record(fingerprint, repeats))
         # deliver the trailing end frames (|win|) if still pending
         if self.pending:
             self.step()

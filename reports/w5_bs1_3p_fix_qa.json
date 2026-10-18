@@ -1,0 +1,2722 @@
+{
+ "smoke": {
+  "stage": "smoke",
+  "battles": 12,
+  "valid_reports": true,
+  "model_illegal_actions": 0,
+  "engineering": {
+   "per_arm": {
+    "C": {
+     "battles": 6,
+     "wall_s_per_battle": {
+      "n": 6,
+      "p50": 0.47723671252606437,
+      "p95": 1.2243643587571569,
+      "max": 1.3401326710009016,
+      "mean": 0.6048085425087871
+     },
+     "decisions_per_battle": {
+      "n": 6,
+      "p50": 30.5,
+      "p95": 58.25,
+      "max": 59,
+      "mean": 37.166666666666664
+     }
+    },
+    "C+search": {
+     "battles": 6,
+     "wall_s_per_battle": {
+      "n": 6,
+      "p50": 107.92057985000429,
+      "p95": 142.7216057452606,
+      "max": 145.27499725000234,
+      "mean": 114.13505646450601
+     },
+     "decisions_per_battle": {
+      "n": 6,
+      "p50": 27.0,
+      "p95": 59.75,
+      "max": 62,
+      "mean": 36.166666666666664
+     }
+    }
+   },
+   "errors": {
+    "battles": 12,
+    "timeouts": [],
+    "battle_errors": [],
+    "protocol_retries": 0
+   },
+   "latency": {
+    "decisions": 217,
+    "with_t_send": 217,
+    "missing_t_send": 0,
+    "deadline_s": 5.0,
+    "decisions_over_deadline": 0,
+    "end_to_end_s": {
+     "n": 217,
+     "p50": 4.471468448638916,
+     "p95": 4.66357307434082,
+     "max": 4.70268988609314,
+     "mean": 3.1382156670917563
+    },
+    "phases_s": {
+     "c_inference_and_state": {
+      "n": 217,
+      "p50": 0.0038475990295410156,
+      "p95": 0.005179786682128906,
+      "max": 0.006322145462036133,
+      "mean": 0.0038294737240136493
+     },
+     "c_done_to_search_start": {
+      "n": 215,
+      "p50": 7.152557373046875e-06,
+      "p95": 1.2469291687011715e-05,
+      "max": 1.9550323486328125e-05,
+      "mean": 7.386540257653525e-06
+     },
+     "search": {
+      "n": 215,
+      "p50": 4.469927072525024,
+      "p95": 4.659851050376892,
+      "max": 4.69833517074585,
+      "mean": 3.162965234490328
+     },
+     "search_end_to_send": {
+      "n": 215,
+      "p50": 0.0005631446838378906,
+      "p95": 0.0007617235183715819,
+      "max": 0.0009171962738037109,
+      "mean": 0.0005667109822118005
+     },
+     "non_search_choice_to_send": {
+      "n": 2,
+      "p50": 0.00021541118621826172,
+      "p95": 0.00022002458572387696,
+      "max": 0.0002205371856689453,
+      "mean": 0.00021541118621826172
+     }
+    }
+   },
+   "search": {
+    "category_counts": {
+     "search_fallback_no_signal": 109,
+     "search_override": 31,
+     "not_searched_single_legal": 2,
+     "search_fallback_unsupported": 75
+    },
+    "decisions": 217,
+    "searched_decisions": 215,
+    "complete_pairs": {
+     "n": 215,
+     "p50": 11.0,
+     "p95": 64.0,
+     "max": 64,
+     "mean": 16.051162790697674
+    },
+    "rollouts": {
+     "n": 215,
+     "p50": 48.0,
+     "p95": 192.0,
+     "max": 256,
+     "mean": 57.64186046511628
+    },
+    "frac_searched_with_ge4_pairs": 0.6511627906976745,
+    "decisions_with_pairs": 140,
+    "unsupported_reasons": {
+     "p2:twoturnmove": 1,
+     "p2:lockedmove": 2,
+     "p1:lockedmove": 1,
+     "courtchange": 59,
+     "pivot_switch_request": 12
+    },
+    "decisions_with_unsupported_reason": 75,
+    "reconstruction_support_rate": 0.6511627906976745,
+    "hard_deadline_hit": 6,
+    "override_rate_of_searched": 0.14418604651162792,
+    "search_errors": [],
+    "illegal_in_rollouts": 0,
+    "protocol_retries_in_rollouts": 0,
+    "rollout_errors": [],
+    "by_learner_role": {
+     "p1": 110,
+     "p2": 105
+    },
+    "worker_restarts_max": 0
+   },
+   "state_integrity": {
+    "battles": 6,
+    "per_decision_forward_violations": [],
+    "hidden_changed_by_search": [],
+    "cross_battle_state": [],
+    "cumulative_forward_counter_mismatch": [],
+    "pass": true,
+    "offline_replay_parity": "not run: live Showdown RNG is not seedable, so there is no offline replay of the logged observations; verified by per-decision forward counters, pre/post-search hidden-state digests and unit tests (tests/test_bs1_1_live.py)"
+   }
+  },
+  "new_class_exceptions": 0,
+  "known_class_search_errors_by_category": {},
+  "decisions_over_deadline": 0,
+  "decisions": 217,
+  "worlds_rejected_by_mask": 0,
+  "decisions_with_rejected_worlds": 0,
+  "pairs_dropped_parser": 0,
+  "dropped_reasons": {},
+  "mask_rejects_logged": [],
+  "resources": "bs13p-smoke.service: Consumed 49min 35.012s CPU time over 7min 8.905s wall clock time, 10.9G memory peak.",
+  "cpu_hours": 0.8263922222222222,
+  "winners_descriptive_only": {
+   "Grunt|C": {
+    "player": 1,
+    "opponent": 1
+   },
+   "Grunt|C+search": {
+    "player": 2
+   },
+   "GymLeader|C": {
+    "player": 2
+   },
+   "GymLeader|C+search": {
+    "player": 2
+   },
+   "C|C": {
+    "player": 1,
+    "opponent": 1
+   },
+   "C|C+search": {
+    "player": 2
+   }
+  },
+  "gates": {
+   "all_battles_valid": true,
+   "zero_new_class_exceptions": true,
+   "zero_decisions_over_5s": true,
+   "state_integrity": true,
+   "fixed_classes_zero": true,
+   "no_timeouts": true,
+   "zero_illegal": true
+  },
+  "world_rejected_state": 0,
+  "decisions_with_state_rejects": 0,
+  "state_rejects_logged": [],
+  "rollout_aborts": {},
+  "RolloutStalled": 0,
+  "RolloutHorizonExceeded": 0,
+  "unsupported_reasons": {
+   "p2:twoturnmove": 1,
+   "p2:lockedmove": 2,
+   "p1:lockedmove": 1,
+   "courtchange": 59,
+   "pivot_switch_request": 12
+  },
+  "coverage_vs_bs1_2b": {
+   "frac_searched_with_ge4_pairs": [
+    0.6511627906976745,
+    0.7893258426966292
+   ],
+   "reconstruction_support_rate": [
+    0.6511627906976745,
+    0.7893258426966292
+   ],
+   "note": "[this run, BS1.2b]; different seeds/team pairs, descriptive only"
+  }
+ },
+ "requal": {
+  "stage": "requal",
+  "battles": 120,
+  "valid_reports": true,
+  "model_illegal_actions": 0,
+  "engineering": {
+   "per_arm": {
+    "C": {
+     "battles": 60,
+     "wall_s_per_battle": {
+      "n": 60,
+      "p50": 0.36271076794946566,
+      "p95": 1.0260558010515524,
+      "max": 1.280269691022113,
+      "mean": 0.4477434796708015
+     },
+     "decisions_per_battle": {
+      "n": 60,
+      "p50": 31.0,
+      "p95": 84.14999999999999,
+      "max": 143,
+      "mean": 37.15
+     }
+    },
+    "C+search": {
+     "battles": 60,
+     "wall_s_per_battle": {
+      "n": 60,
+      "p50": 107.0777691914991,
+      "p95": 276.2245586395348,
+      "max": 487.4215433939826,
+      "mean": 137.5066409906159
+     },
+     "decisions_per_battle": {
+      "n": 60,
+      "p50": 27.0,
+      "p95": 97.14999999999999,
+      "max": 133,
+      "mean": 34.666666666666664
+     }
+    }
+   },
+   "errors": {
+    "battles": 120,
+    "timeouts": [],
+    "battle_errors": [],
+    "protocol_retries": 0
+   },
+   "latency": {
+    "decisions": 2080,
+    "with_t_send": 2080,
+    "missing_t_send": 0,
+    "deadline_s": 5.0,
+    "decisions_over_deadline": 0,
+    "end_to_end_s": {
+     "n": 2080,
+     "p50": 4.539466977119446,
+     "p95": 4.7023775458335875,
+     "max": 4.704514741897583,
+     "mean": 3.948466475995687
+    },
+    "phases_s": {
+     "c_inference_and_state": {
+      "n": 2078,
+      "p50": 0.0038422346115112305,
+      "p95": 0.005316543579101561,
+      "max": 0.009676933288574219,
+      "mean": 0.0038641347003969813
+     },
+     "c_done_to_search_start": {
+      "n": 2017,
+      "p50": 7.152557373046875e-06,
+      "p95": 1.0967254638671875e-05,
+      "max": 4.601478576660156e-05,
+      "mean": 7.425728090103747e-06
+     },
+     "search": {
+      "n": 2017,
+      "p50": 4.540816783905029,
+      "p95": 4.697998666763306,
+      "max": 4.70093846321106,
+      "mean": 4.067216410516333
+     },
+     "search_end_to_send": {
+      "n": 2017,
+      "p50": 0.0005679130554199219,
+      "p95": 0.0007437705993652342,
+      "max": 0.005132436752319336,
+      "mean": 0.0005748918521031922
+     },
+     "non_search_choice_to_send": {
+      "n": 63,
+      "p50": 0.0002276897430419922,
+      "p95": 0.0003177642822265625,
+      "max": 0.0006260871887207031,
+      "mean": 0.00023057347252255394
+     }
+    }
+   },
+   "search": {
+    "category_counts": {
+     "search_fallback_no_signal": 1471,
+     "search_override": 319,
+     "not_searched_single_legal": 61,
+     "search_fallback_unsupported": 227,
+     "not_represented": 2
+    },
+    "decisions": 2080,
+    "searched_decisions": 2017,
+    "complete_pairs": {
+     "n": 2017,
+     "p50": 16.0,
+     "p95": 64.0,
+     "max": 64,
+     "mean": 21.405552801189884
+    },
+    "rollouts": {
+     "n": 2017,
+     "p50": 66.0,
+     "p95": 256.0,
+     "max": 256,
+     "mean": 83.86564204263757
+    },
+    "frac_searched_with_ge4_pairs": 0.8795240456122955,
+    "decisions_with_pairs": 1790,
+    "unsupported_reasons": {
+     "p2:twoturnmove": 2,
+     "pivot_switch_request": 89,
+     "p1:move_state:futuresight": 1,
+     "pending_move:futuresight": 7,
+     "p2:move_state:futuresight": 12,
+     "p1:lockedmove": 3,
+     "p2:move_state:outrage": 7,
+     "p2:lockedmove": 6,
+     "p1:twoturnmove": 9,
+     "p2:volatile:throat chop": 1,
+     "p2:move_state:wish": 32,
+     "pending_move:wish": 20,
+     "pending_move:healingwish": 8,
+     "side_condition_duration_exhausted:lightscreen": 1,
+     "p1:move_state:wish": 19,
+     "pending_move:lunardance": 11
+    },
+    "decisions_with_unsupported_reason": 228,
+    "reconstruction_support_rate": 0.887456618740704,
+    "hard_deadline_hit": 288,
+    "override_rate_of_searched": 0.15815567674764502,
+    "search_errors": [],
+    "illegal_in_rollouts": 0,
+    "protocol_retries_in_rollouts": 25,
+    "rollout_errors": [],
+    "by_learner_role": {
+     "p1": 982,
+     "p2": 1035
+    },
+    "worker_restarts_max": 0
+   },
+   "state_integrity": {
+    "battles": 60,
+    "per_decision_forward_violations": [],
+    "hidden_changed_by_search": [],
+    "cross_battle_state": [],
+    "cumulative_forward_counter_mismatch": [],
+    "pass": true,
+    "offline_replay_parity": "not run: live Showdown RNG is not seedable, so there is no offline replay of the logged observations; verified by per-decision forward counters, pre/post-search hidden-state digests and unit tests (tests/test_bs1_1_live.py)"
+   }
+  },
+  "new_class_exceptions": 0,
+  "known_class_search_errors_by_category": {},
+  "decisions_over_deadline": 0,
+  "decisions": 2080,
+  "worlds_rejected_by_mask": 0,
+  "decisions_with_rejected_worlds": 0,
+  "pairs_dropped_parser": 0,
+  "dropped_reasons": {},
+  "mask_rejects_logged": [],
+  "resources": "bs13p-requal.service: Consumed 9h 20min 25.119s CPU time over 1h 17min 48.190s wall clock time, 10.9G memory peak.",
+  "cpu_hours": 9.340310833333334,
+  "winners_descriptive_only": {
+   "Grunt|C": {
+    "opponent": 6,
+    "player": 14
+   },
+   "Grunt|C+search": {
+    "player": 17,
+    "opponent": 3
+   },
+   "GymLeader|C": {
+    "player": 17,
+    "opponent": 3
+   },
+   "GymLeader|C+search": {
+    "player": 20
+   },
+   "C|C": {
+    "player": 11,
+    "opponent": 9
+   },
+   "C|C+search": {
+    "player": 13,
+    "opponent": 7
+   }
+  },
+  "gates": {
+   "all_battles_valid": true,
+   "zero_new_class_exceptions": true,
+   "zero_decisions_over_5s": true,
+   "state_integrity": true,
+   "fixed_classes_zero": true,
+   "no_timeouts": true,
+   "zero_illegal": true
+  },
+  "world_rejected_state": 0,
+  "decisions_with_state_rejects": 0,
+  "state_rejects_logged": [],
+  "rollout_aborts": {},
+  "RolloutStalled": 0,
+  "RolloutHorizonExceeded": 0,
+  "unsupported_reasons": {
+   "p2:twoturnmove": 2,
+   "pivot_switch_request": 89,
+   "p1:move_state:futuresight": 1,
+   "pending_move:futuresight": 7,
+   "p2:move_state:futuresight": 12,
+   "p1:lockedmove": 3,
+   "p2:move_state:outrage": 7,
+   "p2:lockedmove": 6,
+   "p1:twoturnmove": 9,
+   "p2:volatile:throat chop": 1,
+   "p2:move_state:wish": 32,
+   "pending_move:wish": 20,
+   "pending_move:healingwish": 8,
+   "side_condition_duration_exhausted:lightscreen": 1,
+   "p1:move_state:wish": 19,
+   "pending_move:lunardance": 11
+  },
+  "coverage_vs_bs1_2b": {
+   "frac_searched_with_ge4_pairs": [
+    0.8795240456122955,
+    0.847627340008707
+   ],
+   "reconstruction_support_rate": [
+    0.887456618740704,
+    0.8602525032651285
+   ],
+   "note": "[this run, BS1.2b]; different seeds/team pairs, descriptive only"
+  }
+ },
+ "golden_trace_parity": {
+  "roots": 240,
+  "identical_untouched": 82,
+  "touched": [
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     0
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)",
+     "old bootstrap entry effects: ['-ability:p1a: Corviknight', '-activate:p2a: Raging Bolt', '-enditem:p2a: Raging Bolt', '-start:p2a: Raging Bolt']"
+    ],
+    "old_action": 5,
+    "new_action": 5,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     2
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)",
+     "old bootstrap entry effects: ['-activate:p2a: Iron Crown', '-enditem:p2a: Iron Crown', '-start:p2a: Iron Crown']"
+    ],
+    "old_action": 4,
+    "new_action": 4,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     5
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p1a: Great Tusk', '-enditem:p1a: Great Tusk', '-start:p1a: Great Tusk']"
+    ],
+    "old_action": 1,
+    "new_action": 1,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     6
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p2a: Ting-Lu']"
+    ],
+    "old_action": 0,
+    "new_action": 0,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     8
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-weather:SunnyDay']"
+    ],
+    "old_action": 2,
+    "new_action": 2,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     9
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p1a: Zamazenta', '-boost:p1a: Zamazenta']"
+    ],
+    "old_action": 3,
+    "new_action": 3,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     10
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p2a: Ting-Lu']"
+    ],
+    "old_action": 3,
+    "new_action": 3,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     13
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)",
+     "old bootstrap entry effects: ['-weather:Sandstorm']"
+    ],
+    "old_action": 4,
+    "new_action": 4,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     15
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p1a: Raging Bolt', '-enditem:p1a: Raging Bolt', '-start:p1a: Raging Bolt']"
+    ],
+    "old_action": 1,
+    "new_action": 1,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     16
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)"
+    ],
+    "old_action": 6,
+    "new_action": 6,
+    "old_pairs": 0,
+    "new_pairs": 0,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     17
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)"
+    ],
+    "old_action": 4,
+    "new_action": 4,
+    "old_pairs": 0,
+    "new_pairs": 0,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     19
+    ],
+    "reasons": [
+     "item received mid-stint (choice-lock fix): 2",
+     "old bootstrap entry effects: ['-item:p2a: Gholdengo']"
+    ],
+    "old_action": 5,
+    "new_action": 5,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     20
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p1a: Ting-Lu']"
+    ],
+    "old_action": 8,
+    "new_action": 8,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     21
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p2a: Landorus', '-unboost:p1a: Garganacl']"
+    ],
+    "old_action": 1,
+    "new_action": 1,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     22
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p1a: Landorus', '-ability:p2a: Ting-Lu', '-unboost:p2a: Ting-Lu']"
+    ],
+    "old_action": 0,
+    "new_action": 0,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     23
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p2a: Iron Valiant', '-enditem:p2a: Iron Valiant', '-start:p2a: Iron Valiant']"
+    ],
+    "old_action": 0,
+    "new_action": 0,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     25
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p2a: Kyurem']"
+    ],
+    "old_action": 3,
+    "new_action": 3,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     28
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p1a: Iron Valiant', '-activate:p2a: Great Tusk', '-enditem:p1a: Iron Valiant', '-enditem:p2a: Great Tusk']"
+    ],
+    "old_action": 3,
+    "new_action": 3,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     29
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p1a: Iron Moth', '-enditem:p1a: Iron Moth', '-start:p1a: Iron Moth']"
+    ],
+    "old_action": 0,
+    "new_action": 0,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     30
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)"
+    ],
+    "old_action": 4,
+    "new_action": 4,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     31
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p2a: Zamazenta', '-boost:p2a: Zamazenta']"
+    ],
+    "old_action": 1,
+    "new_action": 1,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     32
+    ],
+    "reasons": [
+     "item received mid-stint (choice-lock fix): 2"
+    ],
+    "old_action": 0,
+    "new_action": 0,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     33
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)"
+    ],
+    "old_action": 4,
+    "new_action": 4,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     34
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)"
+    ],
+    "old_action": 7,
+    "new_action": 7,
+    "old_pairs": 0,
+    "new_pairs": 0,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     38
+    ],
+    "reasons": [
+     "item received mid-stint (choice-lock fix): 1"
+    ],
+    "old_action": 2,
+    "new_action": 2,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     39
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-weather:Sandstorm']"
+    ],
+    "old_action": 4,
+    "new_action": 4,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     41
+    ],
+    "reasons": [
+     "worlds unsupported (neutralizing_gas_active): 8"
+    ],
+    "old_action": 1,
+    "new_action": 1,
+    "old_pairs": 8,
+    "new_pairs": 0,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     42
+    ],
+    "reasons": [
+     "item received mid-stint (choice-lock fix): 2",
+     "forced-switch root (no second residual after the replacement)"
+    ],
+    "old_action": 6,
+    "new_action": 6,
+    "old_pairs": 0,
+    "new_pairs": 0,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     43
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-item:p2a: Heatran']"
+    ],
+    "old_action": 0,
+    "new_action": 0,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     44
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-fieldstart:move: Grassy Terrain', '-weather:Sandstorm']"
+    ],
+    "old_action": 1,
+    "new_action": 1,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     45
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p2a: Scream Tail', '-enditem:p2a: Scream Tail', '-start:p2a: Scream Tail']"
+    ],
+    "old_action": 2,
+    "new_action": 2,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     49
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p1a: Ting-Lu', '-weather:Sandstorm']"
+    ],
+    "old_action": 2,
+    "new_action": 2,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     50
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p1a: Zamazenta', '-boost:p1a: Zamazenta']"
+    ],
+    "old_action": 4,
+    "new_action": 4,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     51
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-fieldstart:move: Grassy Terrain']"
+    ],
+    "old_action": 0,
+    "new_action": 0,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     53
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p2a: Moltres', '-activate:p1a: Iron Treads', '-enditem:p1a: Iron Treads', '-start:p1a: Iron Treads']"
+    ],
+    "old_action": 1,
+    "new_action": 1,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     55
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p2a: Iron Crown', '-enditem:p2a: Iron Crown', '-start:p2a: Iron Crown']"
+    ],
+    "old_action": 3,
+    "new_action": 3,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     56
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p2a: Iron Treads', '-enditem:p2a: Iron Treads', '-start:p2a: Iron Treads']"
+    ],
+    "old_action": 2,
+    "new_action": 2,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     57
+    ],
+    "reasons": [
+     "item received mid-stint (choice-lock fix): 1",
+     "old bootstrap entry effects: ['-ability:p1a: Corviknight']"
+    ],
+    "old_action": 1,
+    "new_action": 1,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-3",
+     59
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p2a: Iron Hands', '-enditem:p2a: Iron Hands', '-start:p2a: Iron Hands']"
+    ],
+    "old_action": 2,
+    "new_action": 2,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     0
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p2a: Corviknight']"
+    ],
+    "old_action": 3,
+    "new_action": 3,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     1
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-weather:SunnyDay']"
+    ],
+    "old_action": 0,
+    "new_action": 0,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     2
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)"
+    ],
+    "old_action": 8,
+    "new_action": 8,
+    "old_pairs": 0,
+    "new_pairs": 0,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     3
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p1a: Corviknight', '-activate:p2a: Iron Treads', '-enditem:p2a: Iron Treads', '-start:p2a: Iron Treads']"
+    ],
+    "old_action": 0,
+    "new_action": 0,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     4
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)",
+     "old bootstrap entry effects: ['-ability:p1a: Zamazenta', '-boost:p1a: Zamazenta']"
+    ],
+    "old_action": 4,
+    "new_action": 4,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     5
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p1a: Corviknight']"
+    ],
+    "old_action": 0,
+    "new_action": 0,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     6
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)"
+    ],
+    "old_action": 6,
+    "new_action": 6,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     10
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p1a: Iron Moth', '-enditem:p1a: Iron Moth', '-start:p1a: Iron Moth']"
+    ],
+    "old_action": 3,
+    "new_action": 3,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     12
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p1a: Landorus', '-unboost:p2a: Cinderace']"
+    ],
+    "old_action": 2,
+    "new_action": 2,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     13
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p2a: Corviknight']"
+    ],
+    "old_action": 2,
+    "new_action": 2,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     15
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p2a: Corviknight', '-fieldstart:move: Grassy Terrain']"
+    ],
+    "old_action": 1,
+    "new_action": 1,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     16
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-weather:Sandstorm']"
+    ],
+    "old_action": 3,
+    "new_action": 3,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     17
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)",
+     "old bootstrap entry effects: ['-ability:p1a: Ting-Lu', '-item:p2a: Kingambit']"
+    ],
+    "old_action": 4,
+    "new_action": 4,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     18
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p2a: Raging Bolt', '-enditem:p2a: Raging Bolt', '-start:p2a: Raging Bolt']"
+    ],
+    "old_action": 4,
+    "new_action": 4,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     21
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p1a: Kyurem']"
+    ],
+    "old_action": 0,
+    "new_action": 0,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     25
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p2a: Ting-Lu']"
+    ],
+    "old_action": 0,
+    "new_action": 0,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     27
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-item:p2a: Gholdengo']"
+    ],
+    "old_action": 2,
+    "new_action": 2,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     28
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)"
+    ],
+    "old_action": 4,
+    "new_action": 4,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     30
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p2a: Corviknight']"
+    ],
+    "old_action": 0,
+    "new_action": 0,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     31
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p1a: Corviknight']"
+    ],
+    "old_action": 3,
+    "new_action": 3,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     33
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p1a: Great Tusk', '-activate:p2a: Raging Bolt', '-enditem:p1a: Great Tusk', '-enditem:p2a: Raging Bolt']"
+    ],
+    "old_action": 1,
+    "new_action": 1,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     34
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p2a: Iron Valiant', '-enditem:p2a: Iron Valiant', '-start:p2a: Iron Valiant']"
+    ],
+    "old_action": 0,
+    "new_action": 0,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     35
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p2a: Iron Treads', '-enditem:p2a: Iron Treads', '-start:p2a: Iron Treads']"
+    ],
+    "old_action": 1,
+    "new_action": 1,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     37
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p1a: Corviknight', '-item:p2a: Kingambit']"
+    ],
+    "old_action": 11,
+    "new_action": 11,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     38
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p1a: Zamazenta', '-ability:p2a: Excadrill', '-boost:p1a: Zamazenta']"
+    ],
+    "old_action": 1,
+    "new_action": 1,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     39
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p2a: Iron Valiant', '-enditem:p2a: Iron Valiant', '-start:p2a: Iron Valiant']"
+    ],
+    "old_action": 2,
+    "new_action": 2,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     40
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p2a: Great Tusk', '-enditem:p2a: Great Tusk', '-start:p2a: Great Tusk']"
+    ],
+    "old_action": 8,
+    "new_action": 8,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     42
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p2a: Raging Bolt', '-enditem:p2a: Raging Bolt', '-start:p2a: Raging Bolt']"
+    ],
+    "old_action": 4,
+    "new_action": 4,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     43
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p1a: Entei']"
+    ],
+    "old_action": 8,
+    "new_action": 8,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     45
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p1a: Iron Moth', '-enditem:p1a: Iron Moth', '-start:p1a: Iron Moth']"
+    ],
+    "old_action": 0,
+    "new_action": 0,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     48
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p2a: Zamazenta', '-boost:p2a: Zamazenta']"
+    ],
+    "old_action": 4,
+    "new_action": 4,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     49
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p1a: Raging Bolt', '-enditem:p1a: Raging Bolt', '-start:p1a: Raging Bolt']"
+    ],
+    "old_action": 0,
+    "new_action": 0,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     52
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)",
+     "old bootstrap entry effects: ['-activate:p2a: Walking Wake', '-enditem:p2a: Walking Wake', '-start:p2a: Walking Wake']"
+    ],
+    "old_action": 5,
+    "new_action": 5,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     53
+    ],
+    "reasons": [
+     "item received mid-stint (choice-lock fix): 2",
+     "old bootstrap entry effects: ['-activate:p1a: Great Tusk', '-enditem:p1a: Great Tusk', '-start:p1a: Great Tusk']"
+    ],
+    "old_action": 5,
+    "new_action": 5,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     54
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)",
+     "old bootstrap entry effects: ['-weather:Sandstorm']"
+    ],
+    "old_action": 5,
+    "new_action": 5,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     55
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p2a: Zamazenta', '-activate:p1a: Iron Moth', '-boost:p2a: Zamazenta', '-enditem:p1a: Iron Moth']"
+    ],
+    "old_action": 2,
+    "new_action": 2,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     57
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p2a: Deoxys']"
+    ],
+    "old_action": 9,
+    "new_action": 9,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs0-4",
+     58
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p2a: Zamazenta', '-boost:p2a: Zamazenta']"
+    ],
+    "old_action": 3,
+    "new_action": 3,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     0
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p2a: Great Tusk', '-enditem:p2a: Great Tusk', '-start:p2a: Great Tusk']"
+    ],
+    "old_action": 11,
+    "new_action": 11,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     1
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p2a: Ting-Lu', '-weather:RainDance']"
+    ],
+    "old_action": 0,
+    "new_action": 0,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     2
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-weather:Snowscape']"
+    ],
+    "old_action": 4,
+    "new_action": 4,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     4
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)",
+     "old bootstrap entry effects: ['-ability:p1a: Ting-Lu']"
+    ],
+    "old_action": 6,
+    "new_action": 6,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     7
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)"
+    ],
+    "old_action": 8,
+    "new_action": 8,
+    "old_pairs": 0,
+    "new_pairs": 0,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     8
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p2a: Iron Hands', '-enditem:p2a: Iron Hands', '-start:p2a: Iron Hands']"
+    ],
+    "old_action": 1,
+    "new_action": 1,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     9
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p1a: Zamazenta', '-boost:p1a: Zamazenta']"
+    ],
+    "old_action": 1,
+    "new_action": 1,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     10
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)",
+     "old bootstrap entry effects: ['-ability:p2a: Zamazenta', '-activate:p1a: Great Tusk', '-boost:p2a: Zamazenta', '-enditem:p1a: Great Tusk']"
+    ],
+    "old_action": 4,
+    "new_action": 4,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     11
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)"
+    ],
+    "old_action": 6,
+    "new_action": 6,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     12
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-item:p2a: Gholdengo']"
+    ],
+    "old_action": 2,
+    "new_action": 2,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     13
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)"
+    ],
+    "old_action": 4,
+    "new_action": 4,
+    "old_pairs": 0,
+    "new_pairs": 0,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     14
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p1a: Deoxys']"
+    ],
+    "old_action": 2,
+    "new_action": 2,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     15
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p1a: Iron Treads', '-enditem:p1a: Iron Treads', '-start:p1a: Iron Treads']"
+    ],
+    "old_action": 3,
+    "new_action": 3,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     16
+    ],
+    "reasons": [
+     "item received mid-stint (choice-lock fix): 2",
+     "old bootstrap entry effects: ['-item:p2a: Iron Treads']"
+    ],
+    "old_action": 1,
+    "new_action": 1,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     17
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)",
+     "old bootstrap entry effects: ['-activate:p2a: Iron Treads', '-enditem:p2a: Iron Treads', '-item:p2a: Iron Treads', '-start:p2a: Iron Treads']"
+    ],
+    "old_action": 5,
+    "new_action": 5,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     18
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-weather:SunnyDay']"
+    ],
+    "old_action": 2,
+    "new_action": 2,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     19
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p2a: Iron Valiant', '-enditem:p2a: Iron Valiant', '-start:p2a: Iron Valiant']"
+    ],
+    "old_action": 2,
+    "new_action": 2,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     21
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)",
+     "old bootstrap entry effects: ['-item:p2a: Kingambit']"
+    ],
+    "old_action": 6,
+    "new_action": 4,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     23
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p2a: Zamazenta', '-boost:p2a: Zamazenta']"
+    ],
+    "old_action": 2,
+    "new_action": 2,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     24
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-weather:SunnyDay']"
+    ],
+    "old_action": 2,
+    "new_action": 2,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     25
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p2a: Great Tusk', '-enditem:p2a: Great Tusk', '-start:p2a: Great Tusk']"
+    ],
+    "old_action": 1,
+    "new_action": 1,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     26
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p1a: Iron Valiant', '-enditem:p1a: Iron Valiant', '-start:p1a: Iron Valiant', '-weather:Sandstorm']"
+    ],
+    "old_action": 1,
+    "new_action": 1,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     27
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)"
+    ],
+    "old_action": 4,
+    "new_action": 4,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     28
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)"
+    ],
+    "old_action": 6,
+    "new_action": 6,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     29
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p2a: Kyurem', '-fieldstart:move: Psychic Terrain']"
+    ],
+    "old_action": 2,
+    "new_action": 2,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     30
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-item:p1a: Glimmora']"
+    ],
+    "old_action": 2,
+    "new_action": 2,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     32
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p2a: Gardevoir']"
+    ],
+    "old_action": 3,
+    "new_action": 3,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     33
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p2a: Iron Hands', '-enditem:p2a: Iron Hands', '-start:p2a: Iron Hands']"
+    ],
+    "old_action": 11,
+    "new_action": 11,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     34
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p2a: Iron Valiant', '-enditem:p2a: Iron Valiant', '-start:p2a: Iron Valiant']"
+    ],
+    "old_action": 1,
+    "new_action": 1,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     35
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p2a: Iron Treads', '-enditem:p2a: Iron Treads', '-item:p2a: Iron Treads', '-start:p2a: Iron Treads']"
+    ],
+    "old_action": 2,
+    "new_action": 2,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     37
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-weather:SunnyDay']"
+    ],
+    "old_action": 0,
+    "new_action": 0,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     40
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p2a: Zamazenta', '-boost:p2a: Zamazenta']"
+    ],
+    "old_action": 7,
+    "new_action": 7,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     41
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p1a: Zamazenta', '-boost:p1a: Zamazenta']"
+    ],
+    "old_action": 9,
+    "new_action": 9,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     44
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p2a: Wo-Chien']"
+    ],
+    "old_action": 0,
+    "new_action": 0,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     45
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-item:p1a: Pecharunt']"
+    ],
+    "old_action": 0,
+    "new_action": 0,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     49
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p2a: Ting-Lu']"
+    ],
+    "old_action": 1,
+    "new_action": 1,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     52
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p2a: Iron Moth', '-enditem:p2a: Iron Moth', '-start:p2a: Iron Moth']"
+    ],
+    "old_action": 9,
+    "new_action": 9,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     53
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p1a: Corviknight', '-activate:p2a: Iron Treads', '-enditem:p2a: Iron Treads', '-start:p2a: Iron Treads']"
+    ],
+    "old_action": 9,
+    "new_action": 9,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     56
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p2a: Walking Wake', '-enditem:p2a: Walking Wake', '-start:p2a: Walking Wake']"
+    ],
+    "old_action": 7,
+    "new_action": 7,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     58
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p2a: Raging Bolt', '-enditem:p2a: Raging Bolt', '-start:p2a: Raging Bolt']"
+    ],
+    "old_action": 3,
+    "new_action": 3,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-deadline",
+     59
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)",
+     "old bootstrap entry effects: ['-ability:p2a: Zamazenta', '-boost:p2a: Zamazenta']"
+    ],
+    "old_action": 6,
+    "new_action": 6,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     2
+    ],
+    "reasons": [
+     "worlds unsupported (neutralizing_gas_active): 6"
+    ],
+    "old_action": 2,
+    "new_action": 2,
+    "old_pairs": 8,
+    "new_pairs": 2,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     3
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)",
+     "old bootstrap entry effects: ['-ability:p1a: Kyurem', '-activate:p2a: Iron Boulder', '-enditem:p2a: Iron Boulder', '-start:p2a: Iron Boulder']"
+    ],
+    "old_action": 4,
+    "new_action": 4,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     4
+    ],
+    "reasons": [
+     "item received mid-stint (choice-lock fix): 1",
+     "forced-switch root (no second residual after the replacement)"
+    ],
+    "old_action": 4,
+    "new_action": 4,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     5
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)"
+    ],
+    "old_action": 6,
+    "new_action": 6,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     8
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p1a: Ting-Lu', '-activate:p2a: Raging Bolt', '-enditem:p2a: Raging Bolt', '-start:p2a: Raging Bolt']"
+    ],
+    "old_action": 0,
+    "new_action": 0,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     11
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-weather:RainDance']"
+    ],
+    "old_action": 2,
+    "new_action": 2,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     13
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p1a: Weavile']"
+    ],
+    "old_action": 1,
+    "new_action": 1,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     14
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p1a: Zamazenta', '-activate:p2a: Great Tusk', '-boost:p1a: Zamazenta', '-enditem:p2a: Great Tusk']"
+    ],
+    "old_action": 0,
+    "new_action": 0,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     15
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p2a: Iron Moth', '-enditem:p2a: Iron Moth', '-start:p2a: Iron Moth']"
+    ],
+    "old_action": 2,
+    "new_action": 2,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     18
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-weather:Sandstorm']"
+    ],
+    "old_action": 1,
+    "new_action": 1,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     19
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p2a: Great Tusk', '-enditem:p2a: Great Tusk', '-item:p1a: Kingambit', '-start:p2a: Great Tusk']"
+    ],
+    "old_action": 2,
+    "new_action": 2,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     21
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p2a: Zamazenta', '-boost:p2a: Zamazenta']"
+    ],
+    "old_action": 3,
+    "new_action": 3,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     22
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p2a: Ting-Lu', '-activate:p1a: Sandy Shocks', '-enditem:p1a: Sandy Shocks', '-start:p1a: Sandy Shocks']"
+    ],
+    "old_action": 0,
+    "new_action": 0,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     24
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)"
+    ],
+    "old_action": 4,
+    "new_action": 4,
+    "old_pairs": 0,
+    "new_pairs": 0,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     27
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p1a: Raging Bolt', '-enditem:p1a: Raging Bolt', '-start:p1a: Raging Bolt']"
+    ],
+    "old_action": 2,
+    "new_action": 2,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     28
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)"
+    ],
+    "old_action": 8,
+    "new_action": 8,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     30
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p1a: Corviknight']"
+    ],
+    "old_action": 7,
+    "new_action": 7,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     31
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)",
+     "old bootstrap entry effects: ['-activate:p2a: Raging Bolt', '-enditem:p2a: Raging Bolt', '-start:p2a: Raging Bolt']"
+    ],
+    "old_action": 4,
+    "new_action": 4,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     33
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)",
+     "old bootstrap entry effects: ['-ability:p2a: Ting-Lu']"
+    ],
+    "old_action": 6,
+    "new_action": 6,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     35
+    ],
+    "reasons": [
+     "item received mid-stint (choice-lock fix): 1"
+    ],
+    "old_action": 2,
+    "new_action": 2,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     36
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p2a: Kyurem']"
+    ],
+    "old_action": 3,
+    "new_action": 3,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     37
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)"
+    ],
+    "old_action": 5,
+    "new_action": 5,
+    "old_pairs": 0,
+    "new_pairs": 0,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     38
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-item:p2a: Gholdengo']"
+    ],
+    "old_action": 1,
+    "new_action": 1,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     39
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p2a: Raging Bolt', '-enditem:p2a: Raging Bolt', '-start:p2a: Raging Bolt']"
+    ],
+    "old_action": 0,
+    "new_action": 0,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     41
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p1a: Iron Treads', '-enditem:p1a: Iron Treads', '-start:p1a: Iron Treads']"
+    ],
+    "old_action": 3,
+    "new_action": 3,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     42
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)",
+     "old bootstrap entry effects: ['-item:p1a: Gholdengo', '-item:p2a: Gholdengo']"
+    ],
+    "old_action": 7,
+    "new_action": 7,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     43
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p2a: Walking Wake', '-enditem:p2a: Walking Wake', '-start:p2a: Walking Wake']"
+    ],
+    "old_action": 3,
+    "new_action": 3,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     44
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p2a: Kyurem', '-weather:Sandstorm']"
+    ],
+    "old_action": 8,
+    "new_action": 8,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     45
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-item:p2a: Raging Bolt']"
+    ],
+    "old_action": 1,
+    "new_action": 1,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     47
+    ],
+    "reasons": [
+     "item received mid-stint (choice-lock fix): 1"
+    ],
+    "old_action": 5,
+    "new_action": 5,
+    "old_pairs": 0,
+    "new_pairs": 0,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     48
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p1a: Sandy Shocks', '-enditem:p1a: Sandy Shocks', '-start:p1a: Sandy Shocks']"
+    ],
+    "old_action": 3,
+    "new_action": 3,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     49
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p2a: Corviknight']"
+    ],
+    "old_action": 0,
+    "new_action": 0,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     50
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p2a: Landorus', '-unboost:p1a: Samurott']"
+    ],
+    "old_action": 2,
+    "new_action": 2,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     51
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)",
+     "old bootstrap entry effects: ['-weather:Sandstorm']"
+    ],
+    "old_action": 6,
+    "new_action": 6,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     52
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-ability:p1a: Staraptor', '-item:p2a: Hatterene', '-unboost:p2a: Hatterene']"
+    ],
+    "old_action": 0,
+    "new_action": 0,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     53
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p1a: Iron Treads', '-enditem:p1a: Iron Treads', '-start:p1a: Iron Treads']"
+    ],
+    "old_action": 0,
+    "new_action": 0,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     54
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p2a: Raging Bolt', '-enditem:p2a: Raging Bolt', '-start:p2a: Raging Bolt']"
+    ],
+    "old_action": 3,
+    "new_action": 3,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     55
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-activate:p2a: Iron Valiant', '-enditem:p2a: Iron Valiant', '-start:p2a: Iron Valiant']"
+    ],
+    "old_action": 7,
+    "new_action": 7,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     56
+    ],
+    "reasons": [
+     "old bootstrap entry effects: ['-item:p1a: Pecharunt']"
+    ],
+    "old_action": 0,
+    "new_action": 0,
+    "old_pairs": 8,
+    "new_pairs": 8,
+    "mask_rejects": []
+   },
+   {
+    "root": [
+     "runs/w5-bs1-0-matrix",
+     58
+    ],
+    "reasons": [
+     "forced-switch root (no second residual after the replacement)"
+    ],
+    "old_action": 6,
+    "new_action": 6,
+    "old_pairs": 0,
+    "new_pairs": 0,
+    "mask_rejects": []
+   }
+  ],
+  "unexplained": 0,
+  "decision_changed": [
+   [
+    "runs/w5-bs1-0-deadline",
+    21
+   ]
+  ],
+  "decision_change_rate": 0.004166666666666667,
+  "PASS": true
+ }
+}

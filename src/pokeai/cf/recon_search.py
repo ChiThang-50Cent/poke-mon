@@ -103,6 +103,16 @@ def decide(
     return out
 
 
+def abort_choice(candidates: list[int], aborts: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """BS1.3-P: a stalled (deadlocked) or horizon-censored rollout voids the whole decision: C's
+    action, no pairs, no outcome assigned. None when no rollout aborted."""
+    if not aborts:
+        return None
+    kind = "stalled" if any(a["kind"] == "stalled" for a in aborts) else "horizon"
+    return {"n_pairs": 0, "action": candidates[0], "override": False,
+            "reason": f"fallback:rollout_{kind}", "stats": []}
+
+
 def opponent_for_pair(payload: Payload, world: int, k: int) -> str:
     """Heuristic opponent policy of one (world, seed) pair. Mixture: a seeded fair coin per pair,
     the same for every candidate of the pair. Reads only the search parameter."""
@@ -161,8 +171,9 @@ def _decide_chunk(
 
     from pokeai.cf.branching import rollout
     from pokeai.cf.cf1 import seed_triple
+    from pokeai.cf.offline import RolloutAborted, RolloutStalled
     from pokeai.cf.recon_match import build_world_root
-    from pokeai.cf.recon_world import Unsupported, reconstruct_world
+    from pokeai.cf.recon_world import Unsupported, WorldRejectedState, reconstruct_world
 
     t_start = time.time()
     payload: Payload = pickle.loads(blob)
@@ -174,7 +185,8 @@ def _decide_chunk(
     st: dict[str, Any] = {
         "timing": timing, "n_rollouts": 0, "worlds_built": 0, "unsupported": [], "errors": [],
         "illegal": 0, "retries": 0, "t_end": 0.0, "rounds": 0, "turns": 0,
-        "world_rejected_mask": 0, "mask_rejects": [], "dropped_pairs": 0, "dropped": []}
+        "world_rejected_mask": 0, "mask_rejects": [], "dropped_pairs": 0, "dropped": [],
+        "world_rejected_state": 0, "state_rejects": [], "rollout_aborts": []}
     keys = []
 
     def can_start() -> bool:
@@ -219,6 +231,11 @@ def _decide_chunk(
                         cache[(w, opp)] = None
                     else:
                         cache[(w, opp)] = SimpleNamespace(checkpoint=cp)
+                except WorldRejectedState as e:
+                    cache[(w, opp)] = None
+                    st["world_rejected_state"] += 1
+                    st["unsupported"].append("world_rejected_state")
+                    st["state_rejects"].append({"world": w, "opp": opp, "violations": str(e)})
                 except Unsupported as e:
                     cache[(w, opp)] = None
                     st["unsupported"].append(str(e))
@@ -228,6 +245,7 @@ def _decide_chunk(
             outs = []
             complete = True
             dropped: str | None = None
+            abort = False
             for slot in payload.candidates:
                 if not can_start():
                     complete = False
@@ -236,6 +254,13 @@ def _decide_chunk(
                 try:
                     r = rollout(sim, players[opp], cache[(w, opp)], "p1", slot,
                                 seed_triple(payload.root_id, k), keep_signature=False)
+                except RolloutAborted as e:
+                    kind = "stalled" if isinstance(e, RolloutStalled) else "horizon"
+                    st["rollout_aborts"].append({
+                        "kind": kind, "world": w, "seed": k, "opp": opp, "candidate": slot,
+                        "message": str(e), **e.record})
+                    abort = True
+                    break
                 except ForwardException as e:
                     dropped = f"{type(e).__name__}: {str(e)[:200]}"
                     break
@@ -251,6 +276,9 @@ def _decide_chunk(
                         st["retries"] += 1
                     else:
                         st["errors"].append(e)
+            if abort:  # whole-decision fallback: no partial pairs are used
+                emit([], st)
+                break
             if dropped is not None:  # the pair is lost for every candidate (paired integrity)
                 st["dropped_pairs"] += 1
                 st["dropped"].append(dropped)
@@ -434,7 +462,12 @@ class SearchPool:
         if error:
             raise RuntimeError(error[0])
         pairs = [p for chunk in pairs_by for p in chunk]
-        choice = decide(payload.candidates, payload.mask, pairs)
+        aborts = [a for s in snaps if s is not None for a in s.get("rollout_aborts", [])]
+        choice = abort_choice(payload.candidates, aborts)
+        if choice is not None:
+            pairs = []  # a stalled/censored rollout voids the whole decision: C, no partial pairs
+        else:
+            choice = decide(payload.candidates, payload.mask, pairs)
         wall = time.time() - t0
         have = [s for s in snaps if s is not None]
         keys = ("load_s", "sample_s", "reconstruct_s", "pov_s", "rollout_s")
@@ -453,6 +486,9 @@ class SearchPool:
             "mask_rejects": [m for s in have for m in s.get("mask_rejects", [])],
             "dropped_pairs": sum(s.get("dropped_pairs", 0) for s in have),
             "dropped": [x for s in have for x in s.get("dropped", [])],
+            "world_rejected_state": sum(s.get("world_rejected_state", 0) for s in have),
+            "state_rejects": [m for s in have for m in s.get("state_rejects", [])],
+            "rollout_aborts": aborts,
             "pairs": pairs, "workers_done": sum(done), "workers": n,
             "hard_deadline_hit": not all(done),
         }
