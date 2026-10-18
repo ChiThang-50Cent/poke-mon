@@ -1,11 +1,14 @@
-# W5.BS-RC1 frozen release-candidate config for the one-shot heldout benchmark (BS1.3). NOT RUN.
+# W5 frozen release-candidate config (tag w5-bs-rc2) for the one-shot heldout benchmark (BS1.3).
 # Same design as BS1.2: 100 battles / arm / opponent = 50 team pairs, both directions, both arms,
 # alternating challenger, 4 pair-blocks (12/13/12/13) x 2 lanes x 4 search workers.
 # Run:  uv run python scripts/bs1_2_run.py --config configs/w5_bs_rc1.yaml   (adds --final)
 # One-shot: the first (lane, block) window claims data/teams_w5/heldout/final.started.json with this
 # exact config; later windows must carry the identical config and each window runs once.
+# Before any claim, the driver and every lane verify the release manifest (all hashes) and abort
+# on any mismatch.
 run:
   final: true
+  release_manifest: reports/w5_bs_rc1_manifest.json
   seed: 20261501
   lanes: 2
   block_pairs: [[0, 12], [12, 25], [25, 37], [37, 50]]

@@ -30,6 +30,11 @@ def main() -> None:
     prefix = run.get("out_prefix", "w5-bs1-2")
     total_pairs = blocks[-1][1]
     battles = str(config["battles"])
+    if run.get("final"):
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from evaluate_w5 import verify_release
+
+        verify_release(config)  # fail before any lane starts or any claim exists
     t0 = time.time()
     log = ROOT / f"{prefix}-projections.jsonl"
     done_pairs = 0

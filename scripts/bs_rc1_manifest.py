@@ -1,4 +1,7 @@
-"""Freeze manifest of release candidate 1 (C + belief search): prepared, NOT tagged."""
+"""Freeze manifest of the C + belief search release candidate (tag `w5-bs-rc2`).
+
+`verify(path)` re-hashes everything the manifest froze; a final heldout run refuses to claim the
+pool unless it returns no problems."""
 
 from __future__ import annotations
 
@@ -78,25 +81,73 @@ def belief_data_files() -> list[Path]:
     return sorted({p.resolve() for p in opened if p.exists() and "usage-stats" in str(p)})
 
 
-def main() -> None:
-    config = yaml.safe_load((ROOT / CONFIG).read_text())
-    search = config["arms"]["C+search"]["search"]
-    c_dir = ROOT / config["arms"]["C+search"]["model_dir"]
-    preview = ROOT / config["arms"]["C+search"]["preview_checkpoint"]
+FILE_SECTIONS = ("c_checkpoint", "preview_checkpoint", "tokenizer", "belief_sampler_data",
+                 "code_live_path", "scripts", "sim_driver_js")
+
+
+def showdown_state() -> dict:
     showdown = ROOT / "third_party/metamon/server/pokemon-showdown"
     dist_files = sorted((showdown / "dist/sim").rglob("*.js"))
     tree = hashlib.sha256()
     for f in dist_files:
         tree.update(str(f.relative_to(showdown)).encode() + b"\0" + f.read_bytes())
-    code = live_path_modules()
-    scripts = [ROOT / "scripts" / n for n in SCRIPTS_USED]
-    driver = ROOT / "src/pokeai/cf/sim_driver.js"
+    return {
+        "repo_commit": run("git", "rev-parse", "HEAD", cwd=showdown),
+        "dist_sim_files": len(dist_files), "dist_sim_tree_sha256": tree.hexdigest(),
+        "metamon_commit": run("git", "rev-parse", "HEAD", cwd=ROOT / "third_party/metamon"),
+    }
+
+
+def versions() -> dict:
     import numpy
     import torch
 
+    return {"python": platform.python_version(), "torch": torch.__version__,
+            "numpy": numpy.__version__, "node": run("node", "--version")}
+
+
+def verify(path: Path) -> list[str]:
+    """Every mismatch between the frozen manifest and the current tree (empty list = frozen)."""
+    manifest = json.loads(path.read_text())
+    problems = []
+    if manifest["git"]["uncommitted_tracked_files"]:
+        problems.append("manifest was generated from a dirty tree")
+    for section in FILE_SECTIONS:
+        for name, digest in manifest[section].items():
+            file = ROOT / name
+            if not file.is_file():
+                problems.append(f"{section}: missing {name}")
+            elif sha(file) != digest:
+                problems.append(f"{section}: changed {name}")
+    live = {rel(p) for p in live_path_modules()}
+    for name in sorted(live - set(manifest["code_live_path"])):
+        problems.append(f"code_live_path: unfrozen live module {name}")
+    config = manifest["benchmark_config"]
+    if sha(ROOT / config["file"]) != config["sha256"]:
+        problems.append(f"benchmark_config: changed {config['file']}")
+    if sha(ROOT / "uv.lock") != manifest["uv_lock_sha256"]:
+        problems.append("uv.lock changed")
+    for key, value in showdown_state().items():
+        if manifest["showdown"][key] != value:
+            problems.append(f"showdown: {key} changed")
+    for key, value in versions().items():
+        if manifest["versions"][key] != value:
+            problems.append(f"versions: {key} {manifest['versions'][key]} -> {value}")
+    return problems
+
+
+def main() -> None:
+    config = yaml.safe_load((ROOT / CONFIG).read_text())
+    search = config["arms"]["C+search"]["search"]
+    c_dir = ROOT / config["arms"]["C+search"]["model_dir"]
+    preview = ROOT / config["arms"]["C+search"]["preview_checkpoint"]
+    code = live_path_modules()
+    scripts = [ROOT / "scripts" / n for n in SCRIPTS_USED]
+    driver = ROOT / "src/pokeai/cf/sim_driver.js"
+
     status = run("git", "status", "--porcelain", "--untracked-files=no").splitlines()
     manifest = {
-        "release_candidate": "RC1 (C + belief search, no tag)",
+        "release_candidate": "RC2 (C + belief search; tag w5-bs-rc2)",
         "git": {"commit": run("git", "rev-parse", "HEAD"), "uncommitted_tracked_files": status,
                 "note": "files are hashed below regardless of commit state"},
         "c_checkpoint": {rel(p): sha(p) for p in sorted(c_dir.iterdir()) if p.is_file()},
@@ -108,11 +159,7 @@ def main() -> None:
         "code_live_path": {rel(p): sha(p) for p in code},
         "scripts": {rel(p): sha(p) for p in scripts},
         "sim_driver_js": {rel(driver): sha(driver)},
-        "showdown": {
-            "repo_commit": run("git", "rev-parse", "HEAD", cwd=showdown),
-            "dist_sim_files": len(dist_files), "dist_sim_tree_sha256": tree.hexdigest(),
-            "metamon_commit": run("git", "rev-parse", "HEAD", cwd=ROOT / "third_party/metamon"),
-        },
+        "showdown": showdown_state(),
         "benchmark_config": {
             "file": CONFIG, "sha256": sha(ROOT / CONFIG), "parsed": config,
             "frozen_search_parameters": {
@@ -124,10 +171,7 @@ def main() -> None:
                 "fail_fast": search["fail_fast"]},
         },
         "uv_lock_sha256": sha(ROOT / "uv.lock"),
-        "versions": {
-            "python": platform.python_version(), "torch": torch.__version__,
-            "numpy": numpy.__version__, "node": run("node", "--version"),
-            "platform": platform.platform()},
+        "versions": {**versions(), "platform": platform.platform()},
     }
     out = ROOT / "reports/w5_bs_rc1_manifest.json"
     out.write_text(json.dumps(manifest, indent=1))
