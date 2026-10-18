@@ -1,0 +1,256 @@
+{
+ "release_candidate": "RC1 (C + belief search, no tag)",
+ "git": {
+  "commit": "adb03a1d622721d332478fd24926b067c855457b",
+  "uncommitted_tracked_files": [],
+  "note": "files are hashed below regardless of commit state"
+ },
+ "c_checkpoint": {
+  "models/pokedecision-v1-value/best.pt": "0d987dc4fe7f36ab782b142efade20facab0eb53136b1f5bcb9e33eefd4e51ae",
+  "models/pokedecision-v1-value/config.yaml": "384e1b59fbc9174e08b9eed5159f1fbfbbd77b2412ab345d192013d524fe71d2",
+  "models/pokedecision-v1-value/freeze.json": "823311cbd523c101c2f0f1f18b5e7926c5e3905c561994139d90e1a6f37a814f",
+  "models/pokedecision-v1-value/metrics.json": "aa968afd7a75f4e7cdf00aa3684213b09ccd42c2aef73818d004dabe8b7f5d1f",
+  "models/pokedecision-v1-value/tokenizer.json": "801521a3ecce057ffea589a6fbe3228e1f5fce84cc82c4bfbaddaaeb4bf43e1d"
+ },
+ "preview_checkpoint": {
+  "third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt": "39cb5c65f30e9e363b5a8dee6fcaa7ea130077b3af0a1b4865e5d48de11daeaa"
+ },
+ "tokenizer": {
+  "models/pokedecision-v1-value/tokenizer.json": "801521a3ecce057ffea589a6fbe3228e1f5fce84cc82c4bfbaddaaeb4bf43e1d",
+  "third_party/metamon/metamon/tokenizer/DefaultObservationSpace-v0.json": "eab483a2212b00a08f6e75fb5ed648b3f4be00bd871c231715512f389ef20ade",
+  "third_party/metamon/metamon/tokenizer/DefaultObservationSpace-v1.json": "d33f1d7721d5f2255eb732b13ababf2751ac28e098e6a5e9d9fd92248013f17e",
+  "third_party/metamon/metamon/tokenizer/allreplaysv1.json": "26076016ecdcfc8b57205a78fdd9ae2f91616283afe6064b0d385fb822b0fd75",
+  "third_party/metamon/metamon/tokenizer/allreplaysv2.json": "3e294f8627b260f6151ebb066227049aa81a2351609fab5e61cf43474af5ea65",
+  "third_party/metamon/metamon/tokenizer/allreplaysv3.json": "f692c1d5375cd2ba8526547423400e79ee3fc7c429689c8d49c3ab15a9a22ea1"
+ },
+ "belief_sampler_data": {
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2022-11.json": "f6b9b49abc71d9b129d679c69a6c86f15d4b6b46f73899de0c6639428ba8178a",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2022-12.json": "c4adba075dc4fc2aacd983ee4504dea405d9a2536b8a5d72059b70005c7219c6",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2023-01.json": "2bc355ef2faad2f498a0551156c6e9ca1a71ccf91f3b0e4da7bb6818853f4a3b",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2023-02.json": "480d7d90033edefc24113404f1cc4622d95b435656620308d4dcf86d16bb72e9",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2023-03.json": "d8811db84c37ffe80043ea6c2af4c2cf35d3e64a61f99427d5b02168c5a1a543",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2023-04.json": "92b51bf066e950dcadb006d371db9dd16fbac00286fa412de66f7b6bc6af56e4",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2023-05.json": "97079b0ce7d1a0c36458818d48f11703491b205bb2df57adb6225cd23687bcbb",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2023-06.json": "95b2ff57ad1a03b683f9f1da4083702b5e0287409c7faa2af10c513c9940b759",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2023-07.json": "2729b2d4ae31dde77f8335199c0cc5ef0589407cb3779764c894af13093e2ba8",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2023-08.json": "e28a773d022b95a518c4c218f1851ddd561bb02e2a36af5770ba9489eb633fe4",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2023-09.json": "4c9857738c37b984c60833b509e62f4b3537e29f6bbd5092c575ba7520b211e8",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2023-10.json": "e2f08fd241de48c2a4b41b567750e67813854d52b1ee9b565efddf6847d2ecea",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2023-11.json": "4c3686f8a7987df818bc537ecfa9c57dd33ff4569d04af6ddffef634a5c16f79",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2023-12.json": "687be757ae07251925380c130b2e6851c5a44b06a00816decabf8ebb429cf178",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2024-01.json": "a9183a9fb90df2946c90c71d010a73ecb9dc7d46182a0a81f20cead8bffbad90",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2024-02.json": "1c7ff73f35197811a7610e1e6fb2598b84cfc538ed6ec3d3aa74b5a5e669750e",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2024-03.json": "ebbca51514065430197983a8f8778af41853a918c1a56b5f1321a878d4aac2eb",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2024-04.json": "f0b2e0fcab9aee80d5cef0c84565fa4fd0ae6daf2d657e68964abc84778b258c",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2024-05.json": "148276362e34de1ef03d2310ccd7c9519f1b158c1789dec105da71304b6616a0",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2024-06.json": "e57f8ca7c72d60504a3272929702449e24f4d610f5bc383a937cab1b896fa548",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2024-07.json": "dba35b61019249ccc7522bf6a4fd97e73d071b21c74064b77abcaae9010a2ffb",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2024-08.json": "80fe2045a48cb35fcab8750e319b1baee0cc6c35deaaab251ee13bcc0d9b3d77",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2024-09.json": "59e0b632a3b12a07117f2d101a8c4ade09891d0e743374251920fd9d704cdbef",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2024-10.json": "56ad038f89c3f631218f72856cc44b7af495cb417ce06f2f132ef34bfa564fd5",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2024-11.json": "96eade18a848d9312325aeee93d0dc09639956091bfe7c05b7d971b8f3bac1b8",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2024-12.json": "baf29a3a478c777f6e355ad9bab99c6ecb464e12265497329a61618af9f1091b",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2025-01.json": "41dafc73394549d385615f626f20a22bdca48ba58009c9deaba12d623c354548",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2025-02.json": "676ab978f547028be6a4fd3661818015d4bd97e9666ee5c79293c7fc27a49432",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2025-03.json": "0e45e4f28f9acedf93f384aeb7e254e3849b36b41eac4615ef4bf239a8c49a35",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2025-04.json": "9af62d298a1e523abf280b3c7dbb781248ca1568f2744b363e5257e80fb1ffc3",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2025-05.json": "4d4e16f1e2fc12f6be920c628d584fd1809b2d96d0015ab8120b3b065f6982d0",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2025-06.json": "26829fe14ed2587617f266c05f1d53bbe8df60834642a08bd832d47c639c7a04",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2025-07.json": "5e1465cd28a29bf02c61c048b264c1a1ec9aeceb59de615657e496ba6821c72e",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2025-08.json": "e5be57905830cf084e2ff114534360460ba64f632072d7d1763447fdb3a35d86",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2025-09.json": "69702a3226899e0991cc871a47110d53fd6cd5783e1a40853631782ab52e36f6",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2025-10.json": "f152026bdb31814a29d81cf9f10d1307373831cd04431ba622d0496c91ca9008",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2025-11.json": "ed265b753fd1d1b96d21a25f9f1b63c0aa0545bda60f2fab0d21335cca69e9a0",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2025-12.json": "49d0d1434cfa59e744f5836ad6754ac8941ea4d80d2adf403f5229e5ca48d108",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2026-01.json": "eacb17fb6fadd60483fd4b56b91e48211c9033092c4223862e0cc3ff70a3070b",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2026-02.json": "e16bd8834277b87d01640211e19ac194b9ce36703532e4aa8d2d0dd3a3adf335",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2026-03.json": "8999eb024d37a098962dac3ba94c4af2a2511b5ea3c8372b25cb782e786a6283",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/0/2026-04.json": "3ad153c2663c7ba828d89bb73d79af77c162b02b6cb8d10021c32e4f27ce9aa4",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2022-11.json": "04e358be26d97e3d15d50ab556f188a5e65da9924b1760a7a8fedf22a11dddf8",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2022-12.json": "231262969c10c0295d1f1f4970db42973f895197611649c7b14f9418eeb8e9d3",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2023-01.json": "a366fb172d8b551362fda23b1fc98fc1b9465d1e2ed62e4419706b045818e8b4",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2023-02.json": "03e6003ab058d9eaa1282c4d66adcc8c8d2e0cd3de2412cf735b13af78335efc",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2023-03.json": "edc678ecf34576cdc35d86b0ea2aaafae82f09c79f0957c96baf4c9a6a3e3e50",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2023-04.json": "832fac3ee33dedf84e1019d0bf11a57b16fc497eaa35854559f59f1ab74d62a4",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2023-05.json": "04a78e51bd3d7f679212ab34dff5dc4881c3153fa66e71486305afce657a6e1d",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2023-06.json": "ccb0bef5f642ba4d64151f41d3cd06844198100ec87956ab0de82d102ef3380b",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2023-07.json": "436facdd187dcf732fa813759b4b7ce6ae0471409aaa0bd7d0c8fada83c8038b",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2023-08.json": "6c2b71adc60c9c56e99cbb0517e3ad2b78fd02252680190f2cff376cb0cfc17b",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2023-09.json": "71d561656f21a13e5ad8f113995ba1e155419a4fecbdc460f1d019f9a3f7191f",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2023-10.json": "77fd1b6b8d0b709d9d1d2a33951747242dffd230e6b42d242a8eb869e6ca621a",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2023-11.json": "0975ecfce4d876890e1424d963500c2ff3b4ff6e49efdfa1e04d9b114165b554",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2023-12.json": "a09471b9a8b0be20cd1142f5b83e4d7bab585430f5c6481b806b0348300c396e",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2024-01.json": "7dcf20fb3080d2572b509eed68d7468584a1fdc9787ae95ce0171ef0a3653f0e",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2024-02.json": "6606da7e14c222d6394ef15dd34f220ca386891eab29ee41acf1f10155b4c88b",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2024-03.json": "a703cc55ab9b22db84f288d61d6a6e8197900b5e2e5ac63d4b6359d05d53e7e6",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2024-04.json": "0e6b85d371492a381f36da3235154a1ef8a1c62ad24937c1ff3e4be383d9a253",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2024-05.json": "12b564867b134ef98b37084ed16096d3559cdb51e809ef720a7835a554a83dfa",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2024-06.json": "5b59862b4eb89e3688d913d46b7fee4977a07ea66c897a796ea8b1707c257cc1",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2024-07.json": "c92d5dc188208fcfc3e9bdec6904833d5fe0f63e203a62c464a7956ef3f05b62",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2024-08.json": "5aa7a1b083158b003a94a4d977d57a2604e2d7ffcc41236dff35fb0e2c20168d",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2024-09.json": "d4bef06f01aca2c48b5197f1703b27e867076e02c5009eaf429aa139e3a4b5ae",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2024-10.json": "3993a42771e7f772f536e0e686527025bb72fcfd4e1cd761961faaa02243b386",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2024-11.json": "150595ea206db445d865d1fd3813119d062ec9648a70068428ae743beaba2a81",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2024-12.json": "e095a390c71460cb57fa82c916f79e5901fe847c77d576efa3d4a7a4ba6a88e7",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2025-01.json": "bec0c2ede0fd637bd6f1095862e9b2fa73efe5f3833676c743155b041b43bef4",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2025-02.json": "6a24e4718745411d0d544afb648955488fe84f14223ca80c050bf724298da8f8",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2025-03.json": "c5bb900c515cce07165e3f64e74e5a300921076b7bf02ec1d894ebd0e2019d8f",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2025-04.json": "b42481033cc08afcf6832fdc88e3fbc11cfca8040a470b1c4207a69217dc85e9",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2025-05.json": "5f5289666144092f0a8ce19abb9a5b42f1dd45a5fa8b7aeab9a8827a178c6685",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2025-06.json": "0a436e04ad3a0edcd8cc6a656facb390352cd44de6311a3b2319c90b92355c00",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2025-07.json": "1a26504942220e15b429fc29c232bf94fdc2cd16ed11b14ea0d80d027afd073e",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2025-08.json": "862f988c22fb2816bb940b1a22b60f0656405e49f6aaf2f52b7648e7d2862bad",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2025-09.json": "b0006b7a78a266a0134cb8c18df4a34d86a95f8056b4dbef5ce081eb6c600d83",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2025-10.json": "ca346f0107cb814455957eb3856665c1585a913c2ded4fc25cb9003534f514f3",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2025-11.json": "b8e4fc344f16e3dcf67a624a6dcaa7e2768d4cb6bbd9806bfe8918f9e24aa103",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2025-12.json": "f960378f22301fc8466ddec42a4070c4adad7a09fd9fa54439bafbcc8db9fd9c",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2026-01.json": "8aa8f27802f7c7f2166e837caff360bdc5f2c89a518d95eefe750e47737ac206",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2026-02.json": "3aa362ca5dec5d4c9cca3d2f68d8652190592cea90c11718b734242b1c9f2639",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2026-03.json": "79e59f170e39eec314de4cf589a88f7979c922ea76c7bfcd5596543b4f2037fe",
+  ".cache/metamon/usage-stats/movesets_data/gen9/all_tiers/1500/2026-04.json": "405391c0ed3e26308220e0cb03d6ae0b32525d2031f01160ef83415ef6cf0bb1",
+  ".cache/metamon/usage-stats/movesets_data/gen9/ou/0/2026-01.json": "bd0bb1fd764ac176e004f2c92d5563b8ea38d29a11b0aa3c994187d77dae095b",
+  ".cache/metamon/usage-stats/movesets_data/gen9/ou/0/2026-02.json": "e4787f1b635b76784d222fb63c9fec7fac756c098ece36ab55d7abc26fd4e1df",
+  ".cache/metamon/usage-stats/movesets_data/gen9/ou/0/2026-03.json": "62ece09d208f176e70b3227e661f2d5e430ab751155f91eedbe00fe20fbb1855",
+  ".cache/metamon/usage-stats/movesets_data/gen9/ou/0/2026-04.json": "560d85a49198d824b72954c3045d14dbb3284b2040c42a3e71111776e25baf06",
+  ".cache/metamon/usage-stats/movesets_data/gen9/ou/1500/2026-01.json": "7b258d5ba86f18d19da4aff626c2569c2d17d0fd3a2d3dbe0efbf55e5bd92d1e",
+  ".cache/metamon/usage-stats/movesets_data/gen9/ou/1500/2026-02.json": "4b07f4df262c08906c6e4246e082198227834819363c878bb1aa9fd3830cc582",
+  ".cache/metamon/usage-stats/movesets_data/gen9/ou/1500/2026-03.json": "2e7959094ef31ae1616f4d3c6f1acdaa1f024c084efd590b162f3dd5541bf8ac",
+  ".cache/metamon/usage-stats/movesets_data/gen9/ou/1500/2026-04.json": "fb34a76a601240145c04700549820539e13f77e82abe50fcc9ceed18da93695b"
+ },
+ "code_live_path": {
+  "src/pokeai/__init__.py": "19fb9d23019781d488246cf9e3c2f298fb384a357a8b4e1f6349fb54bd92717a",
+  "src/pokeai/agents/__init__.py": "51775e3a95387d7d47ac5be7cc209c23f4c40b7f2bf99589bae4509bf40dccca",
+  "src/pokeai/agents/live_search.py": "bc77f6e26380ceb89d5f1fe87936ac552d3f9d3d435d7c3b3fd97ec310f95e14",
+  "src/pokeai/agents/neural_player.py": "904fe6ed4f4ffdf4eb66c39795150e4d35a13fac2ffbff2a6568cd153482b251",
+  "src/pokeai/cf/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "src/pokeai/cf/belief.py": "e8ad623fc5a0a49c6c3c97a09740bfe7d7c26e3ec162cbd42dad486810eb3ab1",
+  "src/pokeai/cf/branching.py": "7e63e51ff28b4d5d004b331155dbc575b41ab74caae5b79cc357c427fc135958",
+  "src/pokeai/cf/cf1.py": "88e0c4e80fd08d68f9c158825f71bf785800531d052d19cf4c5cd24727464e44",
+  "src/pokeai/cf/offline.py": "465353ad362b37589589f5d2c6bcf5f0ba4066e03e2b2a65c431d65997c78f36",
+  "src/pokeai/cf/recon_match.py": "fcee8736dabe5ebfc40048b54f86d1e7e59142e80998696ab3164a5a858e76ff",
+  "src/pokeai/cf/recon_search.py": "4f8053dafce599d175be89ba57fbdfd4deac0f8eba148f2e98b6e23d96fe8d9d",
+  "src/pokeai/cf/recon_world.py": "213f0462ac83a1972373b0d155087f3d18093b942a35d6d983f92a020cf326f4",
+  "src/pokeai/cf/reconstruct.py": "0c16dbf5a8ea988951bbad2d3acf7c6179d677b550398a5625ac6b687853df13",
+  "src/pokeai/cf/restore_check.py": "f478a3f3920f2a139bee497e969b97e798ef19aa55f5d06729f42c8864eb4e99",
+  "src/pokeai/cf/rollouts.py": "78b7662263bf31cf7584ea67b1450df4dc804f1e2fc3a898800dba020de6f38b",
+  "src/pokeai/cf/sim.py": "7972b4ce6d17ea66f6d49cf7ec891f8ebf9a219bf4c4f3662ddb3a8b0216bac9",
+  "src/pokeai/env/__init__.py": "ec2a1fee40eaeae81b69088cbffe3363a436ed6387d9884df610646144727b85",
+  "src/pokeai/env/runner.py": "810a8e7e961fcefc19c5387ddc6910808621dc7a37e30daed5478e687b0e19c4",
+  "src/pokeai/env/teams.py": "366564a567e12070399d54cee794a73e47ae8a830986eecc95544c910a33f706"
+ },
+ "scripts": {
+  "scripts/evaluate_w5.py": "6ba573f27a873a1379bd63aaff524fc91efce059d63bee601fcdba2d47935d99",
+  "scripts/evaluate_w4_5.py": "71c5197565d6c551571d8d12be37366747fd57cbf2399ac9f9e405c41634c8fd",
+  "scripts/bs1_2_run.py": "f9656f19b8a2328b3af334c4cefee5ae0beea6507ce1609e39ada85b7d39b7b8",
+  "scripts/bs1_2_report.py": "f3654f2dac0f7a5ff42867c84a585e1c24e4a096da58257b5937efbc033c88a2",
+  "scripts/bs1_1_report.py": "2311403fb791b70150c1e23d563202fa9a417994dac8054a73fe6ef32e37c60d",
+  "scripts/bs1_2b_qa.py": "a2d795e034bb48cbf39db5f28d85bc550fafc98e76a3b9e7a4bf5a0becd31596",
+  "scripts/bs1_2b_golden.py": "fa7b02435fd8abd251869f0da4ce9990fa5f159d1450d7b1147f3d7be4024d17",
+  "scripts/bs_rc1_manifest.py": "58ae221a487a4a9b4a71acb822ab2bd1ea4b4c93ec5ee5b0ee03990fc8c3a035"
+ },
+ "sim_driver_js": {
+  "src/pokeai/cf/sim_driver.js": "381f5351069a12db21b00169ac5ff6e908f5dddd7cd0873cc4b312eee966939e"
+ },
+ "showdown": {
+  "repo_commit": "d62d3a39878f7ef1c6e1cfbd84e8feb2ce7a9fdd",
+  "dist_sim_files": 25,
+  "dist_sim_tree_sha256": "b692ac674f68e2dacefa53a4baf5190510dc0b3d5d2b87449e05eb657ff94b72",
+  "metamon_commit": "0a00a759c9a4382a2877088d828302ec294a05a5"
+ },
+ "benchmark_config": {
+  "file": "configs/w5_bs_rc1.yaml",
+  "sha256": "266936f119b81ba3415167bea6720479d59fb6bbb28a1efbe93f099c4998eaaa",
+  "parsed": {
+   "run": {
+    "final": true,
+    "seed": 20261501,
+    "lanes": 2,
+    "block_pairs": [
+     [
+      0,
+      12
+     ],
+     [
+      12,
+      25
+     ],
+     [
+      25,
+      37
+     ],
+     [
+      37,
+      50
+     ]
+    ],
+    "budget_h": 16,
+    "out_prefix": "w5-bs-rc1"
+   },
+   "reference_arm": "C",
+   "pool": "data/teams_w5/heldout",
+   "battles": 100,
+   "arms": {
+    "C": {
+     "model_dir": "models/pokedecision-v1-value",
+     "preview_checkpoint": "third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt",
+     "preview_argmax": true,
+     "greedy": true
+    },
+    "C+search": {
+     "model_dir": "models/pokedecision-v1-value",
+     "preview_checkpoint": "third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt",
+     "preview_argmax": true,
+     "greedy": true,
+     "battle_timeout_s": 3600,
+     "search": {
+      "deadline_s": 5.0,
+      "margin_s": 0.3,
+      "min_budget_s": 0.5,
+      "opp_model": "mixture",
+      "n_worlds": 8,
+      "n_seeds": 8,
+      "workers": 4,
+      "seed": 20261101,
+      "fail_fast": true,
+      "fail_dir": "runs/w5-bs-rc1-new-class"
+     }
+    }
+   },
+   "opponents": {
+    "Grunt": {
+     "baseline": "Grunt"
+    },
+    "GymLeader": {
+     "baseline": "GymLeader"
+    },
+    "C": {
+     "model_dir": "models/pokedecision-v1-value",
+     "preview_checkpoint": "third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt",
+     "preview_argmax": true,
+     "greedy": true
+    }
+   }
+  },
+  "frozen_search_parameters": {
+   "D_s": 5.0,
+   "M_s": 0.3,
+   "min_budget_s": 0.5,
+   "opp_model": "mixture",
+   "n_worlds": 8,
+   "n_seeds": 8,
+   "workers_per_lane": 4,
+   "lanes": 2,
+   "search_seed": 20261101,
+   "schedule_seed": 20261501,
+   "fail_fast": true
+  }
+ },
+ "uv_lock_sha256": "2ab924c9f21437eaa06bebf9fe2985ec536f78ceadaf771992d384fed65bd7d2",
+ "versions": {
+  "python": "3.11.9",
+  "torch": "2.14.1+cu130",
+  "numpy": "2.4.6",
+  "node": "v22.20.0",
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.43"
+ }
+}
