@@ -1,7 +1,7 @@
 {
- "release_candidate": "RC3 (C + belief search; tag w5-bs-rc3)",
+ "release_candidate": "RC4 (C + belief search; tag w5-bs-rc4; NOT approved for heldout)",
  "git": {
-  "commit": "f3c83b46ff1c5fcae4923bdca16f1fadf7fc86ca",
+  "commit": "17e609ab902e73586a5c6147644a0d25f9961274",
   "uncommitted_tracked_files": [],
   "note": "files are hashed below regardless of commit state"
  },
@@ -120,20 +120,20 @@
  "code_live_path": {
   "src/pokeai/__init__.py": "19fb9d23019781d488246cf9e3c2f298fb384a357a8b4e1f6349fb54bd92717a",
   "src/pokeai/agents/__init__.py": "51775e3a95387d7d47ac5be7cc209c23f4c40b7f2bf99589bae4509bf40dccca",
-  "src/pokeai/agents/live_search.py": "bc77f6e26380ceb89d5f1fe87936ac552d3f9d3d435d7c3b3fd97ec310f95e14",
+  "src/pokeai/agents/live_search.py": "c546aa465d6c8678af00219d72dac666c8a70935089b93daf808624116e3a36c",
   "src/pokeai/agents/neural_player.py": "904fe6ed4f4ffdf4eb66c39795150e4d35a13fac2ffbff2a6568cd153482b251",
   "src/pokeai/cf/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
   "src/pokeai/cf/belief.py": "e8ad623fc5a0a49c6c3c97a09740bfe7d7c26e3ec162cbd42dad486810eb3ab1",
   "src/pokeai/cf/branching.py": "7e63e51ff28b4d5d004b331155dbc575b41ab74caae5b79cc357c427fc135958",
   "src/pokeai/cf/cf1.py": "88e0c4e80fd08d68f9c158825f71bf785800531d052d19cf4c5cd24727464e44",
-  "src/pokeai/cf/offline.py": "465353ad362b37589589f5d2c6bcf5f0ba4066e03e2b2a65c431d65997c78f36",
+  "src/pokeai/cf/offline.py": "0bc7dfbf998a2967d07e62d2d2d83411bf64c1c89510bd109453d3a86c8c892b",
   "src/pokeai/cf/recon_match.py": "fcee8736dabe5ebfc40048b54f86d1e7e59142e80998696ab3164a5a858e76ff",
-  "src/pokeai/cf/recon_search.py": "4f8053dafce599d175be89ba57fbdfd4deac0f8eba148f2e98b6e23d96fe8d9d",
-  "src/pokeai/cf/recon_world.py": "213f0462ac83a1972373b0d155087f3d18093b942a35d6d983f92a020cf326f4",
-  "src/pokeai/cf/reconstruct.py": "0c16dbf5a8ea988951bbad2d3acf7c6179d677b550398a5625ac6b687853df13",
+  "src/pokeai/cf/recon_search.py": "afd0f594ba90c30a37ffa6e32c824cb7a9e37765fb50670865373c55075c3d11",
+  "src/pokeai/cf/recon_world.py": "f54f4caeb14741ef9f5e547629b07838664afd2a7f9357933eacbf7cb8174e43",
+  "src/pokeai/cf/reconstruct.py": "83e6462e9d0ec7e4cbe213eaaf5fab34ab190ec1b6b99c30d927c00071cff960",
   "src/pokeai/cf/restore_check.py": "f478a3f3920f2a139bee497e969b97e798ef19aa55f5d06729f42c8864eb4e99",
   "src/pokeai/cf/rollouts.py": "78b7662263bf31cf7584ea67b1450df4dc804f1e2fc3a898800dba020de6f38b",
-  "src/pokeai/cf/sim.py": "7972b4ce6d17ea66f6d49cf7ec891f8ebf9a219bf4c4f3662ddb3a8b0216bac9",
+  "src/pokeai/cf/sim.py": "98e84e18b661a1ea2a2ca2cfc687c98bc487a2f6857a625c4b550d7664603f92",
   "src/pokeai/env/__init__.py": "ec2a1fee40eaeae81b69088cbffe3363a436ed6387d9884df610646144727b85",
   "src/pokeai/env/collector.py": "4bc956b467a52e4f995bf09d8421d59598003cfdbf342ca76ba705076a8518ab",
   "src/pokeai/env/runner.py": "810a8e7e961fcefc19c5387ddc6910808621dc7a37e30daed5478e687b0e19c4",
@@ -147,11 +147,11 @@
   "scripts/bs1_2_report.py": "f3654f2dac0f7a5ff42867c84a585e1c24e4a096da58257b5937efbc033c88a2",
   "scripts/bs1_1_report.py": "2311403fb791b70150c1e23d563202fa9a417994dac8054a73fe6ef32e37c60d",
   "scripts/bs1_2b_qa.py": "a2d795e034bb48cbf39db5f28d85bc550fafc98e76a3b9e7a4bf5a0becd31596",
-  "scripts/bs1_2b_golden.py": "fa7b02435fd8abd251869f0da4ce9990fa5f159d1450d7b1147f3d7be4024d17",
-  "scripts/bs_rc1_manifest.py": "e6f03a301c026ad2fafbc1dfb55d7a63232fe9d4bb3965d97c2619aadeacfa57"
+  "scripts/bs1_2b_golden.py": "a6758c5d582cd968959fee962eb3c83d71957e8fcea96d6b9b293a16c3d14fc4",
+  "scripts/bs_rc1_manifest.py": "3c6fc43fcb5ae0d9fb475d919d0e9a6e07497183a861e37eda4aabbf532120d1"
  },
  "sim_driver_js": {
-  "src/pokeai/cf/sim_driver.js": "381f5351069a12db21b00169ac5ff6e908f5dddd7cd0873cc4b312eee966939e"
+  "src/pokeai/cf/sim_driver.js": "bde587e0bc7310ea86d5974e6b49e953615a234fd83d87505d68f4250e0ea3a5"
  },
  "showdown": {
   "repo_commit": "d62d3a39878f7ef1c6e1cfbd84e8feb2ce7a9fdd",
