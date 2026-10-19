@@ -1,0 +1,95 @@
+{
+ "bundle": {
+  "search_release": "w5-bs-rc4",
+  "rc4_code": "17e609a",
+  "infra_commit": "d514078",
+  "pool_config_commit": "3ca86360d37a5d544be3d443ff38c9b5cccc106e",
+  "bundle_tag": "w5-bs15-eval",
+  "manifest": "reports/w5_bs15_manifest.json",
+  "manifest_sha256": "372e6ec85e8b5adb968ba78d46375d3cefc1517fb139562aab47df6760226473",
+  "manifest_generated_clean_tree": true,
+  "config": "configs/w5_bs15.yaml",
+  "config_sha256": "5cd3254dd05c98b18e09d2c8adec0e2892fc581ad2256c8aec9a1c488e2e213e",
+  "watchdog_sha256": "349da8f2121d6edec32d07efb8320ab5cbd2541c39fd10c9c0bad0559b1e4318"
+ },
+ "snapshot": "final preflight state, written after the manifest was generated on a clean tree",
+ "rc4_decision_path_unchanged": {
+  "src_diff_vs_rc4_files": 0,
+  "identical_manifest_sections_vs_bs14_bundle": [
+   "c_checkpoint",
+   "preview_checkpoint",
+   "tokenizer",
+   "belief_sampler_data",
+   "code_live_path",
+   "sim_driver_js",
+   "showdown",
+   "versions"
+  ],
+  "changed_scripts_vs_bs14_bundle": [
+   "scripts/bs14_manifest.py",
+   "scripts/bs1_2_run.py",
+   "scripts/bs_watchdog.py",
+   "scripts/evaluate_w5.py",
+   "scripts/pool_claim.py"
+  ],
+  "scripts_tests_diff_vs_rehearsed_infra": 0
+ },
+ "pool": {
+  "path": "data/teams_w5_bs15/heldout",
+  "seed": 20262101,
+  "source": "hl_05_26",
+  "source_count": 43764,
+  "candidates_drawn": 209,
+  "rejected": {
+   "excluded:ordered_sha256": 9
+  },
+  "valid": 200,
+  "team_manifest_sha256": "81173b097da41295c8652349c3aeb0b449205d308c810cb380afed8ddd5eb36e",
+  "frozen_files": 201,
+  "intersections_integrator_recomputed": {
+   "data/teams/gen9ou": {
+    "files": 211,
+    "ordered": 0,
+    "canonical": 0
+   },
+   "data/teams_w5/collect/gen9ou": {
+    "files": 1000,
+    "ordered": 0,
+    "canonical": 0
+   },
+   "data/teams_w5/dev/gen9ou": {
+    "files": 200,
+    "ordered": 0,
+    "canonical": 0
+   },
+   "data/teams_w5/heldout/gen9ou": {
+    "files": 200,
+    "ordered": 0,
+    "canonical": 0
+   },
+   "data/teams_w5_bs14/heldout/gen9ou": {
+    "files": 200,
+    "ordered": 0,
+    "canonical": 0
+   }
+  },
+  "within_pool_distinct": {
+   "ordered": 200,
+   "canonical": 200
+  }
+ },
+ "config_diff_vs_bs14": [
+  "pool",
+  "run.seed: 20261911 -> 20262111",
+  "run.out_prefix: w5-bs15",
+  "run.release_manifest: reports/w5_bs15_manifest.json",
+  "arms.C+search.search.fail_dir: runs/w5-bs15-new-class"
+ ],
+ "verify_bundle_problems": [],
+ "new_pool_root_entries": [
+  "gen9ou"
+ ],
+ "battles_or_rollouts_run_on_new_pool": 0,
+ "win_loss_viewed": false,
+ "approved_to_run": false
+}
