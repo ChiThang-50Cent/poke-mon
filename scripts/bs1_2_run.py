@@ -30,15 +30,21 @@ def main() -> None:
     prefix = run.get("out_prefix", "w5-bs1-2")
     total_pairs = blocks[-1][1]
     battles = str(config["battles"])
-    if run.get("final"):
+    final = bool(run.get("final"))
+    if final:
         sys.path.insert(0, str(Path(__file__).resolve().parent))
-        from evaluate_w5 import verify_release
+        from pool_claim import verify_only
 
-        verify_release(config, args.config)  # fail before any lane starts or any claim exists
+        def verify_all() -> None:  # under the pool lock: never races a lane's claim
+            verify_only(config["pool"], config, args.config)
+
+        verify_all()  # fail before any lane starts or any claim exists
     t0 = time.time()
     log = ROOT / f"{prefix}-projections.jsonl"
     done_pairs = 0
     for k, (a, b) in enumerate(blocks, 1):
+        if final and k > 1:
+            verify_all()  # before every further block: tamper / orphan claim temp => no launch
         tb = time.time()
         procs = []
         for lane in range(lanes):

@@ -18,7 +18,8 @@ import torch
 import yaml
 from evaluate_w4_5 import bootstrap, cluster_differences, verdict
 from evaluate_w4_team_preview import arm_report, sha256
-from evaluate_w5 import claim_pool, run_config
+from evaluate_w5 import run_config
+from pool_claim import claim_unlocked
 
 from pokeai.env.collector import git_commit
 from pokeai.env.runner import run_battles, wilson_interval
@@ -210,7 +211,7 @@ async def evaluate(args):
     pool = Path(args.pool)
     if json.loads((pool/"gen9ou/manifest.json").read_text())["role"] != "dev":
         raise ValueError("W5.3 selection requires the dev pool")
-    claim_pool(pool, False, {})
+    claim_unlocked(None, pool, False, {})
     schedule = args.seed + {"smoke": 0, "screen": 10000,
                            "confirm": 20000, "control": 20000,
                            "sampling": 30000}[stage]

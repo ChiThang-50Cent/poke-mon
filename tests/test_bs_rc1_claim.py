@@ -9,8 +9,14 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-import evaluate_w5
-from evaluate_w5 import claim_pool, verify_release
+import pool_claim
+from pool_claim import claim_unlocked, pool_lock, staging_dir, verify_unlocked
+
+
+def claim_pool(pool, final, config, window=None):
+    """One lane-style critical section (what evaluate_w5 does, minus verify)."""
+    with pool_lock(pool) as lock:
+        claim_unlocked(lock, pool, final, config, window)
 
 
 @pytest.fixture
@@ -81,7 +87,7 @@ def test_concurrent_lanes_all_claim_and_the_claim_is_complete(pool, round_):
     assert sorted(o for o, _ in outcomes) == ["ok"] * 8
     assert json.loads((pool / "final.started.json").read_text())["config"] == BIG
     assert len(list(pool.glob("final.window.*.json"))) == 8
-    assert not list(pool.glob(".final.*"))  # no temp leftovers
+    assert list(staging_dir(pool).iterdir()) == []  # no temp leftovers
 
 
 def test_concurrent_unwindowed_claims_have_exactly_one_winner(pool):
@@ -93,33 +99,35 @@ def test_a_crash_while_writing_leaves_no_claim(pool, monkeypatch):
     def crash(*args, **kwargs):
         raise OSError("disk full")
 
-    monkeypatch.setattr(evaluate_w5.json, "dump", crash)
+    monkeypatch.setattr(pool_claim.json, "dump", crash)
     with pytest.raises(OSError):
         claim_pool(pool, True, CONFIG, (0, 2, 0, 12))
     assert not (pool / "final.started.json").exists()
-    assert not list(pool.glob(".final.*"))
+    assert list(staging_dir(pool).iterdir()) == []
 
 
-def test_final_requires_a_release_manifest():
-    with pytest.raises(ValueError, match="release_manifest"):
-        verify_release({"run": {"final": True}}, "configs/w5_bs_rc1.yaml")
+def test_final_requires_a_release_manifest(pool):
+    with pool_lock(pool) as lock, pytest.raises(ValueError, match="release_manifest"):
+        verify_unlocked(lock, {"pool": str(pool), "run": {"final": True}}, "configs/w5_bs_rc1.yaml")
 
 
-def test_a_changed_frozen_file_blocks_the_release(tmp_path):
+def test_a_changed_frozen_file_blocks_the_release(tmp_path, pool):
     manifest = json.loads((ROOT / "reports/w5_bs_rc1_manifest.json").read_text())
     name = next(iter(manifest["code_live_path"]))
     manifest["code_live_path"][name] = "0" * 64
     path = tmp_path / "manifest.json"
     path.write_text(json.dumps(manifest))
-    with pytest.raises(RuntimeError, match=f"changed {name}"):
-        verify_release({"run": {"release_manifest": str(path)}}, "configs/w5_bs_rc1.yaml")
+    config = {"pool": str(pool), "run": {"release_manifest": str(path)}}
+    with pool_lock(pool) as lock, pytest.raises(RuntimeError, match=f"changed {name}"):
+        verify_unlocked(lock, config, "configs/w5_bs_rc1.yaml")
 
 
 def test_the_driver_verifies_before_launching_any_lane(tmp_path, monkeypatch):
     import bs1_2_run
 
     config = tmp_path / "rc.yaml"
-    config.write_text("run: {final: true}\nbattles: 2\n")
+    (tmp_path / "p").mkdir()
+    config.write_text(f"pool: {tmp_path / 'p'}\nrun: {{final: true}}\nbattles: 2\n")
     launched = []
     monkeypatch.setattr(bs1_2_run.subprocess, "Popen", lambda *a, **k: launched.append(a))
     monkeypatch.setattr(sys, "argv", ["bs1_2_run.py", "--config", str(config)])

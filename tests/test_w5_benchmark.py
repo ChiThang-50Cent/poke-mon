@@ -61,12 +61,15 @@ def test_heldout_requires_final_and_one_shot(tmp_path):
     pool = tmp_path / "heldout"
     (pool / "gen9ou").mkdir(parents=True)
     (pool / "gen9ou/manifest.json").write_text('{"role":"heldout"}')
-    with pytest.raises(ValueError, match="--final"):
-        benchmark.claim_pool(pool, False, {})
-    assert not (pool / "final.started.json").exists()
-    benchmark.claim_pool(pool, True, {"arms": {"C": {}}})
-    with pytest.raises(FileExistsError):
-        benchmark.claim_pool(pool, True, {})
+    from pool_claim import claim_unlocked, pool_lock
+
+    with pool_lock(pool) as lock:
+        with pytest.raises(ValueError, match="--final"):
+            claim_unlocked(lock, pool, False, {})
+        assert not (pool / "final.started.json").exists()
+        claim_unlocked(lock, pool, True, {"arms": {"C": {}}})
+        with pytest.raises(FileExistsError):
+            claim_unlocked(lock, pool, True, {})
 
 
 def test_neural_opponent_independent_configuration(tmp_path):

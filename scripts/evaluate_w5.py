@@ -3,11 +3,8 @@ from __future__ import annotations
 
 import argparse
 import asyncio
-import fcntl
 import json
-import os
 import random
-import tempfile
 import time
 from pathlib import Path
 
@@ -16,75 +13,11 @@ import torch
 import yaml
 from evaluate_w4_5 import bootstrap, cluster_differences
 from evaluate_w4_team_preview import arm_report, sha256
+from pool_claim import claim_unlocked, verify_and_claim
 
 from pokeai.env.collector import git_commit
 from pokeai.env.runner import RunConfig, run_battles
 from pokeai.repro import source_fingerprint
-
-
-def _create_exclusive(path: Path, payload: dict) -> None:
-    """Create `path` with its COMPLETE content, or raise FileExistsError; never a partial file.
-
-    The JSON is written and fsynced to a private temp file, then hard-linked into place
-    (`link` fails atomically if the target exists)."""
-    fd, tmp = tempfile.mkstemp(dir=path.parent, prefix=f".{path.name}.")
-    try:
-        with os.fdopen(fd, "w") as stream:
-            json.dump(payload, stream)
-            stream.write("\n")
-            stream.flush()
-            os.fsync(stream.fileno())
-        os.link(tmp, path)
-    finally:
-        os.unlink(tmp)
-
-
-def claim_pool(pool: Path, final: bool, config: dict,
-               window: tuple[int, int, int, int] | None = None) -> None:
-    """Claim heldout globally, not relative to the user-selected report path.
-
-    BS1.2b: one frozen config may be executed as several (lane, lanes, pair-start, pair-stop)
-    windows of the same schedule. The first window creates the one-shot claim; later windows must
-    carry the IDENTICAL config and each window can be taken exactly once. Concurrent lanes are
-    serialised by an exclusive lock on `final.lock`, and claim files appear atomically."""
-    manifest = json.loads((pool / "gen9ou/manifest.json").read_text())
-    role = manifest["role"]
-    if role not in ("dev", "heldout"):
-        raise ValueError("Benchmark requires a dev or heldout pool")
-    if role == "heldout":
-        if not final:
-            raise ValueError("heldout pool requires --final; never use for selection")
-        claim = pool / "final.started.json"
-        with (pool / "final.lock").open("a") as lock:
-            fcntl.flock(lock, fcntl.LOCK_EX)
-            try:
-                _create_exclusive(
-                    claim, {"purpose": "one-shot final W5 benchmark", "config": config})
-            except FileExistsError:
-                if window is None or json.loads(claim.read_text())["config"] != config:
-                    raise
-            if window is not None:
-                lane, lanes, start, stop = window
-                _create_exclusive(
-                    pool / f"final.window.{lane}of{lanes}.{start}-{stop}.json",
-                    {"config": config})
-    elif final:
-        raise ValueError("--final requires the heldout pool")
-
-
-def verify_release(config: dict, config_path: Path | str, pool: Path | str | None = None) -> None:
-    """A final (heldout) run must match its frozen bundle exactly, before any claim: the code and
-    model hashes, the config FILE actually passed (path, sha256, parsed content), and the exact
-    team files of the pool actually used."""
-    path = config.get("run", {}).get("release_manifest")
-    if not path:
-        raise ValueError("--final requires run.release_manifest in the config")
-    from bs14_manifest import verify_bundle
-
-    problems = verify_bundle(Path(path), config_path, config, pool)
-    if problems:
-        raise RuntimeError("release manifest mismatch; refusing the heldout claim:\n"
-                           + "\n".join(problems))
 
 
 def run_config(arm: dict, opponent: dict, *, pool: Path, battles: int,
@@ -138,8 +71,10 @@ async def evaluate(args):
     if args.lanes > 1 or args.pairs:
         window = (args.lane, args.lanes, *(args.pairs or (0, battles // 2)))
     if args.final:
-        verify_release(config, args.config, pool)
-    claim_pool(pool, args.final, effective, window)
+        # ONE critical section: verify (code, config file, team files, pool root) then claim
+        verify_and_claim(pool, config, args.config, effective, window)
+    else:
+        claim_unlocked(None, pool, False, effective, window)
     model_configs = [*arms.values(), *config["opponents"].values()]
     report = {
         "valid": False, "config": effective, "seed": args.seed,

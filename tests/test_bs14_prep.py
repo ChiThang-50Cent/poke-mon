@@ -18,7 +18,15 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 import bs14_manifest
 import evaluate_w5
-from evaluate_w5 import verify_release
+import pool_claim
+from pool_claim import pool_lock, verify_unlocked
+
+
+def verify_release(config, config_path, pool=None):
+    """Lane-style: verify under the pool lock (the pool is the config's unless overridden)."""
+    target = bs14_manifest.ROOT / (pool if pool is not None else config["pool"])
+    with pool_lock(target) as lock:
+        verify_unlocked(lock, config, config_path, target)
 
 TEAM = (ROOT / "data/teams_w5/dev/gen9ou/hl_05_26-0001.gen9ou_team").read_text()
 
@@ -50,7 +58,7 @@ def bundle(tmp_path, monkeypatch):
 
 
 def _claims(pool: Path):
-    return [p for p in pool.iterdir() if p.name != "gen9ou"]
+    return [p for p in pool.iterdir() if p.name not in ("gen9ou", "final.lock")]
 
 
 def test_the_intact_bundle_verifies(bundle):
@@ -117,9 +125,9 @@ def test_team_file_changes_are_refused_before_any_claim(bundle, edit, message):
 def test_the_lane_verifies_before_it_claims(bundle, monkeypatch):
     root, pool, _config = bundle
     (pool / "gen9ou/t0.gen9ou_team").write_text("tampered")
-    monkeypatch.setattr(evaluate_w5, "claim_pool", lambda *a, **k: pytest.fail("claimed"))
+    monkeypatch.setattr(pool_claim, "claim_unlocked", lambda *a, **k: pytest.fail("claimed"))
     args = argparse.Namespace(
-        config=str(root / "cfg.yaml"), pool=None, battles=None, arm=None, lanes=2, lane=0,
+        config=str(root / "cfg.yaml"), pool=str(pool), battles=None, arm=None, lanes=2, lane=0,
         pairs=[0, 1], out=str(root / "out.json"), final=True)
     with pytest.raises(RuntimeError, match="changed .*t0"):
         asyncio.run(evaluate_w5.evaluate(args))
@@ -130,6 +138,7 @@ def test_the_driver_verifies_before_launching_any_lane(bundle, monkeypatch):
     import bs1_2_run
 
     root, pool, _config = bundle
+    monkeypatch.chdir(root)
     (pool / "gen9ou/t0.gen9ou_team").write_text("tampered")
     launched = []
     monkeypatch.setattr(bs1_2_run.subprocess, "Popen", lambda *a, **k: launched.append(a))
@@ -149,8 +158,6 @@ def test_canonical_hash_catches_a_permuted_team_that_the_ordered_hash_misses():
     assert b.canonical_team_sha256(permuted) == b.canonical_team_sha256(TEAM)
 
 
-def test_the_real_new_pool_is_unclaimed():
+def test_the_spent_bs14_pool_still_holds_its_200_teams():
     pool = ROOT / "data/teams_w5_bs14/heldout"
-    assert pool.is_dir()
-    assert sorted(p.name for p in pool.iterdir()) == ["gen9ou"]
     assert len(list((pool / "gen9ou").glob("*.gen9ou_team"))) == 200
