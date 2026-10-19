@@ -1,0 +1,1877 @@
+{
+  "valid": true,
+  "config": {
+    "reference_arm": "P",
+    "pool": "data/teams_w5/dev",
+    "battles": 500,
+    "arms": {
+      "P": {
+        "model_dir": "models/pokedecision-v2-pile",
+        "preview_checkpoint": "third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt",
+        "preview_argmax": true,
+        "greedy": true
+      },
+      "epn20": {
+        "model_dir": "checkpoints/autoresearch/epn20",
+        "preview_checkpoint": "third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt",
+        "preview_argmax": true,
+        "greedy": true
+      }
+    },
+    "opponents": {
+      "P": {
+        "model_dir": "models/pokedecision-v2-pile",
+        "preview_checkpoint": "third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt",
+        "preview_argmax": true,
+        "greedy": true
+      },
+      "Grunt": {
+        "baseline": "Grunt"
+      },
+      "GymLeader": {
+        "baseline": "GymLeader"
+      }
+    }
+  },
+  "seed": 20261017,
+  "purpose": "benchmark",
+  "fingerprints": {
+    "git_commit": "f1304d95771f8b779f011991faef9d189cef8ce6",
+    "source_sha256": "b3c2243c1780d120f852d8e04ce3a9f00f4952e0c57c8ff6bf3d4c43cd7357e7",
+    "team_manifest_sha256": "f321b84ed427466290072ccbfa1cf9e4085930013677e7f4872d607627c5aa46",
+    "checkpoints": {
+      "models/pokedecision-v2-pile": "b6834838c149415d9ba833c6bf77f4aed4e500077dd3fa00d3695bf73076962c",
+      "checkpoints/autoresearch/epn20": "e3ea5e6fab905537823b69e6424533e70b3af17ba2828aeab688cefb492a4409"
+    },
+    "previews": {
+      "third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt": "39cb5c65f30e9e363b5a8dee6fcaa7ea130077b3af0a1b4865e5d48de11daeaa"
+    }
+  },
+  "methodology": {
+    "schedule": "seeded team pairs, both directions, alternating challenger",
+    "interval": "W4.5 paired bootstrap clustered by team pair; ties are non-wins",
+    "rng": "Showdown and heuristic RNG are not seedable",
+    "selection": "dev only; heldout final-only, one-shot claim"
+  },
+  "opponents": {
+    "P": {
+      "P": {
+        "valid": true,
+        "attempted": 500,
+        "completed": 500,
+        "wins": 245,
+        "losses": 255,
+        "ties": 0,
+        "error_count": 0,
+        "errors": [],
+        "illegal_actions": 0,
+        "protocol_retries": {
+          "player": 0,
+          "opponent": 0
+        },
+        "protocol_retry_evidence": {
+          "player": [],
+          "opponent": []
+        },
+        "trapped_rejected_choices": 0,
+        "win_rate": 0.49,
+        "win_rate_wilson_95": [
+          0.4464261747403093,
+          0.5337263120689218
+        ],
+        "lead_source_counts": {
+          "model": 500
+        },
+        "top_lead_species": [
+          {
+            "species": "gliscor",
+            "count": 35
+          },
+          {
+            "species": "landorustherian",
+            "count": 33
+          },
+          {
+            "species": "samurotthisui",
+            "count": 30
+          },
+          {
+            "species": "ogerpon",
+            "count": 22
+          },
+          {
+            "species": "klefki",
+            "count": 20
+          },
+          {
+            "species": "cinderace",
+            "count": 19
+          },
+          {
+            "species": "glimmora",
+            "count": 16
+          },
+          {
+            "species": "meowscarada",
+            "count": 16
+          },
+          {
+            "species": "tornadustherian",
+            "count": 16
+          },
+          {
+            "species": "pelipper",
+            "count": 15
+          },
+          {
+            "species": "araquanid",
+            "count": 13
+          },
+          {
+            "species": "ninetales",
+            "count": 13
+          },
+          {
+            "species": "ribombee",
+            "count": 13
+          },
+          {
+            "species": "deoxysspeed",
+            "count": 12
+          },
+          {
+            "species": "dragapult",
+            "count": 12
+          },
+          {
+            "species": "grimmsnarl",
+            "count": 12
+          },
+          {
+            "species": "ragingbolt",
+            "count": 9
+          },
+          {
+            "species": "torkoal",
+            "count": 9
+          },
+          {
+            "species": "tyranitar",
+            "count": 9
+          },
+          {
+            "species": "primarina",
+            "count": 8
+          }
+        ],
+        "run_summary": {
+          "attempted": 500,
+          "completed": 500,
+          "wins": 245,
+          "losses": 255,
+          "ties": 0,
+          "error_count": 0,
+          "win_rate": 0.49,
+          "lose_rate": 0.51,
+          "tie_rate": 0.0,
+          "win_rate_wilson_95": [
+            0.4464261747403093,
+            0.5337263120689218
+          ],
+          "wall_time_s": 177.83902788104024,
+          "games_per_s": 2.8115313379606364,
+          "decisions_player": 20497,
+          "decisions_per_s": 115.25591566835833,
+          "lead_source_counts": {
+            "model": 500
+          },
+          "protocol_retry_counts": {
+            "player": 0,
+            "opponent": 0
+          },
+          "protocol_retry_evidence": {
+            "player": [],
+            "opponent": []
+          },
+          "config": {
+            "player": "neural:models/pokedecision-v2-pile",
+            "opponent": "neural:models/pokedecision-v2-pile",
+            "battles": 500,
+            "concurrent": 8,
+            "teams": "data/teams_w5/dev",
+            "timeout_s": 120.0,
+            "out": "runs",
+            "sample": false,
+            "temperature": 1.0,
+            "device": "cpu",
+            "team_preview_checkpoint": "third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt",
+            "team_preview_argmax": true,
+            "schedule_seed": 20261017,
+            "swap_team_pairs": true,
+            "alternate_challenger": true,
+            "opponent_sample": false,
+            "opponent_temperature": 1.0,
+            "opponent_team_preview_checkpoint": "third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt",
+            "opponent_team_preview_disabled": false,
+            "opponent_team_preview_argmax": true,
+            "opponent_type": null
+          },
+          "run_id": "20261019T151944-334ac4d6",
+          "neural": {
+            "player": {
+              "decisions": 20455,
+              "fallbacks": {
+                "struggle": 40,
+                "recharge": 2
+              },
+              "lead_source_counts": {
+                "model": 500
+              },
+              "lead_species_counts": {
+                "pelipper": 15,
+                "lokix": 5,
+                "ogerponwellspring": 7,
+                "weavile": 4,
+                "cinderace": 19,
+                "landorustherian": 33,
+                "infernape": 2,
+                "deoxysspeed": 12,
+                "tornadustherian": 16,
+                "greattusk": 2,
+                "ogerpon": 22,
+                "gliscor": 35,
+                "ribombee": 13,
+                "tyranitar": 9,
+                "samurotthisui": 30,
+                "grimmsnarl": 12,
+                "hoopaunbound": 7,
+                "moltres": 6,
+                "dragapult": 12,
+                "zapdos": 1,
+                "gholdengo": 1,
+                "araquanid": 13,
+                "torkoal": 9,
+                "darkrai": 4,
+                "glimmora": 16,
+                "toxapex": 6,
+                "heatran": 5,
+                "scizor": 4,
+                "klefki": 20,
+                "azelf": 4,
+                "rotomwash": 5,
+                "volcanion": 7,
+                "ragingbolt": 9,
+                "primarina": 8,
+                "cramorant": 5,
+                "indeedee": 2,
+                "meowscarada": 16,
+                "rillaboom": 5,
+                "ironvaliant": 3,
+                "slowkinggalar": 4,
+                "garchomp": 5,
+                "greninja": 4,
+                "mukalola": 1,
+                "latios": 2,
+                "tinkaton": 4,
+                "zamazenta": 4,
+                "ninetales": 13,
+                "corviknight": 1,
+                "alomomola": 1,
+                "irontreads": 3,
+                "porygon2": 1,
+                "azumarill": 1,
+                "ironcrown": 1,
+                "hatterene": 7,
+                "crawdaunt": 1,
+                "gengar": 1,
+                "tentacruel": 1,
+                "okidogi": 2,
+                "pecharunt": 1,
+                "tinglu": 3,
+                "magnezone": 1,
+                "enamorus": 2,
+                "sandyshocks": 1,
+                "thundurustherian": 2,
+                "kyurem": 7,
+                "garganacl": 6,
+                "ninetalesalola": 4,
+                "munkidori": 4,
+                "hydreigon": 3,
+                "golemalola": 1,
+                "empoleon": 1,
+                "wochien": 1,
+                "clefable": 1,
+                "hippowdon": 1
+              },
+              "illegal_actions": 0,
+              "protocol_retries": 0,
+              "inference_ms_p50": 0.9243739768862724,
+              "inference_ms_p95": 1.2201383127830918,
+              "unknown_tokens": 0,
+              "total_tokens": 1779585,
+              "unknown_token_rate": 0.0,
+              "backend": "metamon"
+            },
+            "opponent": {
+              "decisions": 20399,
+              "fallbacks": {
+                "struggle": 34
+              },
+              "lead_source_counts": {
+                "model": 500
+              },
+              "lead_species_counts": {
+                "ragingbolt": 9,
+                "landorustherian": 33,
+                "ogerpon": 22,
+                "ninetalesalola": 4,
+                "rotomwash": 5,
+                "munkidori": 4,
+                "cinderace": 19,
+                "indeedee": 2,
+                "samurotthisui": 30,
+                "greninja": 4,
+                "glimmora": 16,
+                "meowscarada": 16,
+                "gliscor": 35,
+                "grimmsnarl": 12,
+                "wochien": 1,
+                "lokix": 5,
+                "tyranitar": 9,
+                "heatran": 5,
+                "golemalola": 1,
+                "pelipper": 15,
+                "scizor": 4,
+                "ribombee": 13,
+                "rillaboom": 5,
+                "deoxysspeed": 12,
+                "dragapult": 12,
+                "ninetales": 13,
+                "klefki": 20,
+                "weavile": 4,
+                "empoleon": 1,
+                "darkrai": 4,
+                "hatterene": 7,
+                "torkoal": 9,
+                "zamazenta": 4,
+                "ironvaliant": 3,
+                "garchomp": 5,
+                "hydreigon": 3,
+                "volcanion": 7,
+                "infernape": 2,
+                "slowkinggalar": 4,
+                "hoopaunbound": 7,
+                "tinkaton": 4,
+                "tornadustherian": 16,
+                "ironcrown": 1,
+                "irontreads": 3,
+                "araquanid": 13,
+                "crawdaunt": 1,
+                "gengar": 1,
+                "moltres": 6,
+                "tinglu": 3,
+                "kyurem": 7,
+                "toxapex": 6,
+                "sandyshocks": 1,
+                "ogerponwellspring": 7,
+                "garganacl": 6,
+                "latios": 2,
+                "azelf": 4,
+                "clefable": 1,
+                "enamorus": 2,
+                "primarina": 8,
+                "cramorant": 5,
+                "gholdengo": 1,
+                "pecharunt": 1,
+                "alomomola": 1,
+                "greattusk": 2,
+                "magnezone": 1,
+                "porygon2": 1,
+                "zapdos": 1,
+                "okidogi": 2,
+                "thundurustherian": 2,
+                "hippowdon": 1,
+                "azumarill": 1,
+                "tentacruel": 1,
+                "mukalola": 1,
+                "corviknight": 1
+              },
+              "illegal_actions": 0,
+              "protocol_retries": 0,
+              "inference_ms_p50": 0.9260390070267022,
+              "inference_ms_p95": 1.2200173339806497,
+              "unknown_tokens": 0,
+              "total_tokens": 1774713,
+              "unknown_token_rate": 0.0,
+              "backend": "metamon"
+            }
+          }
+        },
+        "model_illegal_by_side": {
+          "player": 0,
+          "opponent": 0
+        },
+        "battles_path": "runs/20261019T151944-334ac4d6/battles.jsonl"
+      },
+      "epn20": {
+        "valid": true,
+        "attempted": 500,
+        "completed": 500,
+        "wins": 385,
+        "losses": 115,
+        "ties": 0,
+        "error_count": 0,
+        "errors": [],
+        "illegal_actions": 0,
+        "protocol_retries": {
+          "player": 0,
+          "opponent": 0
+        },
+        "protocol_retry_evidence": {
+          "player": [],
+          "opponent": []
+        },
+        "trapped_rejected_choices": 0,
+        "win_rate": 0.77,
+        "win_rate_wilson_95": [
+          0.7311377813252322,
+          0.8047450748255296
+        ],
+        "lead_source_counts": {
+          "model": 500
+        },
+        "top_lead_species": [
+          {
+            "species": "gliscor",
+            "count": 35
+          },
+          {
+            "species": "landorustherian",
+            "count": 33
+          },
+          {
+            "species": "samurotthisui",
+            "count": 30
+          },
+          {
+            "species": "ogerpon",
+            "count": 22
+          },
+          {
+            "species": "klefki",
+            "count": 20
+          },
+          {
+            "species": "cinderace",
+            "count": 19
+          },
+          {
+            "species": "glimmora",
+            "count": 16
+          },
+          {
+            "species": "meowscarada",
+            "count": 16
+          },
+          {
+            "species": "tornadustherian",
+            "count": 16
+          },
+          {
+            "species": "pelipper",
+            "count": 15
+          },
+          {
+            "species": "araquanid",
+            "count": 13
+          },
+          {
+            "species": "ninetales",
+            "count": 13
+          },
+          {
+            "species": "ribombee",
+            "count": 13
+          },
+          {
+            "species": "deoxysspeed",
+            "count": 12
+          },
+          {
+            "species": "dragapult",
+            "count": 12
+          },
+          {
+            "species": "grimmsnarl",
+            "count": 12
+          },
+          {
+            "species": "ragingbolt",
+            "count": 9
+          },
+          {
+            "species": "torkoal",
+            "count": 9
+          },
+          {
+            "species": "tyranitar",
+            "count": 9
+          },
+          {
+            "species": "primarina",
+            "count": 8
+          }
+        ],
+        "run_summary": {
+          "attempted": 500,
+          "completed": 500,
+          "wins": 385,
+          "losses": 115,
+          "ties": 0,
+          "error_count": 0,
+          "win_rate": 0.77,
+          "lose_rate": 0.23,
+          "tie_rate": 0.0,
+          "win_rate_wilson_95": [
+            0.7311377813252322,
+            0.8047450748255296
+          ],
+          "wall_time_s": 191.1523658229853,
+          "games_per_s": 2.6157144215678705,
+          "decisions_player": 19723,
+          "decisions_per_s": 103.17947107316623,
+          "lead_source_counts": {
+            "model": 500
+          },
+          "protocol_retry_counts": {
+            "player": 0,
+            "opponent": 0
+          },
+          "protocol_retry_evidence": {
+            "player": [],
+            "opponent": []
+          },
+          "config": {
+            "player": "neural:checkpoints/autoresearch/epn20",
+            "opponent": "neural:models/pokedecision-v2-pile",
+            "battles": 500,
+            "concurrent": 8,
+            "teams": "data/teams_w5/dev",
+            "timeout_s": 120.0,
+            "out": "runs",
+            "sample": false,
+            "temperature": 1.0,
+            "device": "cpu",
+            "team_preview_checkpoint": "third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt",
+            "team_preview_argmax": true,
+            "schedule_seed": 20261017,
+            "swap_team_pairs": true,
+            "alternate_challenger": true,
+            "opponent_sample": false,
+            "opponent_temperature": 1.0,
+            "opponent_team_preview_checkpoint": "third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt",
+            "opponent_team_preview_disabled": false,
+            "opponent_team_preview_argmax": true,
+            "opponent_type": null
+          },
+          "run_id": "20261019T152243-98fa2644",
+          "neural": {
+            "player": {
+              "decisions": 19701,
+              "fallbacks": {
+                "struggle": 20,
+                "recharge": 2
+              },
+              "lead_source_counts": {
+                "model": 500
+              },
+              "lead_species_counts": {
+                "pelipper": 15,
+                "lokix": 5,
+                "ogerpon": 22,
+                "primarina": 8,
+                "torkoal": 9,
+                "toxapex": 6,
+                "cinderace": 19,
+                "slowkinggalar": 4,
+                "deoxysspeed": 12,
+                "grimmsnarl": 12,
+                "ninetales": 13,
+                "glimmora": 16,
+                "hoopaunbound": 7,
+                "tinkaton": 4,
+                "tornadustherian": 16,
+                "landorustherian": 33,
+                "tyranitar": 9,
+                "gliscor": 35,
+                "samurotthisui": 30,
+                "garganacl": 6,
+                "rotomwash": 5,
+                "zapdos": 1,
+                "ribombee": 13,
+                "meowscarada": 16,
+                "darkrai": 4,
+                "ragingbolt": 9,
+                "heatran": 5,
+                "kyurem": 7,
+                "corviknight": 1,
+                "hippowdon": 1,
+                "araquanid": 13,
+                "cramorant": 5,
+                "irontreads": 3,
+                "ironvaliant": 3,
+                "dragapult": 12,
+                "greninja": 4,
+                "hatterene": 7,
+                "latios": 2,
+                "klefki": 20,
+                "azelf": 4,
+                "zamazenta": 4,
+                "volcanion": 7,
+                "munkidori": 4,
+                "porygon2": 1,
+                "garchomp": 5,
+                "ogerponwellspring": 7,
+                "scizor": 4,
+                "weavile": 4,
+                "moltres": 6,
+                "hydreigon": 3,
+                "ninetalesalola": 4,
+                "rillaboom": 5,
+                "sandyshocks": 1,
+                "indeedee": 2,
+                "greattusk": 2,
+                "pecharunt": 1,
+                "tinglu": 3,
+                "thundurustherian": 2,
+                "enamorus": 2,
+                "infernape": 2,
+                "golemalola": 1,
+                "gengar": 1,
+                "okidogi": 2,
+                "alomomola": 1,
+                "ironcrown": 1,
+                "crawdaunt": 1,
+                "tentacruel": 1,
+                "clefable": 1,
+                "azumarill": 1,
+                "wochien": 1,
+                "mukalola": 1,
+                "gholdengo": 1,
+                "empoleon": 1,
+                "magnezone": 1
+              },
+              "illegal_actions": 0,
+              "protocol_retries": 0,
+              "inference_ms_p50": 1.4756870223209262,
+              "inference_ms_p95": 1.8499919679015875,
+              "unknown_tokens": 0,
+              "total_tokens": 1713987,
+              "unknown_token_rate": 0.0,
+              "backend": "metamon"
+            },
+            "opponent": {
+              "decisions": 20599,
+              "fallbacks": {
+                "struggle": 52,
+                "recharge": 1
+              },
+              "lead_source_counts": {
+                "model": 500
+              },
+              "lead_species_counts": {
+                "ragingbolt": 9,
+                "landorustherian": 33,
+                "ogerponwellspring": 7,
+                "gliscor": 35,
+                "samurotthisui": 30,
+                "tornadustherian": 16,
+                "torkoal": 9,
+                "primarina": 8,
+                "kyurem": 7,
+                "rotomwash": 5,
+                "klefki": 20,
+                "grimmsnarl": 12,
+                "cramorant": 5,
+                "dragapult": 12,
+                "cinderace": 19,
+                "meowscarada": 16,
+                "heatran": 5,
+                "gholdengo": 1,
+                "greninja": 4,
+                "ogerpon": 22,
+                "pecharunt": 1,
+                "hydreigon": 3,
+                "latios": 2,
+                "ribombee": 13,
+                "scizor": 4,
+                "azelf": 4,
+                "araquanid": 13,
+                "alomomola": 1,
+                "weavile": 4,
+                "pelipper": 15,
+                "moltres": 6,
+                "tyranitar": 9,
+                "ironvaliant": 3,
+                "deoxysspeed": 12,
+                "slowkinggalar": 4,
+                "garganacl": 6,
+                "greattusk": 2,
+                "glimmora": 16,
+                "zamazenta": 4,
+                "ninetales": 13,
+                "tinkaton": 4,
+                "enamorus": 2,
+                "okidogi": 2,
+                "toxapex": 6,
+                "infernape": 2,
+                "volcanion": 7,
+                "irontreads": 3,
+                "sandyshocks": 1,
+                "lokix": 5,
+                "ninetalesalola": 4,
+                "hoopaunbound": 7,
+                "tinglu": 3,
+                "rillaboom": 5,
+                "thundurustherian": 2,
+                "munkidori": 4,
+                "darkrai": 4,
+                "empoleon": 1,
+                "clefable": 1,
+                "corviknight": 1,
+                "garchomp": 5,
+                "hippowdon": 1,
+                "hatterene": 7,
+                "indeedee": 2,
+                "wochien": 1,
+                "ironcrown": 1,
+                "tentacruel": 1,
+                "porygon2": 1,
+                "azumarill": 1,
+                "golemalola": 1,
+                "magnezone": 1,
+                "crawdaunt": 1,
+                "gengar": 1,
+                "zapdos": 1,
+                "mukalola": 1
+              },
+              "illegal_actions": 0,
+              "protocol_retries": 0,
+              "inference_ms_p50": 0.9556710137985647,
+              "inference_ms_p95": 1.255350123392418,
+              "unknown_tokens": 0,
+              "total_tokens": 1792113,
+              "unknown_token_rate": 0.0,
+              "backend": "metamon"
+            }
+          }
+        },
+        "model_illegal_by_side": {
+          "player": 0,
+          "opponent": 0
+        },
+        "battles_path": "runs/20261019T152243-98fa2644/battles.jsonl"
+      }
+    },
+    "Grunt": {
+      "P": {
+        "valid": true,
+        "attempted": 500,
+        "completed": 500,
+        "wins": 360,
+        "losses": 140,
+        "ties": 0,
+        "error_count": 0,
+        "errors": [],
+        "illegal_actions": 0,
+        "protocol_retries": {
+          "player": 0,
+          "opponent": 0
+        },
+        "protocol_retry_evidence": {
+          "player": [],
+          "opponent": []
+        },
+        "trapped_rejected_choices": 0,
+        "win_rate": 0.72,
+        "win_rate_wilson_95": [
+          0.6790813332381924,
+          0.7575639569587245
+        ],
+        "lead_source_counts": {
+          "model": 500
+        },
+        "top_lead_species": [
+          {
+            "species": "gliscor",
+            "count": 44
+          },
+          {
+            "species": "landorustherian",
+            "count": 38
+          },
+          {
+            "species": "ogerpon",
+            "count": 27
+          },
+          {
+            "species": "samurotthisui",
+            "count": 26
+          },
+          {
+            "species": "pelipper",
+            "count": 17
+          },
+          {
+            "species": "araquanid",
+            "count": 16
+          },
+          {
+            "species": "glimmora",
+            "count": 16
+          },
+          {
+            "species": "dragapult",
+            "count": 14
+          },
+          {
+            "species": "tornadustherian",
+            "count": 14
+          },
+          {
+            "species": "cinderace",
+            "count": 13
+          },
+          {
+            "species": "ribombee",
+            "count": 12
+          },
+          {
+            "species": "torkoal",
+            "count": 12
+          },
+          {
+            "species": "deoxysspeed",
+            "count": 11
+          },
+          {
+            "species": "klefki",
+            "count": 11
+          },
+          {
+            "species": "kyurem",
+            "count": 11
+          },
+          {
+            "species": "ninetales",
+            "count": 11
+          },
+          {
+            "species": "ninetalesalola",
+            "count": 10
+          },
+          {
+            "species": "ragingbolt",
+            "count": 10
+          },
+          {
+            "species": "lokix",
+            "count": 9
+          },
+          {
+            "species": "meowscarada",
+            "count": 9
+          }
+        ],
+        "run_summary": {
+          "attempted": 500,
+          "completed": 500,
+          "wins": 360,
+          "losses": 140,
+          "ties": 0,
+          "error_count": 0,
+          "win_rate": 0.72,
+          "lose_rate": 0.28,
+          "tie_rate": 0.0,
+          "win_rate_wilson_95": [
+            0.6790813332381924,
+            0.7575639569587245
+          ],
+          "wall_time_s": 76.87630402698414,
+          "games_per_s": 6.503954714374618,
+          "decisions_player": 15130,
+          "decisions_per_s": 196.80966965697596,
+          "lead_source_counts": {
+            "model": 500
+          },
+          "protocol_retry_counts": {
+            "player": 0,
+            "opponent": 0
+          },
+          "protocol_retry_evidence": {
+            "player": [],
+            "opponent": []
+          },
+          "config": {
+            "player": "neural:models/pokedecision-v2-pile",
+            "opponent": "Grunt",
+            "battles": 500,
+            "concurrent": 8,
+            "teams": "data/teams_w5/dev",
+            "timeout_s": 120.0,
+            "out": "runs",
+            "sample": false,
+            "temperature": 1.0,
+            "device": "cpu",
+            "team_preview_checkpoint": "third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt",
+            "team_preview_argmax": true,
+            "schedule_seed": 20261018,
+            "swap_team_pairs": true,
+            "alternate_challenger": true,
+            "opponent_sample": false,
+            "opponent_temperature": 1.0,
+            "opponent_team_preview_checkpoint": null,
+            "opponent_team_preview_disabled": true,
+            "opponent_team_preview_argmax": true,
+            "opponent_type": null
+          },
+          "run_id": "20261019T152554-dd23167a",
+          "neural": {
+            "player": {
+              "decisions": 15112,
+              "fallbacks": {
+                "struggle": 17,
+                "recharge": 1
+              },
+              "lead_source_counts": {
+                "model": 500
+              },
+              "lead_species_counts": {
+                "tornadustherian": 14,
+                "hoopaunbound": 8,
+                "ragingbolt": 10,
+                "dragapult": 14,
+                "araquanid": 16,
+                "golemalola": 7,
+                "gliscor": 44,
+                "darkrai": 5,
+                "garganacl": 7,
+                "ursaluna": 1,
+                "ogerpon": 27,
+                "zapdos": 3,
+                "grimmsnarl": 7,
+                "landorustherian": 38,
+                "greattusk": 7,
+                "okidogi": 2,
+                "cinderace": 13,
+                "regieleki": 1,
+                "mukalola": 3,
+                "kyurem": 11,
+                "ribombee": 12,
+                "torkoal": 12,
+                "deoxysspeed": 11,
+                "moltres": 4,
+                "ninetalesalola": 10,
+                "glimmora": 16,
+                "latios": 2,
+                "pelipper": 17,
+                "slowkinggalar": 9,
+                "ninetales": 11,
+                "samurotthisui": 26,
+                "rillaboom": 4,
+                "deoxysdefense": 2,
+                "volcanion": 8,
+                "clefable": 2,
+                "ogerponwellspring": 7,
+                "lokix": 9,
+                "tyranitar": 3,
+                "wochien": 2,
+                "ironcrown": 4,
+                "meowscarada": 9,
+                "heatran": 4,
+                "kingambit": 2,
+                "cramorant": 1,
+                "klefki": 11,
+                "scizor": 4,
+                "tinkaton": 1,
+                "tinglu": 5,
+                "jirachi": 1,
+                "metagross": 1,
+                "toxapex": 3,
+                "rotomwash": 5,
+                "thundurustherian": 2,
+                "houndoom": 2,
+                "alomomola": 2,
+                "irontreads": 2,
+                "greninja": 4,
+                "gengar": 2,
+                "primarina": 3,
+                "infernape": 1,
+                "hydreigon": 1,
+                "hippowdon": 1,
+                "enamorus": 2,
+                "flygon": 2,
+                "keldeoresolute": 1,
+                "hatterene": 2,
+                "gastrodon": 1,
+                "weavile": 2,
+                "zamazenta": 2,
+                "azelf": 2,
+                "corviknight": 1,
+                "gholdengo": 2,
+                "garchomp": 4,
+                "ironvaliant": 1,
+                "weezinggalar": 1,
+                "ogerponcornerstone": 1
+              },
+              "illegal_actions": 0,
+              "protocol_retries": 0,
+              "inference_ms_p50": 1.0390795359853655,
+              "inference_ms_p95": 1.3125610072165725,
+              "unknown_tokens": 0,
+              "total_tokens": 1314744,
+              "unknown_token_rate": 0.0,
+              "backend": "metamon"
+            }
+          }
+        },
+        "model_illegal_by_side": {
+          "player": 0
+        },
+        "battles_path": "runs/20261019T152554-dd23167a/battles.jsonl"
+      },
+      "epn20": {
+        "valid": true,
+        "attempted": 500,
+        "completed": 500,
+        "wins": 462,
+        "losses": 38,
+        "ties": 0,
+        "error_count": 0,
+        "errors": [],
+        "illegal_actions": 0,
+        "protocol_retries": {
+          "player": 0,
+          "opponent": 0
+        },
+        "protocol_retry_evidence": {
+          "player": [],
+          "opponent": []
+        },
+        "trapped_rejected_choices": 0,
+        "win_rate": 0.924,
+        "win_rate_wilson_95": [
+          0.8974035863260316,
+          0.9441309729625723
+        ],
+        "lead_source_counts": {
+          "model": 500
+        },
+        "top_lead_species": [
+          {
+            "species": "gliscor",
+            "count": 44
+          },
+          {
+            "species": "landorustherian",
+            "count": 38
+          },
+          {
+            "species": "ogerpon",
+            "count": 27
+          },
+          {
+            "species": "samurotthisui",
+            "count": 26
+          },
+          {
+            "species": "pelipper",
+            "count": 17
+          },
+          {
+            "species": "araquanid",
+            "count": 16
+          },
+          {
+            "species": "glimmora",
+            "count": 16
+          },
+          {
+            "species": "dragapult",
+            "count": 14
+          },
+          {
+            "species": "tornadustherian",
+            "count": 14
+          },
+          {
+            "species": "cinderace",
+            "count": 13
+          },
+          {
+            "species": "ribombee",
+            "count": 12
+          },
+          {
+            "species": "torkoal",
+            "count": 12
+          },
+          {
+            "species": "deoxysspeed",
+            "count": 11
+          },
+          {
+            "species": "klefki",
+            "count": 11
+          },
+          {
+            "species": "kyurem",
+            "count": 11
+          },
+          {
+            "species": "ninetales",
+            "count": 11
+          },
+          {
+            "species": "ninetalesalola",
+            "count": 10
+          },
+          {
+            "species": "ragingbolt",
+            "count": 10
+          },
+          {
+            "species": "lokix",
+            "count": 9
+          },
+          {
+            "species": "meowscarada",
+            "count": 9
+          }
+        ],
+        "run_summary": {
+          "attempted": 500,
+          "completed": 500,
+          "wins": 462,
+          "losses": 38,
+          "ties": 0,
+          "error_count": 0,
+          "win_rate": 0.924,
+          "lose_rate": 0.076,
+          "tie_rate": 0.0,
+          "win_rate_wilson_95": [
+            0.8974035863260316,
+            0.9441309729625723
+          ],
+          "wall_time_s": 72.98122864897596,
+          "games_per_s": 6.851076766669586,
+          "decisions_player": 12555,
+          "decisions_per_s": 172.03053761107333,
+          "lead_source_counts": {
+            "model": 500
+          },
+          "protocol_retry_counts": {
+            "player": 0,
+            "opponent": 0
+          },
+          "protocol_retry_evidence": {
+            "player": [],
+            "opponent": []
+          },
+          "config": {
+            "player": "neural:checkpoints/autoresearch/epn20",
+            "opponent": "Grunt",
+            "battles": 500,
+            "concurrent": 8,
+            "teams": "data/teams_w5/dev",
+            "timeout_s": 120.0,
+            "out": "runs",
+            "sample": false,
+            "temperature": 1.0,
+            "device": "cpu",
+            "team_preview_checkpoint": "third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt",
+            "team_preview_argmax": true,
+            "schedule_seed": 20261018,
+            "swap_team_pairs": true,
+            "alternate_challenger": true,
+            "opponent_sample": false,
+            "opponent_temperature": 1.0,
+            "opponent_team_preview_checkpoint": null,
+            "opponent_team_preview_disabled": true,
+            "opponent_team_preview_argmax": true,
+            "opponent_type": null
+          },
+          "run_id": "20261019T152711-b733030b",
+          "neural": {
+            "player": {
+              "decisions": 12554,
+              "fallbacks": {
+                "struggle": 1
+              },
+              "lead_source_counts": {
+                "model": 500
+              },
+              "lead_species_counts": {
+                "tornadustherian": 14,
+                "ogerpon": 27,
+                "samurotthisui": 26,
+                "dragapult": 14,
+                "hoopaunbound": 8,
+                "gliscor": 44,
+                "kyurem": 11,
+                "meowscarada": 9,
+                "torkoal": 12,
+                "irontreads": 2,
+                "deoxysspeed": 11,
+                "landorustherian": 38,
+                "flygon": 2,
+                "infernape": 1,
+                "zamazenta": 2,
+                "pelipper": 17,
+                "glimmora": 16,
+                "moltres": 4,
+                "garchomp": 4,
+                "araquanid": 16,
+                "scizor": 4,
+                "klefki": 11,
+                "golemalola": 7,
+                "ninetalesalola": 10,
+                "mukalola": 3,
+                "tyranitar": 3,
+                "ribombee": 12,
+                "slowkinggalar": 9,
+                "garganacl": 7,
+                "ninetales": 11,
+                "alomomola": 2,
+                "volcanion": 8,
+                "zapdos": 3,
+                "gholdengo": 2,
+                "greattusk": 7,
+                "lokix": 9,
+                "hatterene": 2,
+                "darkrai": 5,
+                "wochien": 2,
+                "ironcrown": 4,
+                "heatran": 4,
+                "kingambit": 2,
+                "grimmsnarl": 7,
+                "latios": 2,
+                "ragingbolt": 10,
+                "cramorant": 1,
+                "rotomwash": 5,
+                "thundurustherian": 2,
+                "cinderace": 13,
+                "tinglu": 5,
+                "keldeoresolute": 1,
+                "rillaboom": 4,
+                "toxapex": 3,
+                "enamorus": 2,
+                "weezinggalar": 1,
+                "hippowdon": 1,
+                "azelf": 2,
+                "tinkaton": 1,
+                "houndoom": 2,
+                "gengar": 2,
+                "greninja": 4,
+                "ogerponwellspring": 7,
+                "metagross": 1,
+                "ogerponcornerstone": 1,
+                "regieleki": 1,
+                "hydreigon": 1,
+                "primarina": 3,
+                "deoxysdefense": 2,
+                "weavile": 2,
+                "ursaluna": 1,
+                "jirachi": 1,
+                "ironvaliant": 1,
+                "gastrodon": 1,
+                "okidogi": 2,
+                "clefable": 2,
+                "corviknight": 1
+              },
+              "illegal_actions": 0,
+              "protocol_retries": 0,
+              "inference_ms_p50": 1.5506515046581626,
+              "inference_ms_p95": 1.9069687579758452,
+              "unknown_tokens": 0,
+              "total_tokens": 1092198,
+              "unknown_token_rate": 0.0,
+              "backend": "metamon"
+            }
+          }
+        },
+        "model_illegal_by_side": {
+          "player": 0
+        },
+        "battles_path": "runs/20261019T152711-b733030b/battles.jsonl"
+      }
+    },
+    "GymLeader": {
+      "P": {
+        "valid": true,
+        "attempted": 500,
+        "completed": 500,
+        "wins": 357,
+        "losses": 143,
+        "ties": 0,
+        "error_count": 0,
+        "errors": [],
+        "illegal_actions": 0,
+        "protocol_retries": {
+          "player": 0,
+          "opponent": 0
+        },
+        "protocol_retry_evidence": {
+          "player": [],
+          "opponent": []
+        },
+        "trapped_rejected_choices": 0,
+        "win_rate": 0.714,
+        "win_rate_wilson_95": [
+          0.6728768354985485,
+          0.7518599467839072
+        ],
+        "lead_source_counts": {
+          "model": 500
+        },
+        "top_lead_species": [
+          {
+            "species": "gliscor",
+            "count": 43
+          },
+          {
+            "species": "landorustherian",
+            "count": 35
+          },
+          {
+            "species": "pelipper",
+            "count": 23
+          },
+          {
+            "species": "araquanid",
+            "count": 21
+          },
+          {
+            "species": "glimmora",
+            "count": 21
+          },
+          {
+            "species": "samurotthisui",
+            "count": 19
+          },
+          {
+            "species": "cinderace",
+            "count": 17
+          },
+          {
+            "species": "ogerpon",
+            "count": 16
+          },
+          {
+            "species": "dragapult",
+            "count": 15
+          },
+          {
+            "species": "klefki",
+            "count": 13
+          },
+          {
+            "species": "ribombee",
+            "count": 13
+          },
+          {
+            "species": "deoxysspeed",
+            "count": 11
+          },
+          {
+            "species": "ragingbolt",
+            "count": 11
+          },
+          {
+            "species": "tornadustherian",
+            "count": 11
+          },
+          {
+            "species": "volcanion",
+            "count": 11
+          },
+          {
+            "species": "kyurem",
+            "count": 9
+          },
+          {
+            "species": "ninetales",
+            "count": 9
+          },
+          {
+            "species": "torkoal",
+            "count": 9
+          },
+          {
+            "species": "tyranitar",
+            "count": 9
+          },
+          {
+            "species": "grimmsnarl",
+            "count": 8
+          }
+        ],
+        "run_summary": {
+          "attempted": 500,
+          "completed": 500,
+          "wins": 357,
+          "losses": 143,
+          "ties": 0,
+          "error_count": 0,
+          "win_rate": 0.714,
+          "lose_rate": 0.286,
+          "tie_rate": 0.0,
+          "win_rate_wilson_95": [
+            0.6728768354985485,
+            0.7518599467839072
+          ],
+          "wall_time_s": 81.12884752597893,
+          "games_per_s": 6.163035902117196,
+          "decisions_player": 15884,
+          "decisions_per_s": 195.7873245384591,
+          "lead_source_counts": {
+            "model": 500
+          },
+          "protocol_retry_counts": {
+            "player": 0,
+            "opponent": 0
+          },
+          "protocol_retry_evidence": {
+            "player": [],
+            "opponent": []
+          },
+          "config": {
+            "player": "neural:models/pokedecision-v2-pile",
+            "opponent": "GymLeader",
+            "battles": 500,
+            "concurrent": 8,
+            "teams": "data/teams_w5/dev",
+            "timeout_s": 120.0,
+            "out": "runs",
+            "sample": false,
+            "temperature": 1.0,
+            "device": "cpu",
+            "team_preview_checkpoint": "third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt",
+            "team_preview_argmax": true,
+            "schedule_seed": 20261019,
+            "swap_team_pairs": true,
+            "alternate_challenger": true,
+            "opponent_sample": false,
+            "opponent_temperature": 1.0,
+            "opponent_team_preview_checkpoint": null,
+            "opponent_team_preview_disabled": true,
+            "opponent_team_preview_argmax": true,
+            "opponent_type": null
+          },
+          "run_id": "20261019T152824-f9231dd7",
+          "neural": {
+            "player": {
+              "decisions": 15858,
+              "fallbacks": {
+                "struggle": 26
+              },
+              "lead_source_counts": {
+                "model": 500
+              },
+              "lead_species_counts": {
+                "samurotthisui": 19,
+                "torkoal": 9,
+                "kyurem": 9,
+                "ninetales": 9,
+                "cramorant": 2,
+                "volcanion": 11,
+                "cinderace": 17,
+                "tyranitar": 9,
+                "gliscor": 43,
+                "golemalola": 4,
+                "ribombee": 13,
+                "pelipper": 23,
+                "lokix": 6,
+                "hatterene": 8,
+                "araquanid": 21,
+                "ogerpon": 16,
+                "latios": 1,
+                "grimmsnarl": 8,
+                "moltres": 3,
+                "ogerponwellspring": 5,
+                "landorustherian": 35,
+                "scizor": 7,
+                "rotomwash": 8,
+                "tornadustherian": 11,
+                "walkingwake": 2,
+                "irontreads": 4,
+                "klefki": 13,
+                "deoxysspeed": 11,
+                "glimmora": 21,
+                "darkrai": 7,
+                "deoxysdefense": 1,
+                "ragingbolt": 11,
+                "azelf": 4,
+                "dragapult": 15,
+                "munkidori": 3,
+                "tinkaton": 2,
+                "meowscarada": 5,
+                "rillaboom": 4,
+                "slowkinggalar": 6,
+                "empoleon": 5,
+                "thundurustherian": 3,
+                "clefable": 1,
+                "cresselia": 1,
+                "hydreigon": 2,
+                "garchomp": 5,
+                "tinglu": 5,
+                "zamazenta": 2,
+                "alomomola": 4,
+                "heatran": 2,
+                "ironcrown": 3,
+                "greninja": 3,
+                "flygon": 3,
+                "zapdos": 3,
+                "garganacl": 5,
+                "infernape": 2,
+                "weavile": 5,
+                "ninetalesalola": 6,
+                "gholdengo": 5,
+                "primarina": 3,
+                "magnezone": 2,
+                "ironvaliant": 2,
+                "pecharunt": 1,
+                "enamorus": 1,
+                "greattusk": 3,
+                "porygon2": 2,
+                "gengar": 3,
+                "hoopaunbound": 3,
+                "okidogi": 2,
+                "indeedee": 1,
+                "mukalola": 2,
+                "dragonite": 1,
+                "toedscruel": 1,
+                "duraludon": 1,
+                "keldeoresolute": 1
+              },
+              "illegal_actions": 0,
+              "protocol_retries": 0,
+              "inference_ms_p50": 1.0285655152983963,
+              "inference_ms_p95": 1.3049441389739513,
+              "unknown_tokens": 0,
+              "total_tokens": 1379646,
+              "unknown_token_rate": 0.0,
+              "backend": "metamon"
+            }
+          }
+        },
+        "model_illegal_by_side": {
+          "player": 0
+        },
+        "battles_path": "runs/20261019T152824-f9231dd7/battles.jsonl"
+      },
+      "epn20": {
+        "valid": true,
+        "attempted": 500,
+        "completed": 500,
+        "wins": 472,
+        "losses": 28,
+        "ties": 0,
+        "error_count": 0,
+        "errors": [],
+        "illegal_actions": 0,
+        "protocol_retries": {
+          "player": 0,
+          "opponent": 0
+        },
+        "protocol_retry_evidence": {
+          "player": [],
+          "opponent": []
+        },
+        "trapped_rejected_choices": 0,
+        "win_rate": 0.944,
+        "win_rate_wilson_95": [
+          0.920255206353293,
+          0.9609743793168485
+        ],
+        "lead_source_counts": {
+          "model": 500
+        },
+        "top_lead_species": [
+          {
+            "species": "gliscor",
+            "count": 43
+          },
+          {
+            "species": "landorustherian",
+            "count": 35
+          },
+          {
+            "species": "pelipper",
+            "count": 23
+          },
+          {
+            "species": "araquanid",
+            "count": 21
+          },
+          {
+            "species": "glimmora",
+            "count": 21
+          },
+          {
+            "species": "samurotthisui",
+            "count": 19
+          },
+          {
+            "species": "cinderace",
+            "count": 17
+          },
+          {
+            "species": "ogerpon",
+            "count": 16
+          },
+          {
+            "species": "dragapult",
+            "count": 15
+          },
+          {
+            "species": "klefki",
+            "count": 13
+          },
+          {
+            "species": "ribombee",
+            "count": 13
+          },
+          {
+            "species": "deoxysspeed",
+            "count": 11
+          },
+          {
+            "species": "ragingbolt",
+            "count": 11
+          },
+          {
+            "species": "tornadustherian",
+            "count": 11
+          },
+          {
+            "species": "volcanion",
+            "count": 11
+          },
+          {
+            "species": "kyurem",
+            "count": 9
+          },
+          {
+            "species": "ninetales",
+            "count": 9
+          },
+          {
+            "species": "torkoal",
+            "count": 9
+          },
+          {
+            "species": "tyranitar",
+            "count": 9
+          },
+          {
+            "species": "grimmsnarl",
+            "count": 8
+          }
+        ],
+        "run_summary": {
+          "attempted": 500,
+          "completed": 500,
+          "wins": 472,
+          "losses": 28,
+          "ties": 0,
+          "error_count": 0,
+          "win_rate": 0.944,
+          "lose_rate": 0.056,
+          "tie_rate": 0.0,
+          "win_rate_wilson_95": [
+            0.920255206353293,
+            0.9609743793168485
+          ],
+          "wall_time_s": 74.77798983099638,
+          "games_per_s": 6.686459493362096,
+          "decisions_player": 12552,
+          "decisions_per_s": 167.85687912136206,
+          "lead_source_counts": {
+            "model": 500
+          },
+          "protocol_retry_counts": {
+            "player": 0,
+            "opponent": 0
+          },
+          "protocol_retry_evidence": {
+            "player": [],
+            "opponent": []
+          },
+          "config": {
+            "player": "neural:checkpoints/autoresearch/epn20",
+            "opponent": "GymLeader",
+            "battles": 500,
+            "concurrent": 8,
+            "teams": "data/teams_w5/dev",
+            "timeout_s": 120.0,
+            "out": "runs",
+            "sample": false,
+            "temperature": 1.0,
+            "device": "cpu",
+            "team_preview_checkpoint": "third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt",
+            "team_preview_argmax": true,
+            "schedule_seed": 20261019,
+            "swap_team_pairs": true,
+            "alternate_challenger": true,
+            "opponent_sample": false,
+            "opponent_temperature": 1.0,
+            "opponent_team_preview_checkpoint": null,
+            "opponent_team_preview_disabled": true,
+            "opponent_team_preview_argmax": true,
+            "opponent_type": null
+          },
+          "run_id": "20261019T152945-fd05994f",
+          "neural": {
+            "player": {
+              "decisions": 12541,
+              "fallbacks": {
+                "struggle": 10,
+                "recharge": 1
+              },
+              "lead_source_counts": {
+                "model": 500
+              },
+              "lead_species_counts": {
+                "samurotthisui": 19,
+                "torkoal": 9,
+                "pelipper": 23,
+                "gliscor": 43,
+                "araquanid": 21,
+                "tornadustherian": 11,
+                "deoxysspeed": 11,
+                "gholdengo": 5,
+                "ribombee": 13,
+                "kyurem": 9,
+                "ogerpon": 16,
+                "ogerponwellspring": 5,
+                "glimmora": 21,
+                "latios": 1,
+                "cinderace": 17,
+                "landorustherian": 35,
+                "moltres": 3,
+                "hydreigon": 2,
+                "darkrai": 7,
+                "tyranitar": 9,
+                "garganacl": 5,
+                "heatran": 2,
+                "ninetalesalola": 6,
+                "munkidori": 3,
+                "grimmsnarl": 8,
+                "scizor": 7,
+                "greattusk": 3,
+                "rotomwash": 8,
+                "ragingbolt": 11,
+                "dragapult": 15,
+                "weavile": 5,
+                "cramorant": 2,
+                "volcanion": 11,
+                "azelf": 4,
+                "garchomp": 5,
+                "tinkaton": 2,
+                "alomomola": 4,
+                "meowscarada": 5,
+                "lokix": 6,
+                "toedscruel": 1,
+                "thundurustherian": 3,
+                "empoleon": 5,
+                "tinglu": 5,
+                "mukalola": 2,
+                "rillaboom": 4,
+                "golemalola": 4,
+                "primarina": 3,
+                "klefki": 13,
+                "slowkinggalar": 6,
+                "hatterene": 8,
+                "gengar": 3,
+                "ironcrown": 3,
+                "hoopaunbound": 3,
+                "ninetales": 9,
+                "duraludon": 1,
+                "walkingwake": 2,
+                "flygon": 3,
+                "infernape": 2,
+                "pecharunt": 1,
+                "okidogi": 2,
+                "zamazenta": 2,
+                "zapdos": 3,
+                "magnezone": 2,
+                "porygon2": 2,
+                "irontreads": 4,
+                "ironvaliant": 2,
+                "clefable": 1,
+                "cresselia": 1,
+                "greninja": 3,
+                "dragonite": 1,
+                "indeedee": 1,
+                "enamorus": 1,
+                "deoxysdefense": 1,
+                "keldeoresolute": 1
+              },
+              "illegal_actions": 0,
+              "protocol_retries": 0,
+              "inference_ms_p50": 1.562437042593956,
+              "inference_ms_p95": 1.928685000166297,
+              "unknown_tokens": 0,
+              "total_tokens": 1091067,
+              "unknown_token_rate": 0.0,
+              "backend": "metamon"
+            }
+          }
+        },
+        "model_illegal_by_side": {
+          "player": 0
+        },
+        "battles_path": "runs/20261019T152945-fd05994f/battles.jsonl"
+      }
+    }
+  },
+  "comparisons": {
+    "epn20-P": {
+      "P": {
+        "win_rate_difference": 0.28,
+        "bootstrap_95": [
+          0.226,
+          0.332
+        ],
+        "verdict": "positive",
+        "clusters": 250,
+        "seed": 20271017,
+        "resamples": 5000
+      },
+      "Grunt": {
+        "win_rate_difference": 0.204,
+        "bootstrap_95": [
+          0.162,
+          0.246
+        ],
+        "verdict": "positive",
+        "clusters": 250,
+        "seed": 20271018,
+        "resamples": 5000
+      },
+      "GymLeader": {
+        "win_rate_difference": 0.23,
+        "bootstrap_95": [
+          0.19195,
+          0.27
+        ],
+        "verdict": "positive",
+        "clusters": 250,
+        "seed": 20271019,
+        "resamples": 5000
+      }
+    }
+  },
+  "wall_time_s": 677.929165575013
+}

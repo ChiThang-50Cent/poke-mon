@@ -1,0 +1,16 @@
+{
+  "win_rate_difference": 0.238,
+  "bootstrap_95": [
+    0.21266666666666667,
+    0.264
+  ],
+  "verdict": "positive",
+  "clusters": 750,
+  "strata": {
+    "P": 250,
+    "Grunt": 250,
+    "GymLeader": 250
+  },
+  "seed": 20281017,
+  "resamples": 10000
+}

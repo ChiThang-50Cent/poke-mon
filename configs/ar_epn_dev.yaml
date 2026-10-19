@@ -1,0 +1,27 @@
+# Autoresearch check: entity-pointer network EPN (1.01M, pile only, 20 min from scratch) vs champion P,
+# paired, dev only. Tests whether the offline val_nll gain (1.18 -> EPN) shows up in play.
+# Primary: vs P. Secondary: Grunt, GymLeader.
+reference_arm: P
+pool: data/teams_w5/dev
+battles: 500
+arms:
+  P:
+    model_dir: models/pokedecision-v2-pile
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+  epn20:
+    model_dir: checkpoints/autoresearch/epn20
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+opponents:
+  P:
+    model_dir: models/pokedecision-v2-pile
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+  Grunt:
+    baseline: Grunt
+  GymLeader:
+    baseline: GymLeader

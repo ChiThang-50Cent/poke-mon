@@ -1,0 +1,81 @@
+{
+  "epn20": {
+    "completed": 500,
+    "wins": 381,
+    "win_rate": 0.762,
+    "win_rate_wilson_95": [
+      0.7227638647789387,
+      0.797240980819208
+    ],
+    "error_count": 0,
+    "illegal_actions": 0,
+    "valid": true,
+    "metamon": {
+      "model": "Minikazam",
+      "checkpoint": 40,
+      "checkpoint_path": "/home/thangnc/code/en-tutor/.cache/metamon/pretrained_models/blobs/7a/7ace74fd0a138f400d1bd6191a89bf545250d69c31319c9130f4d65bc5872f60",
+      "checkpoint_sha256": "dda9cf7752d68343992987319a96db0a4c87f011ae6fedbb0521e46f0385cc88",
+      "backend": "pokeagent",
+      "temperature": 1.0,
+      "observation_space": "PACOpponentMoveObservationSpace"
+    },
+    "neural": {
+      "model_dir": "checkpoints/autoresearch/epn20",
+      "checkpoint_sha256": "e3ea5e6fab905537823b69e6424533e70b3af17ba2828aeab688cefb492a4409",
+      "backend": "metamon",
+      "illegal_actions": 0,
+      "fallbacks": {
+        "struggle": 20,
+        "recharge": 1
+      }
+    }
+  },
+  "P": {
+    "completed": 500,
+    "wins": 247,
+    "win_rate": 0.494,
+    "win_rate_wilson_95": [
+      0.45039013091903213,
+      0.5377013611665066
+    ],
+    "error_count": 0,
+    "illegal_actions": 0,
+    "valid": true,
+    "metamon": {
+      "model": "Minikazam",
+      "checkpoint": 40,
+      "checkpoint_path": "/home/thangnc/code/en-tutor/.cache/metamon/pretrained_models/blobs/7a/7ace74fd0a138f400d1bd6191a89bf545250d69c31319c9130f4d65bc5872f60",
+      "checkpoint_sha256": "dda9cf7752d68343992987319a96db0a4c87f011ae6fedbb0521e46f0385cc88",
+      "backend": "pokeagent",
+      "temperature": 1.0,
+      "observation_space": "PACOpponentMoveObservationSpace"
+    },
+    "neural": {
+      "model_dir": "models/pokedecision-v2-pile",
+      "checkpoint_sha256": "b6834838c149415d9ba833c6bf77f4aed4e500077dd3fa00d3695bf73076962c",
+      "backend": "metamon",
+      "illegal_actions": 0,
+      "fallbacks": {
+        "recharge": 4,
+        "struggle": 32
+      }
+    }
+  },
+  "epn20-P": {
+    "win_rate_difference": 0.268,
+    "bootstrap_95": [
+      0.214,
+      0.322
+    ],
+    "verdict": "positive",
+    "clusters": 250,
+    "seed": 20261016,
+    "resamples": 5000
+  },
+  "config": {
+    "teams": "data/teams_w5/dev",
+    "seed": 20261018,
+    "battles": 500,
+    "metamon": "Minikazam ckpt 40, temperature 1.0 (sampled), backend pokeagent, CPU"
+  }
+}
