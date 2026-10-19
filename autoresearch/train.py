@@ -20,6 +20,7 @@ class Config:
     d_model: int = 96
     hidden_size: int = 384
     numeric_size: int = 128
+    flatten_dim: int = 24
     value_head: bool = True
 
 
@@ -35,8 +36,10 @@ class Policy(nn.Module):
         self.numeric = nn.Sequential(
             nn.Linear(48, config.numeric_size), nn.GELU(),
             nn.Linear(config.numeric_size, config.numeric_size), nn.GELU())
+        self.token_flatten = nn.Linear(config.d_model, config.flatten_dim)
         self.fusion = nn.Sequential(
-            nn.Linear(2 * config.d_model + config.numeric_size, config.hidden_size), nn.GELU())
+            nn.Linear(config.token_len * config.flatten_dim + config.numeric_size,
+                      config.hidden_size), nn.GELU())
         self.memory = nn.GRU(config.hidden_size, config.hidden_size, batch_first=True)
         self.policy = nn.Linear(config.hidden_size, 13)
         self.value = nn.Linear(config.hidden_size, 1)
@@ -44,7 +47,7 @@ class Policy(nn.Module):
     def features(self, tokens, numbers, hidden):
         positions = torch.arange(self.config.token_len, device=tokens.device)
         embedded = F.gelu(self.token_projection(self.tokens(tokens) + self.fields(positions)))
-        categorical = torch.cat((embedded.mean(-2), embedded.amax(-2)), -1)
+        categorical = self.token_flatten(embedded).flatten(-2)  # keeps each field's slot
         numerical = self.numeric((numbers - self.feature_mean) / self.feature_std)
         fused = self.fusion(torch.cat((categorical, numerical), -1))
         return self.memory(fused, hidden)
