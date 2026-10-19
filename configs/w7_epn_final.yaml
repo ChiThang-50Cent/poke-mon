@@ -1,0 +1,39 @@
+# W7 EPN one-shot final: checkpoints/epn/epn20 (EPN, 1.01M) vs P on the FRESH heldout pool data/teams_w7/heldout
+# (build_teamset.py --w5-fresh-heldout --seed 20262401, disjoint from every used and spent pool).
+# Same design as the dev run (configs/ar_epn_dev.yaml): 500 battles per cell =
+# 250 team pairs, both directions, alternating challenger, greedy, same preview model.
+# Run:  uv run python scripts/evaluate_w5.py --config configs/w7_epn_final.yaml --final \
+#         --seed 20262411 --out reports/w7_epn_final_benchmark.json
+# Gate (pre-registered, reports/w6_0_distill_feasibility.md §5): promote only if the pooled CI
+# (all three opponents, team-pair clusters) > 0, the vs-P CI > 0, no opponent CI entirely < 0,
+# illegal_actions = 0 and battle errors = 0.
+run:
+  final: true
+  release_manifest: reports/w7_epn_final_manifest.json
+  label: W7 EPN final bundle (epn vs P)
+  code_commit: 7c5b5b1
+  seed: 20262411
+reference_arm: P
+pool: data/teams_w7/heldout
+battles: 500
+arms:
+  P:
+    model_dir: models/pokedecision-v2-pile
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+  epn:
+    model_dir: checkpoints/epn/epn20
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+opponents:
+  P:
+    model_dir: models/pokedecision-v2-pile
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+  Grunt:
+    baseline: Grunt
+  GymLeader:
+    baseline: GymLeader
