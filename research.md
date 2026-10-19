@@ -219,7 +219,7 @@ Số liệu BS1.2 là dev, và dev pool đã dùng cho QA/requalification nên +
 - **Kim chỉ nam:** *fast policy strength improvement per unit of training compute*. Mỗi lần tốn tài nguyên train phải biết model có ra quyết định tốt hơn không (paired Δ vs C, không search) và tốn bao nhiêu (GPU-h, CPU-h collection) để đạt được.
 - **Chỉ số chính:** sức chơi của neural policy ở chế độ một lần inference, không search. Calibration hay accuracy tốt hơn không thay được bằng chứng chơi mạnh hơn (W4.5: D có value metrics tốt hơn C nhưng không mạnh hơn).
 - **Search là teacher, không phải sản phẩm:** không tối ưu search latency lúc inference. Mục tiêu riêng: *optimize teacher quality and cost per useful training label*. Chưa tối ưu ngay; chỉ theo dõi coverage, confidence, thời gian tạo nhãn và tỷ lệ nhãn dùng được trong mọi collection.
-- **Giữ C:** không đổi GRU sang Transformer, không tăng tham số khi chưa có bằng chứng bottleneck.
+- **Model nhỏ, kiến trúc theo cấu trúc trận đấu (quyết định của user):** được đổi kiến trúc, nhưng tối đa 4,7M tham số (nhỏ hơn Minikazam, agent nhỏ nhất của Metamon). Sức chơi phải ít nhất ngang model tham chiếu của Metamon. Không scale model như paper tham khảo.
 - **Một biến mỗi lần:** không đổi encoder, policy head và search trong cùng thí nghiệm.
 - **Nhánh fail thì đóng** hoặc đổi giả thuyết; không tự động mở nhánh training lớn hơn để cứu metric.
 - Thứ tự dưới đây là thứ tự giả thuyết, không phải cam kết làm hết.
