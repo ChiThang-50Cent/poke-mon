@@ -134,7 +134,7 @@ def build_model() -> Policy:
 
 LR = 1e-3
 WEIGHT_DECAY = 1e-4
-BATCH = 16
+BATCH = 32
 VALUE_WEIGHT = 0.5
 GRAD_CLIP = 1.0
 WARMDOWN = 0.5   # fraction of the budget spent decaying LR linearly to 0
