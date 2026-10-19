@@ -79,6 +79,12 @@ class Policy(nn.Module):
         self.move = EntityEncoder(3, 3, config)
         self.bench = EntityEncoder(8, 1, config)
         self.context = EntityEncoder(len(GLOBAL_TOKENS), len(GLOBAL_NUMBERS), config)
+        # kinds: context, ours, opponent, move x4, bench x5 (shared kind ids keep slot symmetry)
+        self.register_buffer("kind_ids", torch.tensor([0, 1, 2] + [3] * 4 + [4] * 5),
+                             persistent=False)
+        self.kinds = nn.Embedding(5, config.d_entity)
+        self.mix = nn.TransformerEncoderLayer(config.d_entity, 4, 2 * config.d_entity,
+                                              dropout=0.0, batch_first=True, norm_first=True)
         self.fusion = nn.Sequential(
             nn.Linear(5 * config.d_entity, config.hidden_size), nn.GELU())
         self.memory = nn.GRU(config.hidden_size, config.hidden_size, batch_first=True)
@@ -95,6 +101,12 @@ class Policy(nn.Module):
         moves = self.move(emb[..., self.move_tokens, :], num[..., self.move_numbers])
         bench = self.bench(emb[..., self.bench_tokens, :], num[..., self.bench_numbers])
         context = self.context(emb[..., self.global_tokens, :], num[..., self.global_numbers])
+        entities = torch.cat((context.unsqueeze(-2), active, moves, bench), -2)  # [B,T,12,E]
+        lead = entities.shape[:-2]
+        entities = self.mix((entities + self.kinds(self.kind_ids)).reshape(-1, 12, entities.shape[-1]))
+        entities = entities.reshape(*lead, 12, -1)
+        context, active, moves, bench = (entities[..., 0, :], entities[..., 1:3, :],
+                                         entities[..., 3:7, :], entities[..., 7:, :])
         state = torch.cat((context, active.flatten(-2), moves.mean(-2), bench.mean(-2)), -1)
         return self.fusion(state), moves, bench
 
