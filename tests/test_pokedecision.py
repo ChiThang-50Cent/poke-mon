@@ -121,7 +121,7 @@ def test_research_export_loads_through_production_loader(tmp_path):
     torch.save(model.state_dict(), tmp_path / "best.pt")
     shutil.copy(source, tmp_path / "model.py")
     ObservationEncoder().save(tmp_path / "tokenizer.json")
-    tokens = torch.randint(model.config.vocab_size, (2, 3, model.config.token_len))
+    tokens = torch.randint(model.config.vocab_size, (2, 3, 87))  # DefaultObservationSpace width
     numbers = torch.randn(2, 3, 48)
     restored, _, config = load_pokedecision(tmp_path, "cpu")
     assert config.value_head
