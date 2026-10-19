@@ -57,8 +57,15 @@ def behavior_errors(data: dict, meta: dict) -> list[str]:
             errors.append(
                 f"{prefix}: missing fields {sorted(required - behavior.keys())}"
             )
-        if behavior.get("chosen_index") != action:
-            errors.append(f"{prefix}: chosen index differs from native action")
+        # Search runs record C's choice in chosen_index and the sent action in executed_index.
+        searched = "executed_index" in behavior
+        executed = behavior["executed_index"] if searched else behavior.get("chosen_index")
+        if executed != action:
+            kind = "executed" if searched else "chosen"
+            errors.append(f"{prefix}: {kind} index differs from native action")
+        if searched and type(behavior.get("search_row")) is not int:
+            errors.append(f"{prefix}: search step without search_row")
+        action = behavior.get("chosen_index")
         masks = meta.get("action_masks", [])
         mask = behavior.get("mask")
         if (
@@ -111,6 +118,8 @@ def behavior_errors(data: dict, meta: dict) -> list[str]:
         if type(action) is not int or not 0 <= action < 13 or not mask[action]:
             errors.append(f"{prefix}: chosen action outside mask")
             continue
+        if searched and (type(executed) is not int or not 0 <= executed < 13 or not mask[executed]):
+            errors.append(f"{prefix}: executed action outside mask")
         logp = behavior.get("log_probability")
         if (
             p[action] <= 0

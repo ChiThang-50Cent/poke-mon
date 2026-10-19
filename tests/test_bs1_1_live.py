@@ -119,6 +119,29 @@ def test_override_changes_action_but_not_memory_or_forward_count(patched):
     assert live._pending_choice["a"]["order"] == s_order.message  # evidence = the order sent
 
 
+def test_collector_records_sent_action_when_search_overrides(patched):
+    """W6.0 bug: the trajectory stored C's argmax instead of the overridden action sent."""
+    from metamon.interface import UniversalState
+
+    from pokeai.env.collector import TrajectoryCollector
+
+    patched.setattr(UniversalState, "from_Battle", lambda _: SimpleNamespace(to_dict=dict))
+    patched.setattr("pokeai.env.collector.order_to_action", lambda *_: (-1, "unsupported"))
+    base = policy()
+    base.encoder = SimpleNamespace(encode=lambda _: encoded(), unknown_id=0)
+    c_action = int(base.choose_move(fake_battle()).message.removeprefix("/choose "))
+    other = next(i for i in (0, 1, 2) if i != c_action)
+    live = searching_player(StubSearch(override=other))
+    live.model = base.model
+    live.collector = TrajectoryCollector()
+    order = live.choose_move(fake_battle())
+    record = live.collector.behavior[0]
+    assert order.message == f"/choose {other}" and live.collector.actions == [other]
+    assert record["chosen_index"] == c_action and record["executed_index"] == other
+    assert int(np.argmax(record["probabilities"])) == c_action  # C's distribution kept
+    assert live.search_rows["a"][record["search_row"]]["action"] == other
+
+
 def test_frame_snapshot_lifecycle_and_battle_isolation(patched):
     taken = []
 

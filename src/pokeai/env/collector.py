@@ -85,7 +85,8 @@ class TrajectoryCollector:
         mask = [int(UniversalAction(index) in legal) for index in range(13)]
         action, reason = order_to_action(battle, order)
         if behavior is not None:
-            action = behavior["chosen_index"]
+            # With search, the sent action may differ from C's chosen_index.
+            action = behavior.get("executed_index", behavior["chosen_index"])
             reason = behavior["fallback_reason"]
             mask = behavior["mask"]
         if action >= 0 and not mask[action]:

@@ -107,6 +107,22 @@ def test_argmax_mutation():
     assert any("argmax" in e for e in behavior_errors(data, meta))
 
 
+def test_search_override_step():
+    """Search runs: native action = sent action; C's choice keeps argmax/logp parity."""
+    data, meta = sample()
+    data["actions"][0] = 1
+    meta["action_masks"] = [[1, 1] + [0] * 11]
+    meta["behavior"][0].update(
+        mask=meta["action_masks"][0], mode="argmax", probabilities=[0.75, 0.25] + [0.0] * 11,
+        log_probability=math.log(0.75), executed_index=1, search_row=0,
+    )
+    assert behavior_errors(data, meta) == []
+    meta["behavior"][0]["executed_index"] = 0  # the pre-W6.0 bug: C's choice saved as sent
+    assert any("executed index" in e for e in behavior_errors(data, meta))
+    meta["behavior"][0].update(executed_index=1, search_row=None)
+    assert any("search_row" in e for e in behavior_errors(data, meta))
+
+
 def test_fallback_mutation():
     data, meta = sample()
     data["actions"][0] = -1

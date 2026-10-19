@@ -436,7 +436,16 @@ class NeuralPlayer(MetamonPlayer):
                 c_forwards=self.forward_count - forwards_before,
                 model_choice=bool(self._model_choice.get(tag, False)),
                 hidden_keys=len(self.hidden), turn=battle.turn)
-            self.search_rows.setdefault(tag, []).append(search_row)
+            rows = self.search_rows.setdefault(tag, [])
+            if self.collector is not None:
+                # W6.0: the native trajectory action must be what was sent. C's own choice
+                # stays in chosen_index/probabilities (replay parity); the search row is
+                # joined by index, so every recorded step has one.
+                self._behavior[tag]["executed_index"] = (
+                    action if self._model_choice.get(tag) else -1
+                )
+                self._behavior[tag]["search_row"] = len(rows)
+            rows.append(search_row)
             self._search_open[tag] = search_row
             self._frame_decided[tag] = True
         if self.collector is not None:
