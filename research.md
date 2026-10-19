@@ -3,9 +3,13 @@
 *Technical research & design proposal — Nghiên cứu model quyết định, kiến trúc đề xuất, chiến lược train và lộ trình triển khai cho Gen 9 OU Singles.*
 
 > **Kết luận khuyến nghị.** Xây một structured-state actor–critic nhỏ với option-conditioned action scorer, value head và opponent head. Dùng Metamon làm nền tảng dữ liệu/đánh giá; tham khảo Kev và Laya cho cách tính xác suất hành động, Jaxcalibur cho self-play và hidden-information modeling.
+>
+> **Hướng W6+ (19/10/2026).** Small, fast, outcome-driven decision model. Giữ C (GRU 1,3M) làm champion; không đổi backbone, không tăng tham số. Chỉ số quan trọng nhất là sức chơi của neural policy **một lần inference, không search**; search, heuristic và simulator chỉ là teacher khi train. W6-A (opponent head) và W6-B (distillation) là hai giả thuyết độc lập, không chặn nhau; W6-C chỉ thiết kế. Chi tiết ở §8.
+>
+> **Định nghĩa “Jev-like”.** Một model nhỏ, non-generative, nhận structured observation và đưa ra legal decision trực tiếp, với chất lượng quyết định được cải thiện nhờ outcome-driven learning. Opponent head, Q critic và search distillation là công cụ để đạt mục tiêu đó, không phải head bắt buộc; một head chỉ được giữ khi nó làm fast policy chơi tốt hơn hoặc làm teacher rẻ/tốt hơn.
 
-**Phạm vi:** Pokémon Showdown · Gen 9 OU Singles · 1 GPU thử nghiệm · research prototype  
-**Cập nhật:** 16/10/2026  
+**Phạm vi:** Pokémon Showdown · Gen 9 OU Singles (kiến trúc mở cho format khác) · RTX 3060 12 GB + 16 threads · practice bot + research benchmark trên local server  
+**Cập nhật:** 19/10/2026 (W1–W5 xong; roadmap W6+)  
 **Mức độ xác minh:** Ưu tiên paper peer-reviewed, README và model code chính chủ; phân biệt kết quả nhóm tác giả công bố và mục tiêu dự kiến.
 
 ## 1. Executive summary
@@ -42,15 +46,18 @@ Jaxcalibur công bố policy 8,5M tham số, PPO tự đấu và search khi infe
 
 Pokémon Singles là trò chơi hai người có thông tin không đầy đủ, cơ chế ngẫu nhiên và phần lớn lượt chọn hành động đồng thời. Mô hình chỉ được nhìn thấy thông tin hợp lệ theo góc nhìn người chơi: Pokémon và moves của mình, thông tin đối thủ đã lộ, field, weather, hazards, trạng thái và lịch sử. Nó không được đọc moveset/item/tera type ẩn của đối phương từ replay tương lai \[07, 08\].
 
-### Ba xác suất phải phân biệt
+### Bốn đại lượng phải phân biệt
 
-| **Đại lượng**             | **Ý nghĩa**                                                  | **Dùng làm gì**                                  |
+| **Đại lượng**             | **Ý nghĩa**                                                  | **Học bằng**                                     |
 |---------------------------|--------------------------------------------------------------|--------------------------------------------------|
-| **Policy π(a\|o,h)**      | Xác suất agent chọn action a với observation o và lịch sử h. | Sampling action, policy loss, exploration.       |
-| **Value V(o,h)**          | Dự đoán xác suất thắng từ trạng thái/lịch sử hiện tại.       | Critic; đánh giá tình thế; calibration.          |
-| **Opponent p(aₒₚₚ\|o,h)** | Dự đoán hành động hoặc hidden set của đối thủ.               | Dự báo switch/move, search qua nhiều giả thuyết. |
+| **Policy π(a\|h)**        | Xác suất agent chọn action a với lịch sử quan sát h.         | BC, policy improvement, RL.                      |
+| **Value V(h)**            | P(thắng) khi tiếp tục theo policy, với phân phối đối thủ xác định. | Outcome prediction, TD learning.           |
+| **Opponent p(aₒₚₚ\|h)**   | Đối thủ có khả năng chọn gì (hoặc hidden set nào).           | Supervised opponent prediction.                  |
+| **Q(h,a)**                | Giá trị kỳ vọng nếu chọn a rồi tiếp tục theo một policy xác định. | Critic hoặc rollout, với policy được định nghĩa rõ. |
 
-Không nên gắn nhãn “Thunderbolt: 62% chance of winning” cho output softmax của action scorer. Đó chỉ là phân phối lựa chọn (hoặc preference) trừ khi model được train/đánh giá riêng để ước lượng win probability có điều kiện theo từng action.
+h là lịch sử quan sát hợp lệ từ góc nhìn người chơi.
+
+Không nên gắn nhãn “Thunderbolt: 62% chance of winning” cho output softmax của action scorer. Đó chỉ là phân phối lựa chọn (hoặc preference) trừ khi model được train/đánh giá riêng để ước lượng win probability có điều kiện theo từng action. Một policy tốt còn có thể cố ý chia xác suất cho nhiều action để khó bị khai thác, vì Pokémon có lượt chọn đồng thời. Vì vậy không đặt mục tiêu calibration cho policy logits; chỉ calibration các dự đoán có outcome quan sát được (V, p(aₒₚₚ\|h)), trên dữ liệu độc lập và đúng distribution triển khai. Temperature scaling là baseline \[20\]; nó không làm model chọn nước tốt hơn.
 
 ### Không gian hành động
 
@@ -154,6 +161,8 @@ BC học phân phối hành động của human demonstrations, không trực ti
 
 Sau baseline BC, thử advantage-weighted behavior cloning hoặc offline actor–critic trên trajectory có rewards. Bắt đầu bằng ablation đơn giản: BC-only vs BC+value vs BC+opponent. Offline RL có rủi ro extrapolation trên actions ít xuất hiện; mọi cải thiện phải đo bằng win rate trong simulator, không chỉ giảm validation loss. Metamon có sẵn config và pipeline offline RL qua amago \[06–07\].
 
+**Trạng thái sau W5.** Các biến thể đã thử ở W5 được đóng: outcome-weighted AWBC/GAE (`reports/w5_3_final_report.md`, `w5_a2_3_final_report.md`) và supervised counterfactual head trên frozen C features (`w5_cf1_5d_report.md`). Đó không phải kết luận rằng cả họ thuật toán bị bác bỏ: nếu dữ liệu hoặc estimator/target thay đổi thực chất, có thể xem xét lại dựa trên bằng chứng. Policy improvement tiếp theo đi qua selective search distillation (W6-B, kiểu DAgger + Expert Iteration \[16–17\]); TD critic hoặc IQL \[18\] chỉ thử khi có trajectory và target hợp lệ. Human replay không có counterfactual actions, nên không tin critic đánh giá action ngoài phân phối.
+
 ### Phase C: Self-play reinforcement learning
 
 Tạo league có random, heuristic, nhiều checkpoint cũ của chính model và một số đối thủ chiến thuật mạnh. Train bằng PPO/GAE (hoặc tiếp tục RL pipeline của Metamon), lấy outcome terminal làm reward chính; shaping nhẹ cho HP/status chỉ dùng nếu ablation cho thấy có ích. Jaxcalibur cho thấy có thể train policy nhỏ với PPO và các auxiliary heads, nhưng mức hàng chục triệu trận self-play yêu cầu simulator thông lượng rất cao \[08\].
@@ -189,33 +198,104 @@ History length: 0, 4, 16 recent events; team and metagame splits.
 
 Search off vs shallow search on difficult states; đo Elo gain và cost/turn.
 
-## 8. Roadmap triển khai 8 tuần
+## 8. Roadmap và trạng thái
 
-| **Giai đoạn**            | **Deliverables**                                                     | **Exit gate**                                       |
-|--------------------------|----------------------------------------------------------------------|-----------------------------------------------------|
-| **W1 — Environment**     | Local Showdown, poke-env/Metamon, fixed Gen9OU teams, baselines.     | 1k local battles tự động, log chuẩn và không crash. |
-| **W2 — Parser**          | Replay → observation/action dataset; masked legal action unit tests. | 100% sampled records hợp lệ, 0 hidden-info leak.    |
-| **W3 — First policy**    | Small MLP/GRU + masked 13-action BC.                                 | Vượt random/naïve heuristic ở test mix.             |
-| **W4 — Robustness**      | Value head, history; frozen evaluation harness, CI.                  | BC ổn định qua seed, team và opponent mix.          |
-| **W5–6 — Self-play**     | League, PPO/offline RL, opponents đa dạng, checkpoint registry.      | Win rate tốt hơn BC trên holdout.                   |
-| **W7 — Belief / search** | Opponent head, optional shallow Foul Play integration.               | Ablation chứng minh cải thiện thực tế.              |
-| **W8 — Release**         | API, model card, test matrix, performance report.                    | 0 invalid action, reproducible eval.                |
+### W1–W5: đã xong
 
-Nếu chỉ có 4 tuần, chốt MVP ở cuối W4. Nếu target là top ladder, scope sẽ chuyển thành bài toán research nhiều tháng, yêu cầu đầu tư simulator throughput và cross-play evaluation lớn hơn.
+| **Mốc**   | **Kết quả**                                                                                                                                                                    | **Bằng chứng**                                              |
+|-----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------|
+| **W1–W4** | Environment, parser, BC GRU, value head, team preview. Production C = `models/pokedecision-v1-value` (1,30M): Random 98,4%, Grunt 65,4%, GymLeader 65,8%.                      | `reports/w4_5_final_report.md`                              |
+| **W5**    | C+Belief Search (RC4, 5 s/decision): dev Δ +0,267 [0,210; 0,323]. Chưa có heldout xác nhận. Các biến thể AWBC/GAE và CF head đã thử được đóng.                                  | `reports/w5_bs1_2_report.md`, `reports/w5_bs1_5_closure.md` |
+| **W6.0**  | Distillation feasibility: log BS1.2 không có observation nên chỉ dùng để thiết kế; cần collection mới và sửa bug executed-action trong collector khi bật search + trajectories. | `reports/w6_0_distill_feasibility.md`                       |
+
+Số liệu BS1.2 là dev, và dev pool đã dùng cho QA/requalification nên +26,7 pp có thể lạc quan. Không dùng nó làm bằng chứng final.
+
+### Nguyên tắc W6+
+
+- **Kim chỉ nam:** *fast policy strength improvement per unit of training compute*. Mỗi lần tốn tài nguyên train phải biết model có ra quyết định tốt hơn không (paired Δ vs C, không search) và tốn bao nhiêu (GPU-h, CPU-h collection) để đạt được.
+- **Chỉ số chính:** sức chơi của neural policy ở chế độ một lần inference, không search. Calibration hay accuracy tốt hơn không thay được bằng chứng chơi mạnh hơn (W4.5: D có value metrics tốt hơn C nhưng không mạnh hơn).
+- **Search là teacher, không phải sản phẩm:** không tối ưu search latency lúc inference. Mục tiêu riêng: *optimize teacher quality and cost per useful training label*. Chưa tối ưu ngay; chỉ theo dõi coverage, confidence, thời gian tạo nhãn và tỷ lệ nhãn dùng được trong mọi collection.
+- **Giữ C:** không đổi GRU sang Transformer, không tăng tham số khi chưa có bằng chứng bottleneck.
+- **Một biến mỗi lần:** không đổi encoder, policy head và search trong cùng thí nghiệm.
+- **Nhánh fail thì đóng** hoặc đổi giả thuyết; không tự động mở nhánh training lớn hơn để cứu metric.
+- Thứ tự dưới đây là thứ tự giả thuyết, không phải cam kết làm hết.
+
+### Milestones
+
+| **Milestone**                         | **Mục tiêu và scope**                                                                                                                                                                                                                                                                                                                                                                                                                         | **Gate / stop rule**                                                                                                                       |
+|---------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| **W6-A — Opponent head** (đầu tiên)   | Giả thuyết: opponent modeling dự đoán đối thủ tốt hơn và có thể cải thiện teacher. Nhãn = action đối thủ thực sự làm ở lượt đó, lấy từ protocol công khai sau lượt hoặc từ POV còn lại của cùng battle. Nhãn chỉ là target. **Input giữ đúng player-view tại thời điểm chọn đồng thời**: state và GRU hidden chỉ chứa protocol đến trước lượt đang dự đoán, không chứa action đối thủ của chính lượt đó (cần regression test). Hai arm: head trên C đóng băng (policy không đổi, làm đối chứng) và joint fine-tune có BC. Không làm lại value calibration: W4.5 đã có (`w4_5_value_calibration.json`). Đo **ba tầng riêng**: (1) prediction: NLL/Brier/top-k vs usage prior và heuristic mixture; (2) policy regression của joint arm vs C; (3) decision: head làm `opp_model` của search teacher, đo chất lượng nhãn và Δ của teacher. | Tầng (1) đạt mà (3) không đạt vẫn là kết quả nghiên cứu hợp lệ, nhưng không được kết luận sức chơi tăng. Joint arm làm giảm win rate vs C thì giữ head tách riêng. Không dùng heldout đã tiêu thụ làm final evidence. |
+| **W6-B — Selective distillation** (trọng tâm) | Giả thuyết: student học được decision improvement từ teacher. Không phụ thuộc W6-A: chạy với teacher hiện tại (heuristic mixture) nếu W6.0 xác nhận nhãn đủ tin cậy; nếu W6-A thắng ở tầng (3) thì teacher mới dùng cho vòng distillation sau. Thứ tự: sửa bug collector, kiểm tra recurrent context và join nhãn, pilot giới hạn 12 h trên `teams_w5/collect`, rồi mới cân nhắc tối đa hai recipe (R1 hard labels có lọc z ≥ 1,96; R2 pairwise) × 3 seeds. Mỗi recipe giữ một phần BC và KL tới C để tránh quên; giữ cả mẫu teacher đồng ý với C. Báo cáo cost per useful label. | Primary: paired Δ vs C trên dev, student không search; CI chứa 0 thì dừng, chẩn đoán offline, không scale. Promote chỉ sau một lần eval trên fresh pool. |
+| **W6-C — Format interface** (song song, chỉ thiết kế) | Giả thuyết: năng lực đã học chuyển được sang format khác. Ở W6 chỉ design và validate compatibility: format spec, observation adapter, candidate action interface (move, switch, Tera, preview, forced switch, Doubles joint). Chưa train UU, chưa làm VGC khi fast policy OU chưa cải thiện rõ. Ghi chú cho sau này: Metamon `SUPPORTED_BATTLE_FORMATS` chỉ có gen1–4 ou/uu/nu/ubers và gen9ou, nên UU cần tự tải replay, dựng team pool đã validate và kiểm tra vocab coverage của `ObservationEncoder`. | Deliverable: compatibility matrix, interface contracts, test cases. Candidate scorer thay 13-head chỉ khi có bằng chứng (CF1.5 đã fail).                    |
+| **W7 — Self-play league**             | Khám phá chiến thuật không có đủ trong replay. League trộn C, champion checkpoints, Grunt/GymLeader, neural baselines khác (vd. Metamon Minikazam 4,7M RNN \[15\], nếu tương thích format/observation) và nhiều team archetype. Offline training trên trajectory mới trước; PPO chỉ khi thu thập đúng semantics on-policy.                                                                                                                                | Một vòng cải thiện dương nhỏ, lặp lại được, trước khi scale. Không self-play C-vs-C đơn độc.                                                |
+| **W8 — Multi-format adaptation**      | Chỉ sau khi fast policy OU cải thiện rõ. Gen 9 UU là bài transfer đầu tiên: zero-shot vs fine-tune từ OU. Sau đó thử theo thứ tự: shared backbone + format embedding → format-specific heads → specialist models.                                                                                                                                                                                                                                         | Đo zero-shot, few-shot và mức quên format cũ. Specialist chỉ khi shared model bị negative transfer đáng kể.                               |
+
+Thứ tự triển khai: chốt W6.0 (decision record trong version control) → W6-A → W6-B pilot (chuẩn bị collector song song với W6-A) → W6-C design. Phụ thuộc thật duy nhất: W6-B cần W6.0 xác nhận nhãn đủ tin cậy; W6-A thành công chỉ đổi teacher của vòng distillation sau, không chặn pilot đầu.
+
+### Experiment card
+
+Mỗi thí nghiệm mới phải trả lời một câu hỏi W5 chưa giải quyết, và ghi đủ:
+
+| **Trường**     | **Nội dung**                                                       |
+|----------------|--------------------------------------------------------------------|
+| **Hypothesis** | Model đang thiếu năng lực gì?                                      |
+| **Control**    | So với checkpoint nào, chỉ đổi thành phần nào?                     |
+| **Data**       | Nguồn, version, split train/dev, leakage checks.                   |
+| **Budget**     | Giới hạn collection, GPU/CPU và benchmark, định trước.             |
+| **Gate**       | Metric pass/fail và mức cải thiện tối thiểu có ý nghĩa.            |
+| **Verdict**    | Promote, stop hay inconclusive; nguyên nhân và next action.        |
+
+Quy trình: unit tests → smoke → bounded dev eval → một final eval trên fresh pool cho candidate đã chọn. Training stochastic: chỉ nhân seeds cho candidate có tín hiệu, báo uncertainty thay vì mean \[19\]; không sweep hyperparameter lớn trước khi biết giả thuyết nào đúng.
+
+### Scorecard
+
+| **Nhóm**             | **Metric**                                                             |
+|----------------------|------------------------------------------------------------------------|
+| **Playing strength** | Paired Δ vs C và opponent mixture, CI team-pair cluster bootstrap.     |
+| **Generalization**   | Win rate theo team archetype, opponent, format, dữ liệu mới.           |
+| **Decision quality** | Teacher agreement (chỉ chẩn đoán), loại sai lầm chiến thuật.           |
+| **Calibration**      | Value/opponent Brier, log loss, ECE, reliability tables.               |
+| **Reliability**      | `illegal_actions` = 0, battle errors = 0, fallback rate, train/serve parity. |
+| **Efficiency**       | Δ sức chơi fast policy trên GPU-h/CPU-h train; cost per useful teacher label; latency p50/p95, decisions/s, battles/s. |
+
+Promote chỉ khi sức chơi cải thiện có ý nghĩa thực tế, độ bất định chấp nhận được và không hỏng guardrail nào.
+
+### Lộ trình format
+
+1. **Gen 9 OU Singles:** hoàn thiện training loop và tạo policy mạnh hơn C.
+2. **Gen 9 UU:** cùng cơ chế, metagame khác; kiểm tra model học nguyên tắc hay chỉ nhớ phân phối OU.
+3. **Gen 9 Random Battles:** team do game tạo, roster đối thủ không lộ từ đầu; đổi data distribution và team prior.
+4. **Doubles/VGC:** hai Pokémon hành động cùng lúc, move có target, VGC chọn 4 trong 6. Không ghép hai argmax của Singles: hai action có thể xung đột (cùng switch vào một slot, dùng mechanic độc quyền hai lần). Tạo joint candidates hợp lệ rồi score, hoặc top-k mỗi Pokémon + joint scorer, vẫn trong một neural pass.
+
+Gen cũ (vd. Gen 4 OU) là nhánh độc lập, không bắt buộc trước Doubles.
+
+Interface chung: `Observation → Candidate Actions → Decision Model → Typed Action`; format adapter tạo các lựa chọn hợp lệ.
+
+| **Thành phần**                 | **Shared giữa format?** | **Ghi chú**                                          |
+|--------------------------------|-------------------------|------------------------------------------------------|
+| Pokémon/move/type embeddings   | Phần lớn                | Version theo generation, kiểm soát mechanic.          |
+| History encoder                | Có thể                  | Cần biểu diễn phase và event.                         |
+| Value backbone                 | Có thể                  | Calibration riêng theo format/opponent distribution.  |
+| Opponent prediction            | Phần lớn                | Prior và supervision khác nhau.                       |
+| Singles policy head            | Có                      | OU, UU, Random Battle khi tương thích.                |
+| Doubles joint action head      | Riêng                   | Hai actions, move targets, shared constraints.        |
+| Team preview/selection         | Có thể riêng            | Đặc biệt VGC pick-four.                               |
 
 ## 9. Compute, hardware và chi phí
 
-| **Mức**       | **Cấu hình hợp lý**                                 | **Hướng làm / rủi ro**                                        |
-|---------------|-----------------------------------------------------|---------------------------------------------------------------|
-| **Prototype** | CPU + GPU 8–12 GB (nếu sẵn có).                     | Feature/parser + MLP/GRU nhỏ; có thể chậm khi train lớn.      |
-| **MVP**       | 1 GPU 24 GB + nhiều CPU cores cho simulator.        | BC và fine-tuning mô hình 1–20M dễ khả thi hơn LLM 4–9B.      |
-| **Scale-up**  | H100 80 GB hoặc tương đương; engine throughput cao. | PPO/self-play quy mô lớn; simulator và debugging là nút thắt. |
+**Máy hiện tại:** RTX 3060 12 GB, 16 threads. Simulator là bottleneck, không phải GPU: heuristic battles ~35–40 game/s, C+search ~110 s/battle; BS1.2 search collection ≈ 1.840 searched decisions/h ở CPUQuota 1000%.
+
+| **Mức**       | **Nên ưu tiên**                                                                   | **Không ưu tiên**                                    |
+|---------------|-----------------------------------------------------------------------------------|------------------------------------------------------|
+| **GPU 8–12 GB (hiện tại)** | Fine-tune GRU 1–5M, auxiliary heads, offline supervised/distillation. | Large-model training, search dày.                    |
+| **GPU 16–24 GB** | Small Transformer 4–10M, batched sequence training, ablation có kiểm soát.     | Train từ đầu model hàng trăm triệu tham số.          |
+| **Cloud GPU** | Thí nghiệm đã qua smoke/dev gate, nhu cầu compute đo được trước.                  | Thuê GPU liên tục cho pipeline chưa profile.         |
 
 Tham chiếu giá Runpod cập nhật 15/10/2026: A5000 24 GB \$0,27/giờ, RTX 4090 24 GB \$0,89/giờ, H100 PCIe \$2,89/giờ và H100 SXM \$3,99/giờ (mức Secure Cloud trong bảng do nhà cung cấp công bố, có thể đổi theo thời gian) \[13\].
 
-Kế hoạch ngân sách thử nghiệm: dành 20–80 GPU-hours cho baseline + ablations, tương đương khoảng \$5–\$71 nếu chỉ nhân với khoảng giá 24 GB nói trên; chưa gồm CPU simulator, storage, tải dữ liệu, lỗi thử nghiệm và công sức kỹ thuật. Dành ngân sách bổ sung theo hiệu suất games/giờ đo được, thay vì dự trù “100 triệu game” ngay từ đầu.
+Trước khi scale, đo: decisions/s, battles/s, thời gian encode / forward / simulator / search; samples/s khi train, peak RAM/VRAM; chi phí mỗi sample có teacher label đáng tin; Δ win rate trên compute.
 
-> **Điểm thường bị đánh giá thấp.** Tốc độ chạy game state transitions, parser và chất lượng dữ liệu có thể quyết định chi phí nhiều hơn số parameters. Hãy benchmark games/second và decisions/second từ tuần 1 trước khi mua GPU lớn.
+> **Quy tắc.** Nếu môi trường tạo 100k decisions chậm hơn nhiều so với model học 100k decisions đó, tối ưu môi trường và data pipeline có lợi hơn đổi backbone. Jaxcalibur đạt quy mô của họ nhờ engine JAX GPU-vectorized, không chỉ nhờ GPU mạnh \[08\].
 
 ## 10. Rủi ro và cách kiểm soát
 
@@ -229,36 +309,20 @@ Kế hoạch ngân sách thử nghiệm: dành 20–80 GPU-hours cho baseline + 
 | **Engine/API mismatch**        | Illegal action hoặc game state drift.                 | Unit tests theo phiên bản engine; 0 invalid policy.    |
 | **Community fairness**         | Bot spam public ladder / tạo lợi thế không công bằng. | Train trên local server; tuân thủ quy định platform.   |
 
-## 11. Các quyết định cần chốt trước khi code
+## 11. Các quyết định đã chốt
 
-1. **Format:** Gen9 OU Singles (chốt cho V0) hay Gen9 Random Battle? Đây là quyết định có tác động lớn nhất tới dataset, state encoder và game mechanics. 
-2. **Đích sản phẩm:** practice bot, ladder bot hay research benchmark? 
-3. **GPU và ngân sách:** Chạy trên GPU nào và budget thí nghiệm? 
-4. **Giải thích:** Cần giải thích nước đi bằng text không? Nếu cần, thêm một explanation layer bên ngoài policy, không gộp vào decision model.
+1. **Format:** Gen 9 OU Singles; kiến trúc mở cho format khác qua adapter (§8).
+2. **Đích sản phẩm:** practice bot + research benchmark trên local server; không ladder.
+3. **GPU và ngân sách:** RTX 3060 12 GB local; cloud chỉ cho thí nghiệm đã qua dev gate.
+4. **Giải thích:** không nằm trong decision model; nếu cần thì là layer ngoài.
 
 ### Khuyến nghị cuối cùng
 
-Bắt đầu từ Metamon + small masked policy, tự xây một action scorer kiểu Kev trên state embeddings. Sau khi baseline chạy được và đã có test harness đáng tin, mới thêm GRU/history, value calibration và opponent modeling. Chỉ thêm search sau khi biết rõ nó đem lại điểm Elo đủ lớn so với latency và compute. Nhờ cách chia giai đoạn này, project có kết quả đo được sau vài tuần thay vì biến thành việc “train một Jev mới” mơ hồ.
+Không sao chép Jev RLCD bằng suy đoán. Xây một hệ huấn luyện decision model kiểm chứng độc lập được, mang các phẩm chất muốn có từ Jev: typed legal decisions, một lần inference, dự đoán xác suất có calibration. Mốc nền tảng là một vòng `C → training signal tốt hơn → student → thắng C trên dữ liệu mới`.
 
 ## 12. Appendix A: Project structure
 
-```text
-pokemon-decision-ai/
-├── env/
-├── data/
-├── models/
-├── train/
-│   ├── bc.py
-│   └── self_play.py
-├── eval/
-│   └── eval.py
-├── tests/
-├── configs/
-├── checkpoints/
-└── docs/
-```
-
-*Thêm `data/replay_parser.py` để tái dựng observation từ replay.*
+Cấu trúc thực tế (`src/pokeai/`, `scripts/`, `configs/`, `data/`, `models/`, `reports/`) nằm ở mục Code map của `AGENTS.md`.
 
 ## Appendix B: Nguồn và chú giải bằng chứng
 
@@ -305,3 +369,21 @@ Mốc giá GPU công khai để lập ngân sách; có thể thay đổi.
 
 **\[14\] Smogon.** Pokémon Showdown replay API. [Mở nguồn](https://github.com/smogon/pokemon-showdown-client/blob/master/WEB-API.md)  
 Thông tin định dạng replay và JSON; Metamon đã có parser tốt hơn cho training.
+
+**\[15\] Metamon README (`0a00a75`).** Pretrained model list. [Mở nguồn](https://github.com/UT-Austin-RPL/metamon)  
+Minikazam: RNN 4,7M train trên `parsed-replays v4` + self-play; tham chiếu kiến trúc cỡ ngân sách cá nhân.
+
+**\[16\] Ross et al. (AISTATS 2011).** DAgger: A Reduction of Imitation Learning and Structured Prediction to No-Regret Online Learning. [Mở nguồn](https://proceedings.mlr.press/v15/ross11a.html)  
+Train trên trạng thái mà chính policy gặp.
+
+**\[17\] Anthony et al. (NeurIPS 2017).** Thinking Fast and Slow with Deep Learning and Tree Search (Expert Iteration). [Mở nguồn](https://proceedings.neurips.cc/paper_files/paper/2017/hash/d8e1344e27a5b08cdfd5d027d9b8d6de-Abstract.html)  
+Tách planning teacher với student khái quát hóa.
+
+**\[18\] Kostrikov et al. (ICLR 2022).** Offline RL with Implicit Q-Learning. [Mở nguồn](https://arxiv.org/abs/2110.06169)  
+Policy improvement offline, hạn chế extrapolation.
+
+**\[19\] Agarwal et al. (NeurIPS 2021).** Deep RL at the Edge of the Statistical Precipice. [Mở nguồn](https://papers.neurips.cc/paper/2021/hash/f514cec81cb148559cf475e7426eed5e-Abstract.html)  
+Đánh giá kèm uncertainty thay vì mean score.
+
+**\[20\] Guo et al. (ICML 2017).** On Calibration of Modern Neural Networks. [Mở nguồn](https://arxiv.org/abs/1706.04599)  
+Temperature scaling làm baseline calibration.

@@ -16,14 +16,16 @@ Design, roadmap and gates: `research.md`. The overriding aim is a **strong, usab
 - **C+Belief Search** (RC4, tag `w5-bs-rc4`) = live root-level search over sampled opponent hidden sets with paired rollouts, 5 s/decision. It is opt-in via `NeuralPlayer(search=LiveSearch)`, or arm `search:` in `evaluate_w5.py`.
   - **Dev-validated only.** Dev, 600 paired battles: Δ +0.267 [0.210, 0.323]; wins/100 Grunt 64→96, GymLeader 65→95, C 54→72 (`reports/w5_bs1_2_report.md`).
   - Independent heldout confirmation is unavailable: BS1.3 and BS1.4 were aborted by infrastructure bugs (now fixed), and BS1.5 was stopped on a cost decision (`reports/w5_bs1_5_closure.md`).
-- **Closed directions** (do not reopen without a new idea):
+- **Closed W5 variants** (closed as tried; the algorithm families are not refuted, and can be revisited if the data or the estimator/target changes substantially):
   - outcome-weighted AWBC / GAE (`w5_3_final_report.md`, `w5_a2_3_final_report.md`);
   - a supervised counterfactual action head on frozen C features (`w5_cf1_5d_report.md`).
-- **W6 focus: playing strength.**
-  - cheaper search (≪ 5 s) or distilling search into the policy;
-  - an opponent model;
-  - stronger and more diverse opponents;
-  - error analysis from real games against the bot.
+- **"Jev-like"** = a small, non-generative model that takes a structured observation and emits a legal decision directly, with decision quality improved by outcome-driven learning. Opponent head, Q critic and search distillation are tools, not required heads; keep a head only if it makes the fast policy play better or the teacher cheaper/better.
+- **W6+ north star: fast-policy strength improvement per unit of training compute** (paired Δ vs C without search, per GPU-h/CPU-h). Search, heuristics and the simulator are training-time teachers only: optimize teacher quality and cost per useful training label, not search inference latency (track coverage, confidence, label time, usable-label rate). Keep C as champion: no GRU→Transformer swap, no parameter growth, one changed component per experiment. Roadmap, gates and experiment card: `research.md` §8.
+  - **W6.0** done: distillation feasibility (`reports/w6_0_distill_feasibility.md`); fix the executed-action bug in the collector before any search + trajectory collection.
+  - **W6-A** (first): opponent action head, frozen-C arm vs joint-BC arm. Measure three levels separately: prediction (NLL/Brier/top-k vs usage prior and heuristic mixture), policy regression vs C, and teacher impact as search `opp_model`. Inputs must be the player view at the simultaneous choice: nothing from the opponent's action in the turn being predicted. Value calibration already exists (`w4_5_value_calibration.json`).
+  - **W6-B** (core, independent of W6-A): selective search distillation with the current teacher once labels are confirmed reliable; a better W6-A teacher only feeds the next round. Primary gate: student vs C without search.
+  - **W6-C** (design only): format spec + candidate-action interface + compatibility checks. No UU training or VGC until the OU fast policy clearly improves. Gen 9 UU is not in Metamon `SUPPORTED_BATTLE_FORMATS` (own replays and team pool needed).
+  - Later: W7 self-play league (diverse opponents and teams), W8 multi-format adaptation; error analysis from real games against the bot throughout.
 
 ## Evaluation process (W6+)
 
