@@ -1,0 +1,40 @@
+# W7 lever 2: Kakuna soft-label distillation on pile states, dev only.
+# All candidate arms: EPN architecture, 20 min from scratch, the same 189,881 w7_c train
+# trajectories (.cache/epn-w7c), differing only in --kakuna-weight w:
+#   policy loss = (1-w) * CE(Alakazam-family data action) + w * CE(Kakuna probs).
+# - bc_c: w = 0 (control: same data, no teacher)
+# - kk50: w = 0.5
+# - kk100: w = 1.0 (pure Kakuna soft labels)
+# Reference: EPN (production). Primary: kk* vs bc_c and vs EPN.
+reference_arm: EPN
+pool: data/teams_w5/dev
+battles: 500
+arms:
+  EPN:
+    model_dir: models/pokedecision-v3-epn
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+  bc_c:
+    model_dir: checkpoints/epn/bc_c20
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+  kk50:
+    model_dir: checkpoints/epn/kk50_c20
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+  kk100:
+    model_dir: checkpoints/epn/kk100_c20
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+opponents:
+  EPN:
+    model_dir: models/pokedecision-v3-epn
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+  GymLeader:
+    baseline: GymLeader

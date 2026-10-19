@@ -37,9 +37,13 @@ def main() -> None:
     ap.add_argument("--cache", default=None,
                     help="prepare.Split-layout cache (default: the autoresearch cache); val "
                          "files must be the autoresearch val sample (w7_build_cache.py)")
+    ap.add_argument("--kakuna-weight", type=float, default=0.0,
+                    help="policy loss = (1-w)*CE(data action) + w*CE(Kakuna probs) on rows the "
+                         "cache's train_kakuna.npy labels; data CE only elsewhere")
     args = ap.parse_args()
     if args.cache:
         H.CACHE = Path(args.cache).resolve()
+    kakuna = np.load(H.CACHE / "train_kakuna.npy", mmap_mode="r") if args.kakuna_weight else None
     budget = args.minutes * 60
     out = Path(args.out)
 
@@ -63,14 +67,26 @@ def main() -> None:
             group["lr"] = T.LR * min(1.0, (1.0 - trained / budget) / T.WARMDOWN)
         if cursor + T.BATCH > len(order):
             order, cursor, epochs = rng.permutation(data.indices), 0, epochs + 1
-        b = data.batch(order[cursor:cursor + T.BATCH], device)
+        idx = order[cursor:cursor + T.BATCH]
+        b = data.batch(idx, device)
         cursor += T.BATCH
         with torch.autocast("cuda", dtype=torch.bfloat16):
             logits, values, _ = model.forward_with_value(b["tokens"], b["numbers"])
         logits, values = logits.float(), values.float()
         v = b["valid"]
-        policy = F.cross_entropy(logits[v].masked_fill(~b["masks"][v], -torch.inf),
-                                 b["actions"][v])
+        legal = b["masks"] | ~b["masks"].any(-1, keepdim=True)  # padding rows: no -inf-only rows
+        logp = torch.log_softmax(logits.masked_fill(~legal, -torch.inf), -1)
+        data_nll = -logp[v].gather(-1, b["actions"][v].unsqueeze(-1)).squeeze(-1)
+        if kakuna is None:
+            policy = data_nll.mean()
+        else:
+            target = pad_labels(kakuna, data, idx, b["real"].shape[1]).to(device)
+            labeled = b["real"] & b["masks"].any(-1) & torch.isfinite(target).all(-1)
+            soft = -(target[labeled] * torch.where(
+                target[labeled] > 0, logp[labeled], torch.zeros_like(logp[labeled]))).sum(-1)
+            w_data = torch.where(labeled[v], 1.0 - args.kakuna_weight, 1.0)
+            policy = ((w_data * data_nll).sum() + args.kakuna_weight * soft.sum()) / (
+                w_data.sum() + args.kakuna_weight * labeled.sum())
         value = F.binary_cross_entropy_with_logits(values[b["real"]], b["outcomes"][b["real"]])
         loss = policy + T.VALUE_WEIGHT * value
         if not torch.isfinite(loss):
@@ -91,9 +107,17 @@ def main() -> None:
             next_eval += args.eval_every * 60
     summary = {**curve[-1], **H.check_contract(model, device), "curve": curve,
                "minutes": args.minutes, "seed": args.seed, "batch": T.BATCH, "lr": T.LR,
-               "cache": str(H.CACHE)}
+               "cache": str(H.CACHE), "kakuna_weight": args.kakuna_weight}
     H.save(model, out, ROOT / "autoresearch/train.py", summary)
     print("saved", out)
+
+
+def pad_labels(labels: np.ndarray, data, trajectories, n: int) -> torch.Tensor:
+    """Kakuna probs padded to the batch's [B, T, 13] layout (NaN = unlabeled or padding)."""
+    out = np.full((len(trajectories), n, labels.shape[1]), np.nan, dtype=np.float32)
+    for i, t in enumerate(trajectories):
+        out[i, :int(data.lengths[t])] = labels[data.offsets[t]:data.offsets[t + 1]]
+    return torch.from_numpy(out)
 
 
 if __name__ == "__main__":
