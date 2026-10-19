@@ -1,0 +1,76 @@
+{
+  "source_checkpoint": "checkpoints/epn/epn20",
+  "architecture": "EPN entity-pointer network (autoresearch/train.py @ f1304d9), 1,006,692 params",
+  "training": "from scratch, 20 min, pure BC + value on 285,142 pac-base Alakazam-family POVs (datasets/w6p + w6p_b), batch 32, AdamW 1e-3 + linear warmdown",
+  "final_pool": "data/teams_w7/heldout",
+  "final_manifest": "reports/w7_epn_final_manifest.json",
+  "vs_P_final": {
+    "P": {
+      "win_rate_difference": 0.236,
+      "bootstrap_95": [
+        0.188,
+        0.284
+      ],
+      "verdict": "positive",
+      "clusters": 250,
+      "seed": 20272411,
+      "resamples": 5000
+    },
+    "Grunt": {
+      "win_rate_difference": 0.204,
+      "bootstrap_95": [
+        0.166,
+        0.24404999999999927
+      ],
+      "verdict": "positive",
+      "clusters": 250,
+      "seed": 20272412,
+      "resamples": 5000
+    },
+    "GymLeader": {
+      "win_rate_difference": 0.148,
+      "bootstrap_95": [
+        0.11,
+        0.188
+      ],
+      "verdict": "positive",
+      "clusters": 250,
+      "seed": 20272413,
+      "resamples": 5000
+    }
+  },
+  "pooled_final": {
+    "win_rate_difference": 0.196,
+    "bootstrap_95": [
+      0.17133333333333334,
+      0.22133333333333333
+    ],
+    "verdict": "positive",
+    "clusters": 750,
+    "strata": {
+      "P": 250,
+      "Grunt": 250,
+      "GymLeader": 250
+    },
+    "seed": 20282411,
+    "resamples": 10000
+  },
+  "win_rates_final": {
+    "P": {
+      "P": 0.508,
+      "epn": 0.744
+    },
+    "Grunt": {
+      "P": 0.726,
+      "epn": 0.93
+    },
+    "GymLeader": {
+      "P": 0.784,
+      "epn": 0.932
+    }
+  },
+  "dev_references": {
+    "vs_Minikazam": 0.762,
+    "vs_Kakuna_flex": 0.29
+  }
+}

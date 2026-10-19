@@ -10,7 +10,8 @@ Design, roadmap and gates: `research.md`. The overriding aim is a **strong, usab
 
 ## Current state (W1–W5 done)
 
-- **Production: P** = `models/pokedecision-v2-pile`, tag `w6p-pile` (W6-P). Same 1.30M GRU as C, fine-tuned on Metamon self-play; fresh-pool final vs C +9.6 pp, Grunt +5.8, GymLeader +5.8 (`reports/w6p_pile_report.md`).
+- **Production: EPN** = `models/pokedecision-v3-epn`, tag `w7-epn` (W7). Entity-pointer network, 1.01M params, trained from scratch on the Metamon pile; fresh-pool final vs P +23.6 pp, Grunt +20.4, GymLeader +14.8, pooled +19.6 [+17.1, +22.1] (`reports/w7_epn_final_report.md`). Vs Metamon: Minikazam 76.2%, Kakuna 29.0%.
+- **Previous: P** = `models/pokedecision-v2-pile`, tag `w6p-pile` (W6-P). Same 1.30M GRU as C, fine-tuned on Metamon self-play; fresh-pool final vs C +9.6 pp, Grunt +5.8, GymLeader +5.8 (`reports/w6p_pile_report.md`).
 - **C** = `models/pokedecision-v1-value`, tag `w5-baseline`: previous champion, still the init/reference for W5–W6 scripts.
   - 1.30M GRU BC policy trained on 2025–2026 human replays, plus a probe value head and the pretrained team preview.
   - Win rate: Random 98.4%, Grunt 65.4%, GymLeader 65.8% (`reports/w4_5_final_report.md`).
@@ -29,7 +30,7 @@ Design, roadmap and gates: `research.md`. The overriding aim is a **strong, usab
   - **Autoresearch** (`autoresearch/`, karpathy pattern; `reports/ar_autoresearch_report.md`): fixed harness `prepare.py` (memory-mapped pile, stepwise `val_nll`, contract checks, cap 4.7M params, export loadable by `load_pokedecision`), agent-edited `train.py`, rules in `program.md`; `datasets/w6p/val` is sealed for promotion. Root cause of the W6-P plateau: C's mean/max token pooling loses action-slot binding (underfit; train≈val).
     - **EPN** (entity-pointer network, 1.01M; `autoresearch/train.py` on main) encodes entities with shared per-type encoders, runs one entity self-attention layer and a GRU, and scores each action against the entity it refers to.
     - `epn20` (20 min from scratch, pile only): `val_nll` 0.808 vs P 1.19; dev vs P +23.8 pp pooled [+21.3, +26.4]; vs Minikazam 76.2% (P 49.4%); **vs Kakuna (142M) 29.0% [25.2, 33.1]**, so it is not yet at Metamon's best (`reports/ar_epn_vs_kakuna.json`).
-    - Not promoted: the fresh-pool final is pending.
+    - Promoted after the W7 fresh-pool final (see Production).
   - **W6-C** (design only): format spec + candidate-action interface + compatibility checks. No UU training or VGC until the OU fast policy clearly improves. Gen 9 UU is not in Metamon `SUPPORTED_BATTLE_FORMATS` (own replays and team pool needed).
   - Later: W7 self-play league (diverse opponents and teams), W8 multi-format adaptation; error analysis from real games against the bot throughout.
 
@@ -48,7 +49,7 @@ The process is deliberately light:
 
 **Spent data (never use again for selection or evaluation):**
 - W3 and W4 test splits;
-- heldout pools `data/teams_w5/heldout`, `data/teams_w5_bs14`, `data/teams_w5_bs15`, `data/teams_w6p`.
+- heldout pools `data/teams_w5/heldout`, `data/teams_w5_bs14`, `data/teams_w5_bs15`, `data/teams_w6p`, `data/teams_w7`.
 
 Partial BS1.3/BS1.4/BS1.5 gameplay is **sealed**: never read it or merge it.
 
@@ -79,7 +80,7 @@ Showdown request + public protocol → player-view state (metamon backend)
 | `autoresearch/` | Autonomous architecture search: `prepare.py` (fixed harness: `uv run python autoresearch/prepare.py` once → `.cache/autoresearch/`), `train.py` (the only file the agent edits), `program.md` (rules + run command). Results in untracked `results.tsv` |
 | `configs/` | Training and benchmark configs (`w5_bs1_2_benchmark.yaml` = dev design) |
 | `data/teams/`, `data/teams_w5*/` | Server-validated pools. `teams_w5/collect` = self-play/rollout data, `teams_w5/dev` = selection; the rest are spent |
-| `models/` | v0, v1, `v1-value` (C), `v2-pile` (P, production), `v2-candidate` (not production), critic pilot |
+| `models/` | v0, v1, `v1-value` (C), `v2-pile` (P), `v3-epn` (EPN, production; `model.py` + state_dict, loaded via `load_research_model`), `v2-candidate` (not production), critic pilot |
 | `reports/` | Every milestone's evidence and final report; check here for details instead of this file |
 | `third_party/metamon/` | Vendored Metamon `0a00a75` + pinned Showdown (gitignored; **never patch**) |
 | `runs/`, `.cache/metamon/`, `datasets/*.npz` | Gitignored outputs and caches |
