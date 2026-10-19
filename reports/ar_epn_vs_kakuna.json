@@ -1,0 +1,135 @@
+{
+  "epn20_vs_kakuna": {
+    "completed": 500,
+    "wins": 145,
+    "win_rate": 0.29,
+    "win_rate_wilson_95": [
+      0.2519474198773656,
+      0.33125480311648636
+    ],
+    "error_count": 0,
+    "illegal_actions": 0,
+    "valid": true,
+    "problems": [],
+    "metamon": {
+      "model": "Kakuna",
+      "checkpoint": 34,
+      "checkpoint_path": "/home/thangnc/code/en-tutor/.cache/metamon/pretrained_models/blobs/c2/c25512da785582b714c5bc6e9454c91994bfcf6f48c3fa7eadee2ee34e97e95e",
+      "checkpoint_sha256": "7e7474d5b2ec6624afdeb29a7cf1dc5c84817d5aee8ec39c1d35a153b18df26c",
+      "backend": "metamon",
+      "temperature": 1.0,
+      "attention": "flex",
+      "observation_space": "OpponentMoveObservationSpace"
+    },
+    "neural": {
+      "player": "neural:checkpoints/autoresearch/epn20",
+      "checkpoint_sha256": "e3ea5e6fab905537823b69e6424533e70b3af17ba2828aeab688cefb492a4409",
+      "backend": "metamon",
+      "illegal_actions": 0,
+      "fallbacks": {
+        "struggle": 51,
+        "recharge": 1
+      }
+    },
+    "schedule": {
+      "seed": 20261018,
+      "teams": "data/teams_w5/dev",
+      "swap_team_pairs": true,
+      "player_challenges": true
+    },
+    "metamon_results": {
+      "Average Total Return (Across All Env Names)": 143.35865626127563,
+      "Average Total Return in psladder_mm6c7e22948cea": 143.35865626127563,
+      "Average Valid Actions in psladder_mm6c7e22948cea": 0.9976731100741106,
+      "Average Win Rate in psladder_mm6c7e22948cea": 0.71,
+      "Bottom Quintile Total Return in psladder_mm6c7e22948cea": -6.649999894946813
+    }
+  },
+  "grunt_vs_kakuna_sanity": {
+    "completed": 20,
+    "wins": 0,
+    "win_rate": 0.0,
+    "win_rate_wilson_95": [
+      0.0,
+      0.16112515805281938
+    ],
+    "error_count": 0,
+    "illegal_actions": 0,
+    "valid": true,
+    "problems": [],
+    "metamon": {
+      "model": "Kakuna",
+      "checkpoint": 34,
+      "checkpoint_path": "/home/thangnc/code/en-tutor/.cache/metamon/pretrained_models/blobs/c2/c25512da785582b714c5bc6e9454c91994bfcf6f48c3fa7eadee2ee34e97e95e",
+      "checkpoint_sha256": "7e7474d5b2ec6624afdeb29a7cf1dc5c84817d5aee8ec39c1d35a153b18df26c",
+      "backend": "metamon",
+      "temperature": 1.0,
+      "attention": "flex",
+      "observation_space": "OpponentMoveObservationSpace"
+    },
+    "neural": {
+      "player": "baseline:Grunt",
+      "checkpoint_sha256": null,
+      "backend": "metamon",
+      "illegal_actions": 0,
+      "fallbacks": {}
+    },
+    "schedule": {
+      "seed": 8,
+      "teams": "data/teams_w5/dev",
+      "swap_team_pairs": true,
+      "player_challenges": true
+    },
+    "metamon_results": {
+      "Average Total Return (Across All Env Names)": 208.3458598756697,
+      "Average Total Return in psladder_mmda79c24659fb": 208.3458598756697,
+      "Average Valid Actions in psladder_mmda79c24659fb": 1.0,
+      "Average Win Rate in psladder_mmda79c24659fb": 1.0,
+      "Bottom Quintile Total Return in psladder_mmda79c24659fb": 204.1576260857284
+    }
+  },
+  "epn20_vs_kakuna_smoke": {
+    "completed": 6,
+    "wins": 3,
+    "win_rate": 0.5,
+    "win_rate_wilson_95": [
+      0.1876163064826506,
+      0.8123836935173494
+    ],
+    "error_count": 0,
+    "illegal_actions": 0,
+    "valid": true,
+    "problems": [],
+    "metamon": {
+      "model": "Kakuna",
+      "checkpoint": 34,
+      "checkpoint_path": "/home/thangnc/code/en-tutor/.cache/metamon/pretrained_models/blobs/c2/c25512da785582b714c5bc6e9454c91994bfcf6f48c3fa7eadee2ee34e97e95e",
+      "checkpoint_sha256": "7e7474d5b2ec6624afdeb29a7cf1dc5c84817d5aee8ec39c1d35a153b18df26c",
+      "backend": "metamon",
+      "temperature": 1.0,
+      "attention": "flex",
+      "observation_space": "OpponentMoveObservationSpace"
+    },
+    "neural": {
+      "model_dir": "checkpoints/autoresearch/epn20",
+      "checkpoint_sha256": "e3ea5e6fab905537823b69e6424533e70b3af17ba2828aeab688cefb492a4409",
+      "backend": "metamon",
+      "illegal_actions": 0,
+      "fallbacks": {}
+    },
+    "schedule": {
+      "seed": 7,
+      "teams": "data/teams_w5/dev",
+      "swap_team_pairs": true,
+      "player_challenges": true
+    },
+    "metamon_results": {
+      "Average Total Return (Across All Env Names)": 99.67473561380757,
+      "Average Total Return in psladder_mmf44bb08ed4ae": 99.67473561380757,
+      "Average Valid Actions in psladder_mmf44bb08ed4ae": 1.0,
+      "Average Win Rate in psladder_mmf44bb08ed4ae": 0.5,
+      "Bottom Quintile Total Return in psladder_mmf44bb08ed4ae": -6.1699998176191
+    }
+  },
+  "note": "Kakuna run with --metamon-attention flex (AMAGO SlidingWindowFlexAttention, same window 96, weights strict-loaded); flash-attn unavailable for torch 2.14/cu130. EPN win rate is the player side; Kakuna sampled at temperature 1.0."
+}

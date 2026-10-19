@@ -172,15 +172,44 @@ Head-to-head against the Metamon reference (`scripts/run_metamon_h2h.py`,
 | **epn20** | **1.01M** | **0.762** | [0.723, 0.797] |
 | epn20 − P (paired) | | **+0.268 [+0.214, +0.322]** | |
 
-Alakazam (~50M, the pile's teacher) and Kakuna (~142M) cannot be loaded yet: their AMAGO
-configs require flash-attn, which is not installed.
+### Against Kakuna, Metamon's best public agent (`reports/ar_epn_vs_kakuna.json`)
+
+**How Kakuna was run.** flash-attn has no wheel for torch 2.14 / CUDA 13 and the box has no
+`nvcc`, so Kakuna runs with `--metamon-attention flex`. This swaps in AMAGO's
+`SlidingWindowFlexAttention` with the same 96-step window. Attention layers have no
+parameters, so the checkpoint still loads strictly; the numerics are not bit-identical to
+flash. Sanity checks:
+- Kakuna's own valid-action rate: 1.00 in the smoke run, 0.998 in the 500-battle run.
+- Kakuna vs Grunt: 20/20.
+
+**Result.** 500 battles, dev pool, seed 20261018, paired team swaps, 0 errors, 0 illegal
+actions. Kakuna is sampled at temperature 1.0 on the GPU; about 3.8 s per battle.
+
+| Our model | Params | Win rate vs Kakuna (142M) | Wilson 95% |
+|---|---:|---:|---|
+| epn20 | 1.01M | 0.290 | [0.252, 0.331] |
+
+EPN is clearly weaker than Kakuna: about 155 Elo below it, if win rate is read as Elo. A loss
+cannot be explained by the flex override making Kakuna weaker, so the Kakuna-side
+confirmation runs (vs Minikazam, vs GymLeader) were not needed.
+
+**Implication.** Beating Minikazam at 76% and losing to Kakuna at 29% is consistent with
+Metamon's local GXE ordering (Kakuna 76%, Minikazam 50%). It also shows that the transitive
+estimate made earlier (EPN ≈ Kakuna) was wrong.
+
+Alakazam (~50M, the pile's teacher) uses the same flash config and should load the same way;
+it has not been run yet.
 
 ## Next
 
-1. **Stronger references.** Get Alakazam and Kakuna running locally, either by installing
-   flash-attn or with a vanilla-attention override whose weights still load. Then play
-   head-to-head against Alakazam: it is the pile's own teacher, so it is the ceiling for pure
-   imitation.
+1. **Close the gap to Kakuna.** EPN imitates Alakazam-family play from only 285k POVs, trained
+   20 minutes from scratch. Kakuna saw ~4M human replays plus ~18M self-play battles at 142M.
+   Levers that keep the model small:
+   - longer training and more pile data, which now pays off because the architecture no
+     longer underfits;
+   - outcome-driven learning: filtered or critic BC, then self-play RL starting from EPN;
+   - head-to-head against Alakazam with `--metamon-attention flex`, as the ceiling for pure
+     imitation.
 2. **More loop budget for EPN.** Directions:
    - training length (20 min gave 0.862 → 0.808, so it is still improving);
    - entity features (types/effectiveness interactions);

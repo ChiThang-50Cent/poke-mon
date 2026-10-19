@@ -72,7 +72,6 @@ def sha256_file(path: Path) -> str:
 async def play(
     args, schedule, username: str, opp_username: str, out: Path
 ) -> tuple[list[dict], Any]:
-    from functools import partial
 
     from poke_env import AccountConfiguration
     from poke_env.concurrency import handle_threaded_coroutines
@@ -96,23 +95,29 @@ async def play(
             preview = TeamPreviewModel.load_from_checkpoint(
                 args.team_preview_checkpoint, device=args.device, use_argmax=True
             )
-        player = partial(
-            NeuralPlayer, model_dir=args.player.removeprefix("neural:"),
-            sample=args.sample, temperature=args.temperature, device=args.device,
-            team_preview_model=preview,
-        )(
-            battle_format="gen9ou", max_concurrent_battles=1,
-            account_configuration=AccountConfiguration(username, None),
-            server_configuration=ServerConfiguration(SERVER_WS, SERVER_HTTP),
-            log_level=logging.ERROR,
-        )
+        player_kwargs = {
+            "battle_format": "gen9ou", "max_concurrent_battles": 1,
+            "account_configuration": AccountConfiguration(username, None),
+            "server_configuration": ServerConfiguration(SERVER_WS, SERVER_HTTP),
+            "log_level": logging.ERROR,
+        }
+        if args.player.startswith("baseline:"):
+            from pokeai.env.runner import _counted_baseline
+
+            player = _counted_baseline(args.player.removeprefix("baseline:"))(**player_kwargs)
+        else:
+            player = NeuralPlayer(
+                model_dir=args.player.removeprefix("neural:"), sample=args.sample,
+                temperature=args.temperature, device=args.device,
+                team_preview_model=preview, **player_kwargs,
+            )
         records: list[dict] = []
         try:
             with (out / "battles.jsonl").open("x") as log:
                 for index, ((team, team_name), (opp_team, opp_name)) in enumerate(schedule):
                     start = time.perf_counter()
                     previous = next(reversed(player.battles), None)
-                    illegal_before = player.illegal_actions
+                    illegal_before = getattr(player, "illegal_actions", 0)
                     player.decisions = 0
                     player.last_server_error = None
                     record: dict[str, Any] = {
@@ -147,14 +152,15 @@ async def play(
                             "player" if battle.won else "opponent" if battle.lost else "tie"
                         )
                         record["turns"] = battle.turn
-                        record["team_preview"] = player.team_preview_records.get(tag)
+                        record["team_preview"] = getattr(
+                            player, "team_preview_records", {}).get(tag)
                         record["protocol_retries"]["player"] = player.protocol_retries.get(
                             tag, []
                         )
                     except Exception as exc:  # noqa: BLE001 - recorded, run aborts below
                         record["error"] = f"{type(exc).__name__}: {exc}"
                     record["decisions_player"] = player.decisions
-                    record["illegal_actions"] = player.illegal_actions - illegal_before
+                    record["illegal_actions"] = getattr(player, "illegal_actions", 0) - illegal_before
                     record["duration_s"] = time.perf_counter() - start
                     records.append(record)
                     log.write(json.dumps(record) + "\n")
@@ -174,10 +180,11 @@ async def play(
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--player", required=True, help="neural:<model_dir>")
+    parser.add_argument("--player", required=True, help="neural:<model_dir> | baseline:<Name>")
     parser.add_argument("--metamon", required=True, help="Pretrained model, e.g. Minikazam")
     parser.add_argument("--metamon-checkpoint", type=int)
     parser.add_argument("--metamon-temperature", type=float, default=1.0)
+    parser.add_argument("--metamon-attention", choices=("native", "flex"), default="native")
     parser.add_argument("--teams", default="data/teams")
     parser.add_argument("--battles", type=int, default=4)
     parser.add_argument("--seed", type=int, default=1)
@@ -189,8 +196,8 @@ def main() -> int:
     parser.add_argument("--device", default="cpu")
     parser.add_argument("--team-preview-checkpoint", default=DEFAULT_PREVIEW)
     args = parser.parse_args()
-    if not args.player.startswith("neural:"):
-        parser.error("--player must be neural:<model_dir>")
+    if not args.player.startswith(("neural:", "baseline:")):
+        parser.error("--player must be neural:<model_dir> or baseline:<Name>")
     if args.battles < 2 or args.battles % 2:
         parser.error("--battles must be a positive even number (swapped team pairs)")
     out = Path(args.out)
@@ -214,6 +221,7 @@ def main() -> int:
              "--schedule", str(out / "schedule.json"), "--info-out", str(info_path),
              "--team-log", str(team_log), "--ready-file", str(ready),
              "--temperature", str(args.metamon_temperature),
+             "--attention", args.metamon_attention,
              *(["--checkpoint", str(args.metamon_checkpoint)]
                if args.metamon_checkpoint is not None else [])],
             stdout=worker_log, stderr=subprocess.STDOUT,
@@ -247,11 +255,11 @@ def main() -> int:
     summary["metamon"] = metamon
     summary["backend"] = metamon["backend"]
     summary["neural"] = {
-        "model_dir": args.player.removeprefix("neural:"),
-        "checkpoint_sha256": player.checkpoint_sha256,
+        "player": args.player,
+        "checkpoint_sha256": getattr(player, "checkpoint_sha256", None),
         "backend": "metamon",
-        "illegal_actions": player.illegal_actions,
-        "fallbacks": dict(player.fallbacks),
+        "illegal_actions": getattr(player, "illegal_actions", 0),
+        "fallbacks": dict(getattr(player, "fallbacks", {})),
     }
     summary["illegal_actions"] = sum(r["illegal_actions"] for r in records)
     summary["errors"] = [r["error"] for r in records if r["error"]]

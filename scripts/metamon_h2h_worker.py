@@ -23,6 +23,40 @@ def sha256_file(path: str) -> str:
     return digest.hexdigest()
 
 
+def use_flex_attention() -> None:
+    """Swap FlashAttention for SlidingWindowFlexAttention after Metamon parses its gin files.
+
+    Metamon binds its overrides *before* parsing the model gin, so a plain override would be
+    clobbered; wrap `use_config` instead (vendored code stays untouched). Attention layers
+    hold no parameters, so the checkpoint loads strictly. flash_attn window (w, 0) = keys
+    q-w..q, the same set as the flex mask `q - kv <= w` with causal masking.
+    """
+    import amago.cli_utils
+    import gin
+    from amago.nets import transformer
+
+    original = amago.cli_utils.use_config
+
+    def use_config(custom_params, gin_configs=None, finalize=True):
+        original(custom_params, gin_configs, finalize=False)
+        key = "traj_encoders.TformerTrajEncoder.attention_type"
+        try:
+            window = gin.query_parameter("transformer.FlashAttention.window_size")
+        except ValueError:  # model without a FlashAttention transformer (e.g. GRU)
+            return original_finalize(finalize)
+        if window[1] != 0 or window[0] < 0:
+            raise ValueError(f"unsupported flash window {window}")
+        gin.bind_parameter(key, transformer.SlidingWindowFlexAttention)
+        gin.bind_parameter("transformer.SlidingWindowFlexAttention.window_size", window[0])
+        return original_finalize(finalize)
+
+    def original_finalize(finalize):
+        if finalize:
+            gin.finalize()
+
+    amago.cli_utils.use_config = use_config
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--model", required=True)
@@ -34,6 +68,10 @@ def main() -> None:
     parser.add_argument("--team-log", required=True)
     parser.add_argument("--ready-file", required=True)
     parser.add_argument("--temperature", type=float, default=1.0)
+    parser.add_argument(
+        "--attention", choices=("native", "flex"), default="native",
+        help="flex: replace FlashAttention (needs flash-attn) with AMAGO's "
+             "SlidingWindowFlexAttention over the same window; weights are unchanged")
     args = parser.parse_args()
     os.environ.setdefault("METAMON_CACHE_DIR", str(Path(".cache/metamon").resolve()))
 
@@ -77,6 +115,8 @@ def main() -> None:
                 }) + "\n")
             return entry["packed"]
 
+    if args.attention == "flex":
+        use_flex_attention()
     pretrained = get_pretrained_model(args.model)
     checkpoint = args.checkpoint if args.checkpoint is not None else pretrained.default_checkpoint
     agent = pretrained.initialize_agent(
@@ -92,6 +132,7 @@ def main() -> None:
         "checkpoint_sha256": sha256_file(ckpt_path),
         "backend": pretrained.battle_backend,
         "temperature": args.temperature,
+        "attention": args.attention,
         "observation_space": type(pretrained.observation_space.base_obs_space).__name__,
     }
     Path(args.info_out).write_text(json.dumps(info, indent=2) + "\n")
