@@ -38,7 +38,7 @@ TIME_BUDGET = 300           # seconds of training (wall clock, excluding startup
 MAX_LEN = 500               # trajectories longer than this are dropped (train and val)
 VAL_TRAJECTORIES = 2000
 VAL_SEED = 20261020
-MAX_PARAMS = 1_300_174     # human-set: no bigger than C (1.30M); goal = small, structured models
+MAX_PARAMS = 4_700_000     # human-set: below Metamon's smallest agent (Minikazam 4.7M); smaller wins ties
 MAX_STEP_MS = 10.0          # one live decision (batch 1, T=1) on the GPU
 KEYS = ("tokens", "numbers", "masks", "actions", "valid")
 N_ACTIONS, TOKEN_LEN, N_NUMBERS = 13, 87, 48

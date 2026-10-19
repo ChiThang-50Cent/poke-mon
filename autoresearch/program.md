@@ -11,9 +11,10 @@ self-play play better than bigger generic models. Fixed training budget on one R
 - **The cause is architectural.** Mean/max pooling of the 87 tokens loses which move or bench
   Pokémon belongs to which action slot. A slot-preserving encoder fixed most of it at a fixed
   parameter count (`reports/ar_autoresearch_report.md`).
-- **The human's goal is not scaling.** Metamon already scales (15–200M Transformers). Win
-  through inductive bias at ≤ C's size: parameter cap 1.30M, and smaller is better at equal
-  `val_nll`.
+- **The human's goal is not scaling.** Metamon already scales: Kakuna, its best public agent, is
+  ~142M; its smallest, Minikazam, is a 4.7M RNN. Win through inductive bias with a model far
+  smaller than the reference: cap 4.7M, and at equal `val_nll`, fewer parameters wins. A size
+  sweep (the same idea at several widths) is a valid experiment.
 
 ## Observation layout (fixed by `DefaultObservationSpace`; action i is tied to these slots)
 
@@ -45,7 +46,7 @@ Empty slots are `<blank>` tokens and -2.0 numbers. Actions 0–3 are moves, 4–
 ## Files
 
 - `autoresearch/prepare.py` — fixed harness: data (memory-mapped), `evaluate` (the metric),
-  `check_contract`, `save`, constants (`TIME_BUDGET`=300 s, `MAX_PARAMS`=1,300,174,
+  `check_contract`, `save`, constants (`TIME_BUDGET`=300 s, `MAX_PARAMS`=4,700,000,
   `MAX_STEP_MS`=10). **Read-only.**
 - `autoresearch/train.py` — **the only file you edit**: model, optimizer, loop.
 - `autoresearch/program.md` — this file (edited by the human).
@@ -91,7 +92,7 @@ precision, loss weights, regularization.
 - Model contract (enforced by `check_contract`, a violation crashes the run):
   `model(tokens, numbers, hidden) -> (logits[B,T,13], hidden)`, `forward_with_value`,
   `config.value_head=True`, stepwise logits == full-sequence logits (causal: no peeking at future
-  turns), <= 1,300,174 parameters, <= 10 ms per live decision.
+  turns), <= 4,700,000 parameters, <= 10 ms per live decision.
 - Inputs are only the per-turn observation (tokens, numbers). Never feed actions, outcomes or
   anything from the future into the policy input.
 - Never read `datasets/w6p/val.npz` (sealed promotion check), W3/W4 test splits, or any heldout
