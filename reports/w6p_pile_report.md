@@ -86,9 +86,23 @@ manifest) to `models/pokedecision-v2-pile`, with these results in its `metrics.j
 - Human-imitation loss rises (1.48 → 1.61): the bot plays less like the W4 humans.
 - `pokedecision-v1-value` stays the init/reference for older scripts; they are not repointed.
 
-## Next
+## Scale: 300k POVs (dev, not promoted)
 
-- A second, disjoint batch is downloaded and verified: 199,998 Alakazam-family POVs, seed 20261020,
-  no battle shared with the first 100k (`.cache/metamon/w6-pacbase-b/`, zip sha256 `d60805c3…c24f`, tar
-  sha256 `eb943e5b…e701`). Next experiment: train on 300k vs the 100k model, dev only, the new champion as
-  the reference.
+- Second, disjoint batch: 199,998 Alakazam-family POVs, seed 20261020, no battle shared with the first
+  100k (`.cache/metamon/w6-pacbase-b/`, zip sha256 `d60805c3…c24f`, tar sha256 `eb943e5b…e701`), encoded
+  to `datasets/w6p_b/` (190,103 train / 9,895 val trajectories, unknown rate 0, 99.6% valid).
+- `pile300`: same recipe, init C, train = both batches (285,142 trajectories), 3 epochs, 13.5 min.
+  Pile val (first batch) loss/acc 1.127 / 0.584 vs 1.190 / 0.560 for P; W4 val-A loss 1.645 (P 1.611).
+- Dev, `configs/w6p_scale_dev.yaml`, reference P, 500 battles per cell, 0 errors / 0 illegal:
+
+| Opponent | P win rate | pile300 − P [95% CI] |
+|---|---:|---|
+| P | 0.518 | +0.022 [−0.032, +0.076] |
+| Grunt | 0.722 | +0.022 [−0.024, +0.070] |
+| GymLeader | 0.788 | +0.018 [−0.024, +0.062] |
+| pooled | | +0.021 [−0.007, +0.049] |
+
+All inconclusive. Tripling the same-source data gives at most a small gain; P stays champion and
+`checkpoints/w6p/pile300` is kept for reference only. More battles would only resolve a ~2 pp effect,
+which would not change the next step: the cheap lever on this source looks exhausted, so the next gain
+must come from a different signal (stronger teacher such as Kakuna, or on-policy data).

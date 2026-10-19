@@ -18,7 +18,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 import yaml
-from torch.utils.data import DataLoader, Dataset
+from torch.utils.data import ConcatDataset, DataLoader, Dataset
 
 from pokeai.data.w3 import load_split
 from pokeai.data.w4_outcomes import load_outcomes
@@ -120,46 +120,49 @@ def train_epoch(model, data, device, optimizer) -> float:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--epochs", type=int, default=3)
-    parser.add_argument("--data", default="datasets/w6p")
+    parser.add_argument("--data", nargs="+", default=["datasets/w6p"],
+                        help="pile batches; train splits are concatenated, val is the first's")
+    parser.add_argument("--out", type=Path, default=OUT)
     parser.add_argument("--report", default="reports/w6p_pile_train.json")
     args = parser.parse_args()
     started = time.monotonic()
     seed_everything(SEED)
     device = torch.device("cuda")
     model, _, _ = load_pokedecision(C_DIR, device)
-    pile_train = dict(np.load(Path(args.data) / "train.npz"))
-    pile_val = dict(np.load(Path(args.data) / "val.npz"))
+    trains = [dict(np.load(Path(d) / "train.npz")) for d in args.data]
+    pile_val = dict(np.load(Path(args.data[0]) / "val.npz"))
     w4_val = load_split("val", "datasets/w4")
     w4_outcomes = load_outcomes("datasets/w4", "val", w4_val)
     idx_a = [i for i, b in enumerate(w4_val["battle_ids"]) if val_half(str(b)) == "A"]
     evals = {"w4_val_A": loader(w4_val, w4_outcomes, idx_a),
              "pile_val": loader(pile_val, pile_val["outcomes"], short(pile_val))}
-    train_idx = short(pile_train)
+    train_set = ConcatDataset([Trajectories(t, t["outcomes"], short(t)) for t in trains])
     report = {"seed": SEED, "value_weight": VALUE_WEIGHT, "lr": 1e-4, "epochs": args.epochs,
-              "max_len": MAX_LEN, "train_trajectories": len(train_idx),
-              "dropped_long": {"train": len(pile_train["offsets"]) - 1 - len(train_idx),
+              "data": args.data, "max_len": MAX_LEN, "train_trajectories": len(train_set),
+              "dropped_long": {"train": sum(len(t["offsets"]) - 1 for t in trains)
+                               - len(train_set),
                                "val": len(pile_val["offsets"]) - 1 - len(short(pile_val))},
               "C": {k: evaluate(model, v, device) for k, v in evals.items()}, "epochs_log": []}
     print(json.dumps({"C": report["C"]}), flush=True)
     optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4, weight_decay=1e-4)
     for epoch in range(1, args.epochs + 1):
-        objective = train_epoch(
-            model, loader(pile_train, pile_train["outcomes"], train_idx, shuffle=True,
-                          seed=SEED + epoch),
-            device, optimizer)
+        data = DataLoader(train_set, batch_size=16, shuffle=True, collate_fn=collate,
+                          generator=torch.Generator().manual_seed(SEED + epoch))
+        objective = train_epoch(model, data, device, optimizer)
         row = {"epoch": epoch, "train_objective": objective,
                **{k: evaluate(model, v, device) for k, v in evals.items()}}
         report["epochs_log"].append(row)
         print(json.dumps(row), flush=True)
-    OUT.mkdir(parents=True, exist_ok=True)
-    save_checkpoint(model, OUT / "best.pt")
-    shutil.copy(C_DIR / "tokenizer.json", OUT / "tokenizer.json")
+    out = args.out
+    out.mkdir(parents=True, exist_ok=True)
+    save_checkpoint(model, out / "best.pt")
+    shutil.copy(C_DIR / "tokenizer.json", out / "tokenizer.json")
     recorded = yaml.safe_load((C_DIR / "config.yaml").read_text())
     recorded["model"] = vars(model.config)
-    recorded |= {"policy_version": "w6p-pile", "init_checkpoint": str(C_DIR / "best.pt"),
+    recorded |= {"policy_version": f"w6p-{out.name}", "init_checkpoint": str(C_DIR / "best.pt"),
                  "train_data": args.data}
-    (OUT / "config.yaml").write_text(yaml.safe_dump(recorded, sort_keys=False))
-    report["checkpoint"] = str(OUT)
+    (out / "config.yaml").write_text(yaml.safe_dump(recorded, sort_keys=False))
+    report["checkpoint"] = str(out)
     report["wall_time_s"] = time.monotonic() - started
     Path(args.report).write_text(json.dumps(report, indent=2) + "\n")
 

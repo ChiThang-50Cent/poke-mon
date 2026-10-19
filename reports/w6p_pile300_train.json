@@ -1,0 +1,82 @@
+{
+  "seed": 20261019,
+  "value_weight": 0.5,
+  "lr": 0.0001,
+  "epochs": 3,
+  "data": [
+    "datasets/w6p",
+    "datasets/w6p_b"
+  ],
+  "max_len": 500,
+  "train_trajectories": 285035,
+  "dropped_long": {
+    "train": 107,
+    "val": 1
+  },
+  "C": {
+    "w4_val_A": {
+      "policy_loss": 1.481506245371117,
+      "policy_accuracy": 0.433164587885615,
+      "policy_steps": 147362,
+      "value_bce": 0.6644686950694217
+    },
+    "pile_val": {
+      "policy_loss": 1.4077617549360557,
+      "policy_accuracy": 0.4770162478188946,
+      "policy_steps": 176516,
+      "value_bce": 0.6293167429080583
+    }
+  },
+  "epochs_log": [
+    {
+      "epoch": 1,
+      "train_objective": 1.4941985967652436,
+      "w4_val_A": {
+        "policy_loss": 1.6071387064798157,
+        "policy_accuracy": 0.4238677542378632,
+        "policy_steps": 147362,
+        "value_bce": 0.6242740006418146
+      },
+      "pile_val": {
+        "policy_loss": 1.1842178491828972,
+        "policy_accuracy": 0.5624362664007795,
+        "policy_steps": 176516,
+        "value_bce": 0.5312257699241626
+      }
+    },
+    {
+      "epoch": 2,
+      "train_objective": 1.4163403426834682,
+      "w4_val_A": {
+        "policy_loss": 1.6253036744141784,
+        "policy_accuracy": 0.42647358206321845,
+        "policy_steps": 147362,
+        "value_bce": 0.6197239829648691
+      },
+      "pile_val": {
+        "policy_loss": 1.1494525844248258,
+        "policy_accuracy": 0.5756815246209975,
+        "policy_steps": 176516,
+        "value_bce": 0.5291734516468973
+      }
+    },
+    {
+      "epoch": 3,
+      "train_objective": 1.3812598248897159,
+      "w4_val_A": {
+        "policy_loss": 1.6450139596892257,
+        "policy_accuracy": 0.42547603859882466,
+        "policy_steps": 147362,
+        "value_bce": 0.6188077791948037
+      },
+      "pile_val": {
+        "policy_loss": 1.1274842182373341,
+        "policy_accuracy": 0.5843889505767182,
+        "policy_steps": 176516,
+        "value_bce": 0.5306201772044108
+      }
+    }
+  ],
+  "checkpoint": "checkpoints/w6p/pile300",
+  "wall_time_s": 803.9711710020201
+}

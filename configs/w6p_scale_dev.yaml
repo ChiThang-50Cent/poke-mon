@@ -1,0 +1,27 @@
+# W6-P scale: same recipe on 300k pile POVs (datasets/w6p + datasets/w6p_b) vs the champion P
+# (100k POVs, models/pokedecision-v2-pile), paired, dev only. One changed component: data volume.
+# Primary: vs P. Secondary: Grunt, GymLeader. Same preview model, greedy play.
+reference_arm: P
+pool: data/teams_w5/dev
+battles: 500
+arms:
+  P:
+    model_dir: models/pokedecision-v2-pile
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+  pile300:
+    model_dir: checkpoints/w6p/pile300
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+opponents:
+  P:
+    model_dir: models/pokedecision-v2-pile
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+  Grunt:
+    baseline: Grunt
+  GymLeader:
+    baseline: GymLeader
