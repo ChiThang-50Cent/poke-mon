@@ -1,0 +1,23 @@
+# W6-B search-distillation collection (reports/w6_0_distill_feasibility.md §5).
+# Learner = C + RC4 live search (greedy, same settings as the BS1.2 C+search arm); opponents
+# C / Grunt / GymLeader in equal shares; teams only from teams_w5/collect.
+seed: 20261201
+teams: data/teams_w5/collect
+learner: models/pokedecision-v1-value
+team_preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+battle_timeout_s: 3600
+# Battles per opponent per block; the budget is checked between blocks only.
+block_battles: 2
+search:
+  deadline_s: 5.0
+  margin_s: 0.3
+  min_budget_s: 0.5
+  opp_model: mixture
+  n_worlds: 8
+  n_seeds: 8
+  workers: 4
+  seed: 20261101
+opponents:
+  C: {policy: 'neural:models/pokedecision-v1-value', type: C}
+  Grunt: {policy: Grunt, type: Grunt}
+  GymLeader: {policy: GymLeader, type: GymLeader}

@@ -68,6 +68,14 @@ def test_exclude_offpolicy_and_unlogged_decisions(record):
     assert not include_decision(record, C_HASH)
 
 
+def test_search_augmented_records_are_refused_not_skipped():
+    """W6-B rows: chosen_index/probabilities are C's, the sent action may differ."""
+    record = {"checkpoint_sha256": C_HASH, "probabilities": [1.0] + [0.0] * 12,
+              "chosen_index": 0, "executed_index": 3, "search_row": 0}
+    with pytest.raises(ValueError, match="propensities"):
+        include_decision(record, C_HASH)
+
+
 @pytest.mark.parametrize("uppercase", [False, True])
 @pytest.mark.parametrize("learner", [False, True])
 @pytest.mark.parametrize("winner", ["player", "opponent"])

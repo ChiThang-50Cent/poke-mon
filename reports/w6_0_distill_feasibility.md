@@ -157,9 +157,10 @@ Every training run is GPU-minutes; the cost is in collection.
 - Opponents and N:
   - **C (primary)**: 1,000 battles per arm;
   - Grunt and GymLeader (secondary): 500 battles per arm each.
-- 2 recipes × 3 seeds. Select one (recipe, seed) by the primary Δ.
+- 2 recipes × 3 seeds. Select one (recipe, seed) by the primary Δ. *(Superseded by §7: R0 control,
+  recipe-level selection on pooled seeds, median seed.)*
 
-**Stop rule (pilot).**
+**Stop rule (pilot).** *(Superseded by §7.)*
 - If neither recipe's seed mean is positive on the primary vs-C Δ, or the selected candidate's CI
   contains 0: **stop**. Do not collect more data, do not scale.
 - Then diagnose, all offline:
@@ -188,3 +189,56 @@ Every training run is GPU-minutes; the cost is in collection.
 - If R1 and R2 both fail on the pilot, the likely cause is label noise. That is consistent with CF1, and
   the next lever is teacher quality (more pairs per decision, or a learned opponent model in place of
   the heuristic mixture), not student capacity.
+
+## 7. Agreed pilot plan (19/10/2026, after W6-A)
+
+Amends §4–5 where they differ. Nothing below has been run yet except the preflight.
+
+**Data contract.**
+- Collection: `scripts/w6b_collect.py` + `configs/w6b_collect.yaml` (one process = one lane, 4 search
+  workers; blocks of 2 battles per opponent; the time budget is checked between blocks and never
+  extended). Pilot = 2 lanes × 12 h, units `w6-distill-collect-lane{0,1}`, CPUQuota 1000% total.
+- Trajectory sidecars carry `search_augmented: true` on the learner POV. Their
+  `behavior.probabilities`/`chosen_index` are **C's**, the executed policy was C+search: these are
+  not behavior propensities. `training/critic.include_decision` (used by AWBC and the critic)
+  raises on any record with `executed_index`, so no IS/offline-RL loader can consume them silently.
+- Validation = W5.1 self-play checks (schema, leakage, C replay parity on every neural POV) + the
+  exact search-row join (`pokeai.data.search_capture`: same turn, executed = native = row action,
+  C choice = row `c_action`, every row joined once). Any error fails the run.
+- Held-out collect split: frozen right after collection, before any training, by battle id
+  (10% of battles), for teacher agreement and KL drift.
+
+**Arms.** (R0, R1, R2) × 3 seeds, all from C with the §4 hyperparameters.
+- **R0** = R1/R2 minus the teacher term: same collected trajectories, same W4 BC mixing, same KL_C,
+  lr, epochs and seeds. KL_C is zero at initialisation (student = C), so R0 is a KL-anchored BC
+  fine-tune; W6-A's no-aux control moved win rate by +2.6 pp vs C (inconclusive) on its own, which
+  is why the teacher effect is only R − R0.
+
+**Dev selection (pre-registered).**
+- Each student: 1,000 paired battles vs C (primary), 500 vs Grunt and vs GymLeader (secondary).
+- A recipe is judged on its **3 seeds pooled** (3,000 paired battles vs C). Expected 95% CI
+  half-width ≈ ±2 pp [INFERENCE: W6-A gave ±5 pp at 500 battles; 1/√N scaling].
+- Teacher attribution: Δ(R − R0) on the pooled vs-C rows, paired on the same team pairs.
+- Go to the final gate only if, for the chosen recipe (highest pooled vs-C Δ among R1/R2): the pooled
+  vs-C CI is > 0 **and** the Δ(R − R0) point estimate is > 0. The student sent to the final gate is
+  that recipe's **median-Δ seed**, not the best one.
+- Otherwise stop: an inconclusive pooled CI is a stop, not a reason for more battles or data.
+- Report label coverage, overrides, z > 1.96 overrides and decision time **per collection opponent**.
+  First offline diagnosis on a stop: R1 trained on vs-C labels only (tests the heuristic-exploitation
+  confound of §2).
+- Final gate unchanged (§5), once, for one student.
+
+**Preflight (19/10/2026, `runs/w6b-preflight`, `w6b_validation.json`): PASS.**
+- `scripts/w6b_collect.py --blocks 4`: 24 battles (8 per opponent), one lane, 42.8 min; 0 battle
+  errors, 0 illegal actions.
+- W5.1 checks on all 48 POVs pass (the 200-POV volume gate is waived for a preflight only). C replay
+  parity on all 32 neural POVs (24 learner + 8 C-opponent, both sides), 928 decisions, max
+  |Δp| = 1.0e-6.
+- Search join: 669 learner steps, 0 join errors; `search_augmented` true on all 24 learner POVs and
+  false on all 24 opponent POVs.
+- Rows: 441 no-signal, 127 overrides, 87 unsupported, 14 single-legal; mean decision 3.8 s
+  (max 4.7 s, deadline 5 s). No rollout stalls or horizon aborts.
+- Labels per opponent (overrides / z > 1.96): C 55 / 21, Grunt 43 / 18, GymLeader 29 / 9; overall
+  5.3 / 2.0 per battle, in line with BS1.2 (5.9 / 2.4).
+- Throughput ≈ 940 decisions/h per lane. Two lanes × 12 h ≈ 800 battles, ≈ 22k decisions,
+  ≈ 4.2k overrides, ≈ 1.6k at z > 1.96 [INFERENCE: linear in this preflight].

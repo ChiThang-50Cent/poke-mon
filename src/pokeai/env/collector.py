@@ -136,6 +136,9 @@ class TrajectoryCollector:
             "team_file": team_file,
             "team_preview": self.team_preview,
             "behavior": self.behavior,
+            # True: behavior.probabilities are C's, the executed policy was C+search, so
+            # they are not propensities (supervised distillation only, no IS/offline RL).
+            "search_augmented": any(b and "executed_index" in b for b in self.behavior),
             "decision_turns": self.turns,
             "public_events": self.events,
             "decision_event_counts": self.event_counts,

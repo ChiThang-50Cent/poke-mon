@@ -102,7 +102,7 @@ Setup:
   - label agreement across seeds (split-half);
   - prediction NLL of the actual opponent action vs the heuristic-mixture distribution (the missing tier-1 baseline);
   - seconds per usable label.
-- **Prerequisite, not verified:** the CF roots must carry the learner's decision history so the head's GRU can be replayed. If they don't, the roots have to be re-collected with the fixed collector, which records full trajectories.
+- **Prerequisite (checked read-only, 19/10/2026):** `runs/w5-cf1-4-*/roots.jsonl` does **not** store the learner's history (only `public_log_lines` as a count, the mask, C's probs and C's 384-d root features). The roots are, however, deterministically rebuildable from (seed, root id, group) with `cf1.build_root` (it asserts the replay equals pass 1; `scripts/cf1_4_affected.py` already rebuilds roots this way). So no new data is needed. What *is* needed is code: a lockstep shadow joint model on the learner side of the prefix replay (`cf/rollouts.make_players`), so the head's GRU sees the same observations as C. The class → sampled-world action mapping is also still unbuilt; a predicted move absent from a sampled set must be dropped and renormalised.
 - **Cost:** about 2.2 CPU-h per teacher at 5 s/root; no battles.
 - **Gate:** at least 1.2× usable labels per CPU-hour at equal or better split-half agreement. Otherwise W6-B keeps the mixture teacher.
 - **Risk:** the head learned *human* opponents. Search rollouts face bots and C, so the root prior may be mis-specified for those opponents.

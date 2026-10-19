@@ -31,6 +31,11 @@ def chosen_action_loss(logits, actions, targets):
 
 
 def include_decision(record, c_hash):
+    """C-logged on-policy decisions only. Search-augmented records (W6-B collection) carry
+    C's distribution but not the executed policy's propensity: refuse them outright."""
+    if "executed_index" in record:
+        raise ValueError("Search-augmented record: C probabilities are not behavior "
+                         "propensities; use it for supervised distillation only")
     return (
         record.get("checkpoint_sha256") == c_hash
         and record.get("behavior_probs", record.get("probabilities")) is not None
