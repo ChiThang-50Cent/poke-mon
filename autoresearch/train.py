@@ -1,7 +1,11 @@
 """Autoresearch: the ONE file the agent edits (model + optimizer + training loop).
 
-Baseline = the production architecture (C: token embeddings mean/max-pooled, numeric MLP,
-GRU 384, 13-way policy head, value head), trained from scratch for TIME_BUDGET seconds.
+Model = entity-pointer network (EPN). The observation is a fixed set of entities (our active,
+4 moves, 5 bench Pokémon, the opponent's active, global context). Each entity type has ONE
+small shared encoder; the GRU carries the battle state; each action is scored by a shared
+additive-attention scorer over the entity it refers to (move i -> actions i and 9+i, bench j ->
+action 4+j). Slot weights are shared, so the policy is permutation-equivariant over moves and
+bench slots and stays small.
 
 Rules (see program.md): the model section above `# ---- training ----` may import only torch,
 and must define `build_model()`; training code lives under `main()`.
@@ -12,16 +16,49 @@ import torch
 import torch.nn.functional as F
 from torch import nn
 
+# Token / number layout of DefaultObservationSpace (see program.md).
+ACTIVE_TOKENS = (list(range(3, 10)), list(range(72, 79)))       # ours, opponent
+ACTIVE_NUMBERS = (list(range(1, 16)), list(range(33, 48)))
+MOVE_TOKENS = [[11 + 4 * i, 12 + 4 * i, 13 + 4 * i] for i in range(4)]
+MOVE_NUMBERS = [[16 + 3 * i, 17 + 3 * i, 18 + 3 * i] for i in range(4)]
+BENCH_TOKENS = [list(range(27 + 9 * j, 35 + 9 * j)) for j in range(5)]
+BENCH_NUMBERS = [[28 + j] for j in range(5)]
+GLOBAL_TOKENS = [0, 1, 80, 81, 82, 84, 86]
+GLOBAL_NUMBERS = [0]
+
 
 @dataclass
 class Config:
     vocab_size: int = 2542
-    token_len: int = 87
-    d_model: int = 96
-    hidden_size: int = 384
-    numeric_size: int = 128
-    flatten_dim: int = 24
+    d_token: int = 48
+    d_entity: int = 96
+    hidden_size: int = 256
+    d_score: int = 128
     value_head: bool = True
+
+
+class EntityEncoder(nn.Module):
+    def __init__(self, n_tokens: int, n_numbers: int, config: Config):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(n_tokens * config.d_token + n_numbers, config.d_entity), nn.GELU(),
+            nn.Linear(config.d_entity, config.d_entity))
+
+    def forward(self, token_emb, numbers):
+        return self.net(torch.cat((token_emb.flatten(-2), numbers), -1))
+
+
+class Scorer(nn.Module):
+    """score(h, e) = w . gelu(A h + B e): one scorer shared by all slots of an action kind."""
+
+    def __init__(self, config: Config):
+        super().__init__()
+        self.query = nn.Linear(config.hidden_size, config.d_score)
+        self.key = nn.Linear(config.d_entity, config.d_score)
+        self.out = nn.Linear(config.d_score, 1)
+
+    def forward(self, h, entities):  # h [B,T,H], entities [B,T,K,E] -> [B,T,K]
+        return self.out(F.gelu(self.query(h).unsqueeze(-2) + self.key(entities))).squeeze(-1)
 
 
 class Policy(nn.Module):
@@ -30,35 +67,51 @@ class Policy(nn.Module):
         self.config = config
         self.register_buffer("feature_mean", torch.zeros(48))
         self.register_buffer("feature_std", torch.ones(48))
-        self.tokens = nn.Embedding(config.vocab_size, config.d_model)
-        self.fields = nn.Embedding(config.token_len, config.d_model)
-        self.token_projection = nn.Linear(config.d_model, config.d_model)
-        self.numeric = nn.Sequential(
-            nn.Linear(48, config.numeric_size), nn.GELU(),
-            nn.Linear(config.numeric_size, config.numeric_size), nn.GELU())
-        self.token_flatten = nn.Linear(config.d_model, config.flatten_dim)
+        for name, rows in (("active_tokens", ACTIVE_TOKENS), ("move_tokens", MOVE_TOKENS),
+                           ("bench_tokens", BENCH_TOKENS), ("active_numbers", ACTIVE_NUMBERS),
+                           ("move_numbers", MOVE_NUMBERS), ("bench_numbers", BENCH_NUMBERS)):
+            self.register_buffer(name, torch.tensor(rows), persistent=False)
+        self.register_buffer("global_tokens", torch.tensor(GLOBAL_TOKENS), persistent=False)
+        self.register_buffer("global_numbers", torch.tensor(GLOBAL_NUMBERS), persistent=False)
+        self.tokens = nn.Embedding(config.vocab_size, config.d_token)
+        self.side = nn.Parameter(torch.zeros(2, config.d_entity))
+        self.active = EntityEncoder(7, 15, config)
+        self.move = EntityEncoder(3, 3, config)
+        self.bench = EntityEncoder(8, 1, config)
+        self.context = EntityEncoder(len(GLOBAL_TOKENS), len(GLOBAL_NUMBERS), config)
         self.fusion = nn.Sequential(
-            nn.Linear(config.token_len * config.flatten_dim + config.numeric_size,
-                      config.hidden_size), nn.GELU())
+            nn.Linear(5 * config.d_entity, config.hidden_size), nn.GELU())
         self.memory = nn.GRU(config.hidden_size, config.hidden_size, batch_first=True)
-        self.policy = nn.Linear(config.hidden_size, 13)
+        self.move_score = Scorer(config)
+        self.tera_score = Scorer(config)
+        self.switch_score = Scorer(config)
         self.value = nn.Linear(config.hidden_size, 1)
 
-    def features(self, tokens, numbers, hidden):
-        positions = torch.arange(self.config.token_len, device=tokens.device)
-        embedded = F.gelu(self.token_projection(self.tokens(tokens) + self.fields(positions)))
-        categorical = self.token_flatten(embedded).flatten(-2)  # keeps each field's slot
-        numerical = self.numeric((numbers - self.feature_mean) / self.feature_std)
-        fused = self.fusion(torch.cat((categorical, numerical), -1))
-        return self.memory(fused, hidden)
+    def encode(self, tokens, numbers):
+        emb = self.tokens(tokens)                                   # [B,T,87,D]
+        num = (numbers - self.feature_mean) / self.feature_std      # [B,T,48]
+        active = self.active(emb[..., self.active_tokens, :], num[..., self.active_numbers])
+        active = active + self.side                                 # [B,T,2,E]
+        moves = self.move(emb[..., self.move_tokens, :], num[..., self.move_numbers])
+        bench = self.bench(emb[..., self.bench_tokens, :], num[..., self.bench_numbers])
+        context = self.context(emb[..., self.global_tokens, :], num[..., self.global_numbers])
+        state = torch.cat((context, active.flatten(-2), moves.mean(-2), bench.mean(-2)), -1)
+        return self.fusion(state), moves, bench
+
+    def run(self, tokens, numbers, hidden):
+        state, moves, bench = self.encode(tokens, numbers)
+        h, hidden = self.memory(state, hidden)
+        logits = torch.cat((self.move_score(h, moves), self.switch_score(h, bench),
+                            self.tera_score(h, moves)), -1)
+        return logits, h, hidden
 
     def forward(self, tokens, numbers, hidden=None):
-        features, hidden = self.features(tokens, numbers, hidden)
-        return self.policy(features), hidden
+        logits, _, hidden = self.run(tokens, numbers, hidden)
+        return logits, hidden
 
     def forward_with_value(self, tokens, numbers, hidden=None):
-        features, hidden = self.features(tokens, numbers, hidden)
-        return self.policy(features), self.value(features).squeeze(-1), hidden
+        logits, h, hidden = self.run(tokens, numbers, hidden)
+        return logits, self.value(h).squeeze(-1), hidden
 
 
 def build_model() -> Policy:
