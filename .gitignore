@@ -12,4 +12,5 @@ shard-*.tar.part
 datasets/w4/outcomes.json
 datasets/w4/outcomes_holdout.json
 datasets/w4/*.npz
+datasets/w6a/*.npz
 models/*/feature_cache.pt
