@@ -1,0 +1,39 @@
+# W6-P one-shot final: checkpoints/w6p/pile vs C on the FRESH heldout pool data/teams_w6p/heldout
+# (build_teamset.py --w5-fresh-heldout --seed 20262301, disjoint from every used and spent pool).
+# Same design as the dev run (configs/w6p_dev.yaml) minus the control arm: 500 battles per cell =
+# 250 team pairs, both directions, alternating challenger, greedy, same preview model.
+# Run:  uv run python scripts/evaluate_w5.py --config configs/w6p_final.yaml --final \
+#         --seed 20262311 --out reports/w6p_final_benchmark.json
+# Gate (pre-registered, reports/w6_0_distill_feasibility.md §5): promote only if the pooled CI
+# (all three opponents, team-pair clusters) > 0, the vs-C CI > 0, no opponent CI entirely < 0,
+# illegal_actions = 0 and battle errors = 0.
+run:
+  final: true
+  release_manifest: reports/w6p_final_manifest.json
+  label: W6-P final bundle (pile vs C)
+  code_commit: 8bfe74f
+  seed: 20262311
+reference_arm: C
+pool: data/teams_w6p/heldout
+battles: 500
+arms:
+  C:
+    model_dir: models/pokedecision-v1-value
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+  pile:
+    model_dir: checkpoints/w6p/pile
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+opponents:
+  C:
+    model_dir: models/pokedecision-v1-value
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+  Grunt:
+    baseline: Grunt
+  GymLeader:
+    baseline: GymLeader

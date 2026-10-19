@@ -127,30 +127,33 @@ def main() -> None:
     config_file = Path(args.config)
     config_rel = M.rel((ROOT / config_file).resolve())
     config = yaml.safe_load((ROOT / config_rel).read_text())
-    search = config["arms"]["C+search"]["search"]
-    c_dir = ROOT / config["arms"]["C+search"]["model_dir"]
-    preview = ROOT / config["arms"]["C+search"]["preview_checkpoint"]
+    models = [*config["arms"].values(), *config["opponents"].values()]
+    model_dirs = sorted({ROOT / m["model_dir"] for m in models if "model_dir" in m})
+    previews = sorted({ROOT / m["preview_checkpoint"] for m in models if "preview_checkpoint" in m})
+    search = next((m["search"] for m in config["arms"].values() if "search" in m), None)
     driver = ROOT / "src/pokeai/cf/sim_driver.js"
     pool = ROOT / config["pool"]
     status = M.run("git", "status", "--porcelain", "--untracked-files=no").splitlines()
     manifest = {
-        "release_candidate": LABEL,
-        "code_commit": CODE_COMMIT,
+        "release_candidate": config["run"].get("label", LABEL),
+        "code_commit": config["run"].get("code_commit", CODE_COMMIT),
         "git": {"commit": M.run("git", "rev-parse", "HEAD"), "uncommitted_tracked_files": status,
                 "note": "files are hashed below regardless of commit state"},
-        "c_checkpoint": {M.rel(p): M.sha(p) for p in sorted(c_dir.iterdir()) if p.is_file()},
-        "preview_checkpoint": {M.rel(preview): M.sha(preview)},
+        "c_checkpoint": {M.rel(p): M.sha(p) for d in model_dirs for p in sorted(d.iterdir())
+                         if p.is_file()},
+        "preview_checkpoint": {M.rel(p): M.sha(p) for p in previews},
         "tokenizer": {M.rel(p): M.sha(p) for p in
-                      [c_dir / "tokenizer.json",
+                      [*(d / "tokenizer.json" for d in model_dirs),
                        *sorted((ROOT / "third_party/metamon/metamon/tokenizer").glob("*.json"))]},
-        "belief_sampler_data": {M.rel(p): M.sha(p) for p in M.belief_data_files()},
+        "belief_sampler_data": ({M.rel(p): M.sha(p) for p in M.belief_data_files()}
+                                if search else {}),
         "code_live_path": {M.rel(p): M.sha(p) for p in M.live_path_modules()},
         "scripts": {M.rel(ROOT / "scripts" / n): M.sha(ROOT / "scripts" / n) for n in SCRIPTS},
         "sim_driver_js": {M.rel(driver): M.sha(driver)},
         "showdown": M.showdown_state(),
         "benchmark_config": {
             "file": config_rel, "sha256": M.sha(ROOT / config_rel), "parsed": config,
-            "frozen_search_parameters": {
+            "frozen_search_parameters": None if search is None else {
                 "D_s": search["deadline_s"], "M_s": search["margin_s"],
                 "min_budget_s": search["min_budget_s"], "opp_model": search["opp_model"],
                 "n_worlds": search["n_worlds"], "n_seeds": search["n_seeds"],
