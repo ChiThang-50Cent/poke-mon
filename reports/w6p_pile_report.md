@@ -1,8 +1,8 @@
-# W6-P: fine-tune C on Metamon self-play (Alakazam-family POVs) — dev result
+# W6-P: fine-tune C on Metamon self-play (Alakazam-family POVs)
 
-**Verdict: strongest dev signal of the project so far; not yet promoted.** On the dev pool, C fine-tuned on
-Metamon self-play beats C by about +10 pp against every opponent, while the identical recipe on W4 human
-data (the W6-A `control` arm) is flat. The one final evaluation on a fresh pool has not been run.
+**Verdict: promoted.** C fine-tuned on Metamon self-play beats C on dev (+10 pp vs every opponent; the
+same recipe on W4 human data is flat) and passes the one-shot final gate on a fresh pool (pooled
++7.1 pp [+4.0, +10.1]). New champion: `models/pokedecision-v2-pile` (same 1.30M GRU, same speed).
 
 ## Data
 
@@ -54,18 +54,41 @@ greedy play, same preview model. 4,500 battles in 19 min; every cell valid (0 il
 - The control arm rules out "more fine-tuning" as the cause: the same recipe on human data does nothing.
 - All three CIs exclude 0, including the primary opponent C.
 
+## Final (one-shot, fresh pool)
+
+- Pool `data/teams_w6p/heldout`: `build_teamset.py --w5-fresh-heldout --seed 20262301 --exclude-dirs`
+  over `teams/gen9ou`, `teams_w5/{collect,dev,heldout}`, `teams_w5_bs14/heldout`, `teams_w5_bs15/heldout`;
+  200 server-validated teams.
+- Frozen bundle `reports/w6p_final_manifest.json` (code, both checkpoints, config, team files, Showdown,
+  versions; `bs14_manifest.py` now also handles policy-only configs) verified before the claim.
+  A first launch was refused before any claim or battle: the systemd unit resolved a different Node
+  (v22.22.1) from the frozen one (v22.20.0). Relaunched with the frozen PATH.
+- `configs/w6p_final.yaml`, seed 20262311, 500 battles per cell (250 pair clusters), C and pile arms.
+  3,000 battles, all cells valid, 0 illegal actions, 0 errors.
+- Pooled CI: cluster bootstrap within opponent strata (the BS1.2 `stratified` method), 10,000
+  resamples (`reports/w6p_final_pooled.json`).
+
+| Opponent | C win rate | pile win rate | pile − C [95% CI] |
+|---|---:|---:|---|
+| C | 0.526 | 0.622 | **+0.096 [+0.040, +0.152]** |
+| Grunt | 0.620 | 0.678 | **+0.058 [+0.006, +0.110]** |
+| GymLeader | 0.658 | 0.716 | **+0.058 [+0.002, +0.112]** |
+| pooled | | | **+0.071 [+0.040, +0.101]** |
+
+Gate (`w6_0_distill_feasibility.md` §5): pooled CI > 0 ✔, vs-C CI > 0 ✔, no opponent CI < 0 ✔,
+illegal actions 0 ✔, errors 0 ✔ → **PASS**. The checkpoint was copied unchanged (sha256 equal to the
+manifest) to `models/pokedecision-v2-pile`, with these results in its `metrics.json`.
+
 ## Caveats
 
-- Dev only. Selection on dev is trivial here (one candidate), but the fresh-pool evaluation is still
-  required before promotion.
-- The pile's teams come from Metamon team sets, not from our pools; the gain could partly be
-  team-distribution effects. The fresh pool tests this.
-- Human-imitation loss rises (1.48 → 1.61). That is not a gate, but the bot will play less human-like.
+- Against the heuristics the gain shrinks from ~+10 pp (dev) to ~+6 pp (fresh), and those lower CI bounds
+  are near 0; the vs-C gain holds (+9.6).
+- Human-imitation loss rises (1.48 → 1.61): the bot plays less like the W4 humans.
+- `pokedecision-v1-value` stays the init/reference for older scripts; they are not repointed.
 
 ## Next
 
-1. One final paired evaluation of `checkpoints/w6p/pile` vs C, Grunt, GymLeader on a fresh pool
-   (`build_teamset.py --w5-fresh-heldout --exclude-dirs` over every used and spent pool), with the §5 gate
-   from `w6_0_distill_feasibility.md`.
-2. If it passes: promote. Scaling the pile (more POVs, other strong families, epochs) is the next lever,
-   at roughly 1 GB of download per 100k POVs via the same Colab filter.
+- A second, disjoint batch is downloaded and verified: 199,998 Alakazam-family POVs, seed 20261020,
+  no battle shared with the first 100k (`.cache/metamon/w6-pacbase-b/`, zip sha256 `d60805c3…c24f`, tar
+  sha256 `eb943e5b…e701`). Next experiment: train on 300k vs the 100k model, dev only, the new champion as
+  the reference.

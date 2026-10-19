@@ -1,0 +1,60 @@
+{
+  "source_checkpoint": "checkpoints/w6p/pile",
+  "final_pool": "data/teams_w6p/heldout",
+  "vs_C_final": {
+    "C": {
+      "win_rate_difference": 0.096,
+      "bootstrap_95": [
+        0.04,
+        0.15204999999999927
+      ],
+      "verdict": "positive",
+      "clusters": 250,
+      "seed": 20272311,
+      "resamples": 5000
+    },
+    "Grunt": {
+      "win_rate_difference": 0.058,
+      "bootstrap_95": [
+        0.006,
+        0.11
+      ],
+      "verdict": "positive",
+      "clusters": 250,
+      "seed": 20272312,
+      "resamples": 5000
+    },
+    "GymLeader": {
+      "win_rate_difference": 0.058,
+      "bootstrap_95": [
+        0.002,
+        0.112
+      ],
+      "verdict": "positive",
+      "clusters": 250,
+      "seed": 20272313,
+      "resamples": 5000
+    }
+  },
+  "pooled_final": {
+    "win_rate_difference": 0.07066666666666667,
+    "bootstrap_95": [
+      0.04,
+      0.10133333333333333
+    ],
+    "verdict": "positive",
+    "clusters": 750,
+    "strata": {
+      "C": 250,
+      "Grunt": 250,
+      "GymLeader": 250
+    },
+    "seed": 20282311,
+    "resamples": 10000
+  },
+  "win_rates_final": {
+    "C": 0.622,
+    "Grunt": 0.678,
+    "GymLeader": 0.716
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "source": {
+    "source": "jakegrigsby/metamon-parsed-pile pac-base/gen9ou.tar.lz4",
+    "families": [
+      "alakazam",
+      "alakazamdefault",
+      "pac-mm-alakazam"
+    ],
+    "seed": 20261020,
+    "pool": 952816,
+    "excluded_battles_from_first_100k": 100000,
+    "files": 199998,
+    "one_pov_per_battle": true,
+    "tar_sha256": "eb943e5ba629d4ddfb4b297d0963332782a26f5e5001571b7e96639263cde701",
+    "tar_bytes": 1975726080
+  },
+  "splits": {
+    "train": {
+      "trajectories": 190103,
+      "decisions": 6963167,
+      "valid_decisions": 6932742,
+      "excluded_by_reason": {
+        "missing": 0,
+        "action_minus_one": 0,
+        "action_out_of_range": 0,
+        "chosen_not_in_mask": 30425,
+        "empty_mask": 9
+      },
+      "unknown_token_rate": 0.0,
+      "all_finite": true,
+      "win_rate": 0.5981336236000061,
+      "families": {
+        "alakazam": 151135,
+        "alakazamdefault": 29453,
+        "pac-mm-alakazam": 9515
+      },
+      "action_class_histogram": [
+        1226101,
+        1176712,
+        1150008,
+        1003750,
+        782614,
+        520108,
+        423693,
+        324900,
+        151470,
+        48581,
+        46100,
+        40677,
+        38028
+      ]
+    },
+    "val": {
+      "trajectories": 9895,
+      "decisions": 359830,
+      "valid_decisions": 358203,
+      "excluded_by_reason": {
+        "missing": 0,
+        "action_minus_one": 0,
+        "action_out_of_range": 0,
+        "chosen_not_in_mask": 1627,
+        "empty_mask": 0
+      },
+      "unknown_token_rate": 0.0,
+      "all_finite": true,
+      "win_rate": 0.5964628458023071,
+      "families": {
+        "alakazam": 7892,
+        "pac-mm-alakazam": 526,
+        "alakazamdefault": 1477
+      },
+      "action_class_histogram": [
+        64103,
+        60605,
+        59193,
+        51466,
+        40287,
+        27434,
+        21662,
+        16602,
+        7787,
+        2515,
+        2450,
+        2094,
+        2005
+      ]
+    }
+  }
+}

@@ -16,3 +16,4 @@ datasets/w6a/*.npz
 models/*/feature_cache.pt
 .omp/
 datasets/w6p/*.npz
+datasets/w6p_b/*.npz

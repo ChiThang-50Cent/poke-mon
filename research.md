@@ -208,6 +208,7 @@ Search off vs shallow search on difficult states; đo Elo gain và cost/turn.
 | **W5**    | C+Belief Search (RC4, 5 s/decision): dev Δ +0,267 [0,210; 0,323]. Chưa có heldout xác nhận. Các biến thể AWBC/GAE và CF head đã thử được đóng.                                  | `reports/w5_bs1_2_report.md`, `reports/w5_bs1_5_closure.md` |
 | **W6.0**  | Distillation feasibility: log BS1.2 không có observation nên chỉ dùng để thiết kế; cần collection mới và sửa bug executed-action trong collector khi bật search + trajectories. | `reports/w6_0_distill_feasibility.md`                       |
 | **W6-A (tier 1–2)** | Opponent head: the joint-trained head beats the count baselines (val-B NLL 2.43 vs 2.89, top-1 31.9% vs 24.1%); the frozen-C head does not. Paired dev battles vs C, joint − C: −1.4 / −0.4 / −3.2 pp (C / Grunt / GymLeader), all CIs contain 0. No policy gain, so no checkpoint promoted. Tier 3 (teacher impact) not yet run. | `reports/w6a_opp_head_report.md` |
+| **W6-P** | C fine-tuned on 100k Metamon self-play POVs (pac-base gen9ou, Alakazam family), W6-A control recipe. Dev: +10,2 / +9,6 / +11,0 pp (C / Grunt / GymLeader), control flat. **Final on fresh pool `data/teams_w6p/heldout`: +9,6 / +5,8 / +5,8 pp, pooled +7,1 [+4,0; +10,1]; gate PASS → promoted as `models/pokedecision-v2-pile` (same 1,30M GRU).** | `reports/w6p_pile_report.md` |
 
 Số liệu BS1.2 là dev, và dev pool đã dùng cho QA/requalification nên +26,7 pp có thể lạc quan. Không dùng nó làm bằng chứng final.
 

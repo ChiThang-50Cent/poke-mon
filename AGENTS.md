@@ -10,7 +10,8 @@ Design, roadmap and gates: `research.md`. The overriding aim is a **strong, usab
 
 ## Current state (W1–W5 done)
 
-- **Production: C** = `models/pokedecision-v1-value`, tag `w5-baseline`.
+- **Production: P** = `models/pokedecision-v2-pile`, tag `w6p-pile` (W6-P). Same 1.30M GRU as C, fine-tuned on Metamon self-play; fresh-pool final vs C +9.6 pp, Grunt +5.8, GymLeader +5.8 (`reports/w6p_pile_report.md`).
+- **C** = `models/pokedecision-v1-value`, tag `w5-baseline`: previous champion, still the init/reference for W5–W6 scripts.
   - 1.30M GRU BC policy trained on 2025–2026 human replays, plus a probe value head and the pretrained team preview.
   - Win rate: Random 98.4%, Grunt 65.4%, GymLeader 65.8% (`reports/w4_5_final_report.md`).
 - **C+Belief Search** (RC4, tag `w5-bs-rc4`) = live root-level search over sampled opponent hidden sets with paired rollouts, 5 s/decision. It is opt-in via `NeuralPlayer(search=LiveSearch)`, or arm `search:` in `evaluate_w5.py`.
@@ -24,7 +25,7 @@ Design, roadmap and gates: `research.md`. The overriding aim is a **strong, usab
   - **W6.0** done: distillation feasibility (`reports/w6_0_distill_feasibility.md`). The collector executed-action bug is fixed (`executed_index` + `search_row` in behavior; C's `chosen_index`/probs kept for replay parity).
   - **W6-A** tiers 1–2 done (`reports/w6a_opp_head_report.md`). Labels: `scripts/w6a_build_opp_labels.py` → `datasets/w6a/` (other POV, non-forced row pairing). Head: `PokeDecisionConfig.opponent_classes`. The joint-trained head beats the count baselines, but joint play is not stronger than C (all paired CIs contain 0), so nothing is promoted. Tier 3 (head as search root opponent model, measured on teacher label yield/cost) is proposed, not run. Inputs must be the player view at the simultaneous choice: nothing from the opponent's action in the turn being predicted.
   - **W6-B** (core, independent of W6-A): selective search distillation with the current teacher once labels are confirmed reliable; a better W6-A teacher only feeds the next round. Primary gate: student vs C without search. Collection: `scripts/w6b_collect.py` + `configs/w6b_collect.yaml` (validates the search-row join via `data/search_capture.py`); preflight PASS. Plan, R0 control and pre-registered selection: `reports/w6_0_distill_feasibility.md` §7. Search-augmented trajectories (`search_augmented: true`) are for supervised distillation only: C's probabilities are not propensities, and `critic.include_decision` refuses them.
-  - **W6-P** (dev result, not promoted): C fine-tuned on 100k Metamon self-play POVs (pac-base gen9ou, Alakazam family; filtered on Colab, `.cache/metamon/w6-pacbase/`) with the W6-A control recipe beats C on dev by about +10 pp vs C/Grunt/GymLeader (all CIs > 0); the same recipe on W4 is flat. `scripts/w6p_build_pile.py`, `scripts/train_w6p_pile.py`, `reports/w6p_pile_report.md`. Pending: one fresh-pool final evaluation. The W6-B search pilot is paused (cost).
+  - **W6-P done, promoted**: C fine-tuned on 100k Metamon self-play POVs (pac-base gen9ou, Alakazam family; filtered on Colab, `.cache/metamon/w6-pacbase/`) with the W6-A control recipe. Final on fresh `data/teams_w6p/heldout` (now spent): +9.6 / +5.8 / +5.8 pp vs C/Grunt/GymLeader, pooled +7.1 [+4.0, +10.1]. `scripts/w6p_build_pile.py`, `scripts/train_w6p_pile.py`, `reports/w6p_pile_report.md`. A second disjoint batch (199,998 POVs) sits in `.cache/metamon/w6-pacbase-b/`. The W6-B search pilot is paused (cost).
   - **W6-C** (design only): format spec + candidate-action interface + compatibility checks. No UU training or VGC until the OU fast policy clearly improves. Gen 9 UU is not in Metamon `SUPPORTED_BATTLE_FORMATS` (own replays and team pool needed).
   - Later: W7 self-play league (diverse opponents and teams), W8 multi-format adaptation; error analysis from real games against the bot throughout.
 
@@ -43,7 +44,7 @@ The process is deliberately light:
 
 **Spent data (never use again for selection or evaluation):**
 - W3 and W4 test splits;
-- heldout pools `data/teams_w5/heldout`, `data/teams_w5_bs14`, `data/teams_w5_bs15`.
+- heldout pools `data/teams_w5/heldout`, `data/teams_w5_bs14`, `data/teams_w5_bs15`, `data/teams_w6p`.
 
 Partial BS1.3/BS1.4/BS1.5 gameplay is **sealed**: never read it or merge it.
 
