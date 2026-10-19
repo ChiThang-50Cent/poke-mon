@@ -137,6 +137,7 @@ WEIGHT_DECAY = 1e-4
 BATCH = 16
 VALUE_WEIGHT = 0.5
 GRAD_CLIP = 1.0
+WARMDOWN = 0.5   # fraction of the budget spent decaying LR linearly to 0
 SEED = 20261019
 
 
@@ -166,6 +167,9 @@ def main() -> None:
     model.train()
     while trained < H.TIME_BUDGET:
         tick = time.time()
+        progress = trained / H.TIME_BUDGET
+        for group in optimizer.param_groups:  # constant, then linear warmdown to 0
+            group["lr"] = LR * min(1.0, (1.0 - progress) / WARMDOWN)
         if cursor + BATCH > len(order):
             order, cursor = rng.permutation(data.indices), 0
         b = data.batch(order[cursor:cursor + BATCH], device)
