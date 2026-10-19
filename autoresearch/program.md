@@ -1,20 +1,52 @@
 # autoresearch: policy architecture/optimizer search for the gen9ou bot
 
-Adapted from karpathy/autoresearch. You are an autonomous researcher improving how well a small
-recurrent policy imitates strong self-play play, under a fixed training budget on one RTX 3060.
+Adapted from karpathy/autoresearch. You are an autonomous researcher looking for a **small policy
+whose architecture fits the structure of a Pokémon decision**, so that it imitates strong
+self-play play better than bigger generic models. Fixed training budget on one RTX 3060.
 
 ## Why this loop exists
 
-The production policy (1.30M GRU) underfits the Metamon self-play pile: train and val loss are
-almost equal, and 3x more data moved held-out accuracy only 0.560 -> 0.584
-(`reports/w6p_pile_report.md`). The bottleneck is the model/optimizer, not data. Metamon found
-the same for small GRUs and moved to 15M+ Transformers. This loop searches the space cheaply.
+- **The production policy underfits.** The 1.30M GRU fits the Metamon self-play pile almost
+  equally on train and val, and 3x more data barely helped (`reports/w6p_pile_report.md`).
+- **The cause is architectural.** Mean/max pooling of the 87 tokens loses which move or bench
+  Pokémon belongs to which action slot. A slot-preserving encoder fixed most of it at a fixed
+  parameter count (`reports/ar_autoresearch_report.md`).
+- **The human's goal is not scaling.** Metamon already scales (15–200M Transformers). Win
+  through inductive bias at ≤ C's size: parameter cap 1.30M, and smaller is better at equal
+  `val_nll`.
+
+## Observation layout (fixed by `DefaultObservationSpace`; action i is tied to these slots)
+
+Token positions (87):
+
+| Positions | Content |
+|---|---|
+| 0–1 | format, forced-switch flag |
+| 2–9 | `<player>`, then the active Pokémon: name, item, ability, type1, type2, effect, status |
+| 10–25 | four moves × [`<move>`, name, type, category]. Move slot i is at 10+4i; actions i and 9+i |
+| 26–70 | five bench Pokémon × [`<switch>`, name, item, ability, `<moveset>`, four move names]. Switch slot j is at 26+9j; action 4+j |
+| 71–78 | `<opponent>`, then the opponent's active Pokémon (same 7 fields as ours) |
+| 79–82 | `<conditions>`, weather, player side conditions, opponent side conditions |
+| 83–86 | `<player_prev>`, our previous move, `<opp_prev>`, the opponent's previous move |
+
+Numbers (48):
+
+| Positions | Content |
+|---|---|
+| 0 | opponents remaining / 6 |
+| 1–15 | our active Pokémon: hp, level, 6 base stats, 7 boosts |
+| 16–27 | four moves × [power, accuracy, priority] |
+| 28–32 | HP of the five bench Pokémon |
+| 33–47 | the opponent's active Pokémon (same 15 fields as ours) |
+
+Empty slots are `<blank>` tokens and -2.0 numbers. Actions 0–3 are moves, 4–8 are switches,
+9–12 are moves with Tera.
 
 ## Files
 
 - `autoresearch/prepare.py` — fixed harness: data (memory-mapped), `evaluate` (the metric),
-  `check_contract`, `save`, constants (`TIME_BUDGET`=300 s, `MAX_PARAMS`=20M, `MAX_STEP_MS`=10).
-  **Read-only.**
+  `check_contract`, `save`, constants (`TIME_BUDGET`=300 s, `MAX_PARAMS`=1,300,174,
+  `MAX_STEP_MS`=10). **Read-only.**
 - `autoresearch/train.py` — **the only file you edit**: model, optimizer, loop.
 - `autoresearch/program.md` — this file (edited by the human).
 
@@ -59,7 +91,7 @@ precision, loss weights, regularization.
 - Model contract (enforced by `check_contract`, a violation crashes the run):
   `model(tokens, numbers, hidden) -> (logits[B,T,13], hidden)`, `forward_with_value`,
   `config.value_head=True`, stepwise logits == full-sequence logits (causal: no peeking at future
-  turns), <= 20M parameters, <= 10 ms per live decision.
+  turns), <= 1,300,174 parameters, <= 10 ms per live decision.
 - Inputs are only the per-turn observation (tokens, numbers). Never feed actions, outcomes or
   anything from the future into the policy input.
 - Never read `datasets/w6p/val.npz` (sealed promotion check), W3/W4 test splits, or any heldout
@@ -70,10 +102,10 @@ precision, loss weights, regularization.
 
 ## Decide keep/discard
 
-- Keep if `val_nll` improves by more than the noise threshold **0.005** (to be refined from
-  repeat baselines), or is within noise and the code is simpler.
+- Keep if `val_nll` improves by more than the noise threshold **0.005** (repeat baselines differ
+  by ~0.004), or is within noise with fewer parameters or simpler code.
 - Simplicity criterion as in the original: small gains that add ugly complexity are not worth it;
-  equal results with less code are a win.
+  equal results with less code or fewer parameters are a win.
 - Keep: commit stays, branch advances. Discard: `git reset --hard` to the previous keep.
 
 ## Logging
