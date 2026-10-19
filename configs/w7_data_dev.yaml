@@ -1,0 +1,32 @@
+# W7 lever 1 (more data), dev only. Same EPN architecture and recipe.
+# - EPN: production, 20 min, 285k pile POVs.
+# - long60: 60 min, the same 285k POVs (the control for "more compute only").
+# - pile953_60: 60 min, 905k train POVs (every Alakazam-family POV of pac-base, one per battle).
+# Primary: pile953_60 vs long60 (data only) and vs EPN (candidate vs champion).
+reference_arm: EPN
+pool: data/teams_w5/dev
+battles: 500
+arms:
+  EPN:
+    model_dir: models/pokedecision-v3-epn
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+  long60:
+    model_dir: checkpoints/epn/long60
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+  pile953_60:
+    model_dir: checkpoints/epn/pile953_60
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+opponents:
+  EPN:
+    model_dir: models/pokedecision-v3-epn
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+  GymLeader:
+    baseline: GymLeader

@@ -34,7 +34,12 @@ def main() -> None:
     ap.add_argument("--eval-every", type=float, default=10.0, help="minutes of training")
     ap.add_argument("--out", required=True)
     ap.add_argument("--seed", type=int, default=T.SEED)
+    ap.add_argument("--cache", default=None,
+                    help="prepare.Split-layout cache (default: the autoresearch cache); val "
+                         "files must be the autoresearch val sample (w7_build_cache.py)")
     args = ap.parse_args()
+    if args.cache:
+        H.CACHE = Path(args.cache).resolve()
     budget = args.minutes * 60
     out = Path(args.out)
 
@@ -85,7 +90,8 @@ def main() -> None:
             model.train()
             next_eval += args.eval_every * 60
     summary = {**curve[-1], **H.check_contract(model, device), "curve": curve,
-               "minutes": args.minutes, "seed": args.seed, "batch": T.BATCH, "lr": T.LR}
+               "minutes": args.minutes, "seed": args.seed, "batch": T.BATCH, "lr": T.LR,
+               "cache": str(H.CACHE)}
     H.save(model, out, ROOT / "autoresearch/train.py", summary)
     print("saved", out)
 

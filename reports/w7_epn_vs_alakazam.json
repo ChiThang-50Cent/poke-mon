@@ -1,0 +1,46 @@
+{
+  "completed": 500,
+  "wins": 206,
+  "win_rate": 0.412,
+  "win_rate_wilson_95": [
+    0.369688475931219,
+    0.4556534079900142
+  ],
+  "error_count": 0,
+  "illegal_actions": 0,
+  "valid": true,
+  "problems": [],
+  "metamon": {
+    "model": "Alakazam",
+    "checkpoint": 8,
+    "checkpoint_path": "/home/thangnc/code/en-tutor/.cache/metamon/pretrained_models/blobs/cf/cfc3c1759f5a7d225a5df2acdee290fc91278146344578043f1f80f267085383",
+    "checkpoint_sha256": "47a98516df7b346118fa824f9137e6aaaa1428d5a7150af01bf606c1ea935944",
+    "backend": "metamon",
+    "temperature": 1.0,
+    "attention": "flex",
+    "observation_space": "OpponentMoveObservationSpace"
+  },
+  "neural": {
+    "player": "neural:models/pokedecision-v3-epn",
+    "checkpoint_sha256": "e3ea5e6fab905537823b69e6424533e70b3af17ba2828aeab688cefb492a4409",
+    "backend": "metamon",
+    "illegal_actions": 0,
+    "fallbacks": {
+      "struggle": 29
+    }
+  },
+  "schedule": {
+    "seed": 20261018,
+    "teams": "data/teams_w5/dev",
+    "swap_team_pairs": true,
+    "player_challenges": true
+  },
+  "metamon_results": {
+    "Average Total Return (Across All Env Names)": 116.66880880841649,
+    "Average Total Return in psladder_mm3ece8f93e38d": 116.66880880841649,
+    "Average Valid Actions in psladder_mm3ece8f93e38d": 0.9971381524381291,
+    "Average Win Rate in psladder_mm3ece8f93e38d": 0.588,
+    "Bottom Quintile Total Return in psladder_mm3ece8f93e38d": -9.131999999843538
+  },
+  "note": "EPN = models/pokedecision-v3-epn; Alakazam run with --metamon-attention flex; dev pool data/teams_w5/dev; Alakazam sampled at temperature 1.0."
+}
