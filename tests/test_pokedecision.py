@@ -101,6 +101,40 @@ def test_checkpoint_load_is_bit_identical_on_cpu(tmp_path, value_head, legacy):
                 restored.forward_with_value(tokens, numbers)
 
 
+def test_research_export_loads_through_production_loader(tmp_path):
+    """An autoresearch export (model.py + state_dict) must load via load_pokedecision with the
+    exact weights and feature statistics, so live play scores it like the trained model."""
+    import importlib.util
+    import shutil
+    from pathlib import Path
+
+    from pokeai.data.features import ObservationEncoder
+
+    source = Path(__file__).resolve().parents[1] / "autoresearch/train.py"
+    spec = importlib.util.spec_from_file_location("research_train", source)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    torch.manual_seed(3)
+    model = module.build_model().eval()
+    model.feature_mean.copy_(torch.randn(48))
+    model.feature_std.copy_(torch.rand(48) + 0.5)
+    torch.save(model.state_dict(), tmp_path / "best.pt")
+    shutil.copy(source, tmp_path / "model.py")
+    ObservationEncoder().save(tmp_path / "tokenizer.json")
+    tokens = torch.randint(model.config.vocab_size, (2, 3, model.config.token_len))
+    numbers = torch.randn(2, 3, 48)
+    restored, _, config = load_pokedecision(tmp_path, "cpu")
+    assert config.value_head
+    with torch.no_grad():
+        expected, expected_value, _ = model.forward_with_value(tokens, numbers)
+        actual, actual_value, _ = restored.forward_with_value(tokens, numbers)
+        stepped, hidden = restored(tokens[:, :1], numbers[:, :1])
+        stepped2, _ = restored(tokens[:, 1:2], numbers[:, 1:2], hidden)
+    assert torch.equal(actual, expected)
+    assert torch.equal(actual_value, expected_value)
+    torch.testing.assert_close(torch.cat((stepped, stepped2), 1), expected[:, :2])
+
+
 def test_gru_hidden_state_matches_uninterrupted_sequence():
     torch.manual_seed(11)
     model = PokeDecision(

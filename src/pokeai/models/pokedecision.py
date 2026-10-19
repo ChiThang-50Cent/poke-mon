@@ -137,6 +137,8 @@ def load_pokedecision(
     from pokeai.data.features import ObservationEncoder
 
     model_dir = Path(model_dir)
+    if (model_dir / "model.py").is_file():
+        return load_research_model(model_dir, device)
     checkpoint = torch.load(
         model_dir / "best.pt", map_location="cpu", weights_only=True
     )
@@ -149,3 +151,29 @@ def load_pokedecision(
     model.to(device).eval()
     encoder = ObservationEncoder.load(model_dir / "tokenizer.json")
     return model, encoder, config
+
+
+def load_research_model(
+    model_dir: str | Path, device: str | torch.device = "cpu"
+) -> tuple[nn.Module, Any, Any]:
+    """Autoresearch export: `model.py` (a snapshot of autoresearch/train.py) defines
+    `build_model()`; `best.pt` is its state_dict. Same call contract as PokeDecision."""
+    import importlib.util
+
+    from pokeai.data.features import ObservationEncoder
+
+    model_dir = Path(model_dir)
+    spec = importlib.util.spec_from_file_location(
+        f"research_model_{abs(hash(str(model_dir.resolve())))}", model_dir / "model.py"
+    )
+    if spec is None or spec.loader is None:
+        raise ImportError(f"Cannot load {model_dir / 'model.py'}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    model = module.build_model()
+    model.load_state_dict(
+        torch.load(model_dir / "best.pt", map_location="cpu", weights_only=True)
+    )
+    model.to(device).eval()
+    encoder = ObservationEncoder.load(model_dir / "tokenizer.json")
+    return model, encoder, model.config

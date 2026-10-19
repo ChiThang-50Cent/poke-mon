@@ -39,9 +39,11 @@ MAX_LEN = 500
 class Trajectories(Dataset):
     """Full trajectories with a per-trajectory outcome (one uninterrupted hidden state)."""
 
-    def __init__(self, arrays: dict, outcomes: np.ndarray, indices: list[int] | None = None):
+    def __init__(self, arrays: dict, outcomes: np.ndarray, indices: list[int] | None = None,
+                 bc_winners_only: bool = False):
         self.arrays, self.outcomes = arrays, outcomes
         self.indices = list(range(len(arrays["offsets"]) - 1)) if indices is None else indices
+        self.bc_winners_only = bc_winners_only
 
     def __len__(self) -> int:
         return len(self.indices)
@@ -50,6 +52,9 @@ class Trajectories(Dataset):
         t = self.indices[index]
         start, end = self.arrays["offsets"][t], self.arrays["offsets"][t + 1]
         item = {k: torch.from_numpy(self.arrays[k][start:end]) for k in KEYS}
+        if self.bc_winners_only and self.outcomes[t] < 0.5:
+            # Filtered BC: the loser's actions carry no policy loss; value still trains on them.
+            item["valid"] = torch.zeros_like(item["valid"])
         item["outcomes"] = torch.full((end - start,), float(self.outcomes[t]))
         item["real"] = torch.ones(end - start, dtype=torch.bool)
         return item
@@ -124,6 +129,9 @@ def main() -> None:
                         help="pile batches; train splits are concatenated, val is the first's")
     parser.add_argument("--out", type=Path, default=OUT)
     parser.add_argument("--report", default="reports/w6p_pile_train.json")
+    parser.add_argument("--lr", type=float, default=1e-4)
+    parser.add_argument("--bc-winners-only", action="store_true",
+                        help="filtered BC: policy loss on winning POVs only")
     args = parser.parse_args()
     started = time.monotonic()
     seed_everything(SEED)
@@ -136,15 +144,18 @@ def main() -> None:
     idx_a = [i for i, b in enumerate(w4_val["battle_ids"]) if val_half(str(b)) == "A"]
     evals = {"w4_val_A": loader(w4_val, w4_outcomes, idx_a),
              "pile_val": loader(pile_val, pile_val["outcomes"], short(pile_val))}
-    train_set = ConcatDataset([Trajectories(t, t["outcomes"], short(t)) for t in trains])
-    report = {"seed": SEED, "value_weight": VALUE_WEIGHT, "lr": 1e-4, "epochs": args.epochs,
+    train_set = ConcatDataset([Trajectories(t, t["outcomes"], short(t), args.bc_winners_only)
+                               for t in trains])
+    report = {"seed": SEED, "value_weight": VALUE_WEIGHT, "lr": args.lr, "epochs": args.epochs,
+              "bc_winners_only": args.bc_winners_only, "model": vars(model.config),
+              "parameters": sum(p.numel() for p in model.parameters()),
               "data": args.data, "max_len": MAX_LEN, "train_trajectories": len(train_set),
               "dropped_long": {"train": sum(len(t["offsets"]) - 1 for t in trains)
                                - len(train_set),
                                "val": len(pile_val["offsets"]) - 1 - len(short(pile_val))},
-              "C": {k: evaluate(model, v, device) for k, v in evals.items()}, "epochs_log": []}
-    print(json.dumps({"C": report["C"]}), flush=True)
-    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4, weight_decay=1e-4)
+              "init": {k: evaluate(model, v, device) for k, v in evals.items()}, "epochs_log": []}
+    print(json.dumps({"init": report["init"], "parameters": report["parameters"]}), flush=True)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=1e-4)
     for epoch in range(1, args.epochs + 1):
         data = DataLoader(train_set, batch_size=16, shuffle=True, collate_fn=collate,
                           generator=torch.Generator().manual_seed(SEED + epoch))
@@ -159,7 +170,8 @@ def main() -> None:
     shutil.copy(C_DIR / "tokenizer.json", out / "tokenizer.json")
     recorded = yaml.safe_load((C_DIR / "config.yaml").read_text())
     recorded["model"] = vars(model.config)
-    recorded |= {"policy_version": f"w6p-{out.name}", "init_checkpoint": str(C_DIR / "best.pt"),
+    recorded |= {"policy_version": f"w6p-{out.name}",
+                 "init_checkpoint": str(C_DIR / "best.pt"),
                  "train_data": args.data}
     (out / "config.yaml").write_text(yaml.safe_dump(recorded, sort_keys=False))
     report["checkpoint"] = str(out)
