@@ -170,7 +170,9 @@ def main() -> None:
             order, cursor = rng.permutation(data.indices), 0
         b = data.batch(order[cursor:cursor + BATCH], device)
         cursor += BATCH
-        logits, values, _ = model.forward_with_value(b["tokens"], b["numbers"])
+        with torch.autocast("cuda", dtype=torch.bfloat16):
+            logits, values, _ = model.forward_with_value(b["tokens"], b["numbers"])
+        logits, values = logits.float(), values.float()
         v = b["valid"]
         policy = F.cross_entropy(logits[v].masked_fill(~b["masks"][v], -torch.inf),
                                  b["actions"][v])
