@@ -1,0 +1,78 @@
+{
+  "seed": 20261019,
+  "value_weight": 0.5,
+  "lr": 0.0001,
+  "epochs": 3,
+  "max_len": 500,
+  "train_trajectories": 95004,
+  "dropped_long": {
+    "train": 35,
+    "val": 1
+  },
+  "C": {
+    "w4_val_A": {
+      "policy_loss": 1.481506245371117,
+      "policy_accuracy": 0.433164587885615,
+      "policy_steps": 147362,
+      "value_bce": 0.6644686950694217
+    },
+    "pile_val": {
+      "policy_loss": 1.4077617549360557,
+      "policy_accuracy": 0.4770162478188946,
+      "policy_steps": 176516,
+      "value_bce": 0.6293167429080583
+    }
+  },
+  "epochs_log": [
+    {
+      "epoch": 1,
+      "train_objective": 1.5455291118433918,
+      "w4_val_A": {
+        "policy_loss": 1.5677980295576097,
+        "policy_accuracy": 0.42328415738114306,
+        "policy_steps": 147362,
+        "value_bce": 0.6442003622410268
+      },
+      "pile_val": {
+        "policy_loss": 1.236078609452646,
+        "policy_accuracy": 0.542659022411566,
+        "policy_steps": 176516,
+        "value_bce": 0.5472628924726489
+      }
+    },
+    {
+      "epoch": 2,
+      "train_objective": 1.4712631295188263,
+      "w4_val_A": {
+        "policy_loss": 1.5978724137792932,
+        "policy_accuracy": 0.42306021905240154,
+        "policy_steps": 147362,
+        "value_bce": 0.6285811704111761
+      },
+      "pile_val": {
+        "policy_loss": 1.2071709947280642,
+        "policy_accuracy": 0.5535362233451925,
+        "policy_steps": 176516,
+        "value_bce": 0.5382088482007651
+      }
+    },
+    {
+      "epoch": 3,
+      "train_objective": 1.4360807146356338,
+      "w4_val_A": {
+        "policy_loss": 1.6114036060624075,
+        "policy_accuracy": 0.42367774595893104,
+        "policy_steps": 147362,
+        "value_bce": 0.6304901935820779
+      },
+      "pile_val": {
+        "policy_loss": 1.1897502422404351,
+        "policy_accuracy": 0.5600512134877291,
+        "policy_steps": 176516,
+        "value_bce": 0.5383596205875874
+      }
+    }
+  ],
+  "checkpoint": "checkpoints/w6p/pile",
+  "wall_time_s": 284.3531026269775
+}

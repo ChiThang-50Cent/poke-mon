@@ -1,0 +1,87 @@
+{
+  "source": {
+    "source": "jakegrigsby/metamon-parsed-pile pac-base/gen9ou.tar.lz4",
+    "families": [
+      "alakazam",
+      "alakazamdefault",
+      "pac-mm-alakazam"
+    ],
+    "seed": 20261019,
+    "pool": 952816,
+    "files": 100000,
+    "tar_sha256": "3acac5fa023311ff18e7843fcc5afbf75b129fdd033215098445c89eb6e504c6",
+    "tar_bytes": 983654400
+  },
+  "splits": {
+    "train": {
+      "trajectories": 95039,
+      "decisions": 3453779,
+      "valid_decisions": 3438707,
+      "excluded_by_reason": {
+        "missing": 0,
+        "action_minus_one": 0,
+        "action_out_of_range": 0,
+        "chosen_not_in_mask": 15072,
+        "empty_mask": 7
+      },
+      "unknown_token_rate": 0.0,
+      "all_finite": true,
+      "win_rate": 0.5988067984580994,
+      "families": {
+        "alakazam": 75571,
+        "pac-mm-alakazam": 4912,
+        "alakazamdefault": 14556
+      },
+      "action_class_histogram": [
+        610454,
+        583123,
+        568029,
+        500291,
+        384307,
+        261121,
+        209643,
+        160869,
+        74213,
+        24279,
+        22951,
+        20220,
+        19207
+      ]
+    },
+    "val": {
+      "trajectories": 4961,
+      "decisions": 178322,
+      "valid_decisions": 177579,
+      "excluded_by_reason": {
+        "missing": 0,
+        "action_minus_one": 0,
+        "action_out_of_range": 0,
+        "chosen_not_in_mask": 743,
+        "empty_mask": 2
+      },
+      "unknown_token_rate": 0.0,
+      "all_finite": true,
+      "win_rate": 0.6006853580474854,
+      "families": {
+        "alakazam": 3942,
+        "pac-mm-alakazam": 272,
+        "alakazamdefault": 747
+      },
+      "action_class_histogram": [
+        31703,
+        30350,
+        29266,
+        25598,
+        19053,
+        13290,
+        11230,
+        8572,
+        3980,
+        1304,
+        1172,
+        1058,
+        1003
+      ]
+    }
+  }
+}
