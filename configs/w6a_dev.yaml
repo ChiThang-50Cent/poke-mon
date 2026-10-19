@@ -1,0 +1,31 @@
+# W6-A tier 2 (policy regression): joint arm and its no-opponent-loss control vs C, paired,
+# dev only. Primary: vs C. Secondary: Grunt, GymLeader. Same preview model, greedy play.
+reference_arm: C
+pool: data/teams_w5/dev
+battles: 500
+arms:
+  C:
+    model_dir: models/pokedecision-v1-value
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+  joint:
+    model_dir: checkpoints/w6a/joint
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+  control:
+    model_dir: checkpoints/w6a/control
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+opponents:
+  C:
+    model_dir: models/pokedecision-v1-value
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+  Grunt:
+    baseline: Grunt
+  GymLeader:
+    baseline: GymLeader

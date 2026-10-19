@@ -23,6 +23,8 @@ class PokeDecisionConfig:
     hidden_size: int = 384
     numeric_size: int = 128
     value_head: bool = False
+    # W6-A: opponent-action classes (+1 Tera logit); 0 keeps C's exact parameter set.
+    opponent_classes: int = 0
 
 
 class PokeDecision(nn.Module):
@@ -61,6 +63,11 @@ class PokeDecision(nn.Module):
         self.value_head = (
             nn.Linear(config.hidden_size, 1) if config.value_head else None
         )
+        # Constructed after value_head so enabling it preserves every C parameter.
+        self.opponent_head = (
+            nn.Linear(config.hidden_size, config.opponent_classes + 1)
+            if config.opponent_classes else None
+        )
 
     def _forward_features(
         self, tokens: Tensor, numbers: Tensor, hidden: Tensor | None = None
@@ -92,6 +99,19 @@ class PokeDecision(nn.Module):
             raise ValueError("Value prediction requires config.value_head=True")
         features, hidden = self._forward_features(tokens, numbers, hidden)
         return self.policy(features), self.value_head(features).squeeze(-1), hidden
+
+    def forward_with_opponent(
+        self, tokens: Tensor, numbers: Tensor, hidden: Tensor | None = None
+    ) -> tuple[Tensor, Tensor | None, Tensor, Tensor | None]:
+        """Policy logits, value logits (None without a value head), opponent logits
+        [B,T,classes+1] (last column = Tera logit), and memory."""
+        if self.opponent_head is None:
+            raise ValueError("Model has no opponent head")
+        features, hidden = self._forward_features(tokens, numbers, hidden)
+        value = (
+            self.value_head(features).squeeze(-1) if self.value_head is not None else None
+        )
+        return self.policy(features), value, self.opponent_head(features), hidden
 
 
 def masked_logits(logits: Tensor, masks: Tensor) -> Tensor:
