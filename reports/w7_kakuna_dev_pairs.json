@@ -1,0 +1,136 @@
+{
+ "kk100-bc_c": {
+  "EPN": {
+   "win_rate_difference": 0.112,
+   "bootstrap_95": [
+    0.05795000000000002,
+    0.166
+   ],
+   "verdict": "positive",
+   "clusters": 250,
+   "seed": 20271017,
+   "resamples": 5000
+  },
+  "GymLeader": {
+   "win_rate_difference": 0.012,
+   "bootstrap_95": [
+    -0.014,
+    0.04
+   ],
+   "verdict": "inconclusive",
+   "clusters": 250,
+   "seed": 20271017,
+   "resamples": 5000
+  },
+  "pooled": {
+   "win_rate_difference": 0.062,
+   "bootstrap_95": [
+    0.033,
+    0.092
+   ],
+   "verdict": "positive",
+   "clusters": 500,
+   "strata": {
+    "EPN": 250,
+    "GymLeader": 250
+   },
+   "seed": 20271019,
+   "resamples": 10000
+  }
+ },
+ "kk50-bc_c": {
+  "EPN": {
+   "win_rate_difference": 0.068,
+   "bootstrap_95": [
+    0.012,
+    0.122
+   ],
+   "verdict": "positive",
+   "clusters": 250,
+   "seed": 20271017,
+   "resamples": 5000
+  },
+  "GymLeader": {
+   "win_rate_difference": 0.036,
+   "bootstrap_95": [
+    0.014,
+    0.06
+   ],
+   "verdict": "positive",
+   "clusters": 250,
+   "seed": 20271017,
+   "resamples": 5000
+  },
+  "pooled": {
+   "win_rate_difference": 0.052,
+   "bootstrap_95": [
+    0.022,
+    0.08202499999999964
+   ],
+   "verdict": "positive",
+   "clusters": 500,
+   "strata": {
+    "EPN": 250,
+    "GymLeader": 250
+   },
+   "seed": 20271019,
+   "resamples": 10000
+  }
+ },
+ "kk100-kk50": {
+  "EPN": {
+   "win_rate_difference": 0.044,
+   "bootstrap_95": [
+    -0.016,
+    0.104
+   ],
+   "verdict": "inconclusive",
+   "clusters": 250,
+   "seed": 20271017,
+   "resamples": 5000
+  },
+  "GymLeader": {
+   "win_rate_difference": -0.024,
+   "bootstrap_95": [
+    -0.04404999999999998,
+    -0.004
+   ],
+   "verdict": "negative",
+   "clusters": 250,
+   "seed": 20271017,
+   "resamples": 5000
+  },
+  "pooled": {
+   "win_rate_difference": 0.01,
+   "bootstrap_95": [
+    -0.021,
+    0.04
+   ],
+   "verdict": "inconclusive",
+   "clusters": 500,
+   "strata": {
+    "EPN": 250,
+    "GymLeader": 250
+   },
+   "seed": 20271019,
+   "resamples": 10000
+  }
+ },
+ "kk100-EPN": {
+  "pooled": {
+   "win_rate_difference": 0.081,
+   "bootstrap_95": [
+    0.053,
+    0.109
+   ],
+   "verdict": "positive",
+   "clusters": 500,
+   "strata": {
+    "EPN": 250,
+    "GymLeader": 250
+   },
+   "seed": 20271019,
+   "resamples": 10000
+  }
+ }
+}

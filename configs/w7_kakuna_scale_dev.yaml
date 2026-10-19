@@ -1,0 +1,29 @@
+# W7 lever 2 scale-up, dev only: Kakuna soft labels (w = 1.0) on the whole 905k-trajectory pile
+# (.cache/epn-pile953 + train_kakuna.npy), 60 min, vs the 20-min w7_c-only kk100 and production EPN.
+reference_arm: EPN
+pool: data/teams_w5/dev
+battles: 500
+arms:
+  EPN:
+    model_dir: models/pokedecision-v3-epn
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+  kk100_c20:
+    model_dir: checkpoints/epn/kk100_c20
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+  kk100_full60:
+    model_dir: checkpoints/epn/kk100_full60
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+opponents:
+  EPN:
+    model_dir: models/pokedecision-v3-epn
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+  GymLeader:
+    baseline: GymLeader

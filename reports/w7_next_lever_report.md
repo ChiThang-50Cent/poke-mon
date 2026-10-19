@@ -82,4 +82,44 @@ the teacher is the ceiling.
   - The student cannot always reproduce its teacher's reasoning, so soft labels (not argmax) are
     used.
 
-Results: pending (§4).
+### Results, 20 minutes from scratch on the same w7_c data
+
+- Configs: `configs/w7_kakuna_dev.yaml`.
+- Evidence: `reports/w7_kakuna_dev.json`, `reports/w7_kakuna_dev_pairs.json`.
+- Design: 500 battles per cell, paired, 250 clusters.
+- `val_nll` is measured against Alakazam-family actions, so it rises as the student follows
+  Kakuna instead: bc_c 0.816, kk50 0.842, kk100 0.980. It no longer predicts strength here.
+
+Win rate per arm:
+
+| Arm | Kakuna weight | vs EPN | vs GymLeader |
+|---|---:|---:|---:|
+| EPN | — | 0.466 | 0.944 |
+| bc_c | 0 | 0.510 | 0.938 |
+| kk50 | 0.5 | 0.578 | **0.974** |
+| kk100 | 1.0 | **0.622** | 0.950 |
+
+Paired differences, 95% bootstrap CI:
+
+| Comparison | vs EPN opponent | vs GymLeader | Pooled |
+|---|---|---|---|
+| kk50 − bc_c (teacher effect) | +0.068 [+0.012, +0.122] | +0.036 [+0.014, +0.060] | **+0.052 [+0.022, +0.082]** |
+| kk100 − bc_c (teacher effect) | +0.112 [+0.058, +0.166] | +0.012 [−0.014, +0.040] | **+0.062 [+0.033, +0.092]** |
+| kk100 − kk50 | +0.044 [−0.016, +0.104] | −0.024 [−0.044, −0.004] | +0.010 [−0.021, +0.040] |
+| kk100 − EPN (vs production) | +0.156 [+0.106, +0.206] | +0.006 [−0.020, +0.032] | **+0.081 [+0.053, +0.109]** |
+
+Kakuna (flex, temperature 1), 500 battles, same schedule as EPN's run
+(`reports/w7_kk100_vs_kakuna.json`):
+
+| Player | Wins vs Kakuna | Wilson 95% |
+|---|---:|---|
+| EPN | 0.290 | [0.252, 0.331] |
+| kk100_c20 | **0.396** | [0.354, 0.440] |
+
+Paired kk100 − EPN against Kakuna: **+0.106 [+0.050, +0.160]**.
+
+- **Verdict: positive.** Same data, same compute, same 1.01M architecture: only the label
+  source changes, and the teacher effect is +5–6 pp pooled with both CIs above 0.
+- kk100 closes a third of the gap to Kakuna. kk50 vs kk100 is inconclusive; kk100 is chosen
+  for the next step because the primary opponents (EPN and Kakuna) favour it.
+- Next: label the whole 905k-trajectory pile and train kk100 for 60 minutes.

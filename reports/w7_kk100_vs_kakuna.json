@@ -1,0 +1,152 @@
+{
+ "kk100_c20_vs_kakuna": {
+  "attempted": 500,
+  "completed": 500,
+  "wins": 198,
+  "losses": 302,
+  "ties": 0,
+  "error_count": 0,
+  "win_rate": 0.396,
+  "lose_rate": 0.604,
+  "tie_rate": 0.0,
+  "win_rate_wilson_95": [
+   0.35408170350275736,
+   0.4395041593132456
+  ],
+  "wall_time_s": 1977.1994948899955,
+  "games_per_s": 0.2528829292604175,
+  "decisions_player": 21735,
+  "decisions_per_s": 10.99282093495035,
+  "lead_source_counts": {
+   "model": 500
+  },
+  "protocol_retry_counts": {
+   "player": 1,
+   "opponent": 0
+  },
+  "protocol_retry_evidence": {
+   "player": [
+    {
+     "order": "/choose switch 3",
+     "trapped": false,
+     "maybeTrapped": true,
+     "maybeDisabled": false,
+     "disabled_moves": [],
+     "rqid": 56,
+     "turn": 19,
+     "active_species": "kingambit",
+     "active_ability": "supremeoverlord",
+     "opponent_species": "magnezone",
+     "opponent_ability": null,
+     "error": "|error|[Unavailable choice] Can't switch: The active Pok\u00e9mon is trapped",
+     "public_log": [
+      "|",
+      "|t:|1792448358",
+      "|-end|p1a: Iron Moth|Quark Drive|[silent]",
+      "|switch|p1a: Rillaboom|Rillaboom, M|294/392",
+      "|-fieldstart|move: Grassy Terrain|[from] ability: Grassy Surge|[of] p1a: Rillaboom",
+      "|move|p2a: Ursaluna|Facade|p1a: Rillaboom",
+      "|-damage|p1a: Rillaboom|0 fnt",
+      "|faint|p1a: Rillaboom",
+      "|",
+      "|-heal|p2a: Ursaluna|88/100 brn|[from] Grassy Terrain",
+      "|-damage|p2a: Ursaluna|82/100 brn|[from] brn",
+      "|upkeep",
+      "|inactive|Time left: 300 sec this turn | 300 sec total | 5 sec grace",
+      "|",
+      "|t:|1792448358",
+      "|switch|p1a: Kingambit|Kingambit, M|404/404",
+      "|-activate|p1a: Kingambit|ability: Supreme Overlord",
+      "|-start|p1a: Kingambit|fallen4|[silent]",
+      "|turn|18",
+      "|inactive|Time left: 300 sec this turn | 300 sec total",
+      "|",
+      "|t:|1792448358",
+      "|move|p2a: Ursaluna|Earthquake|p1a: Kingambit",
+      "|-supereffective|p1a: Kingambit",
+      "|-damage|p1a: Kingambit|140/404",
+      "|move|p1a: Kingambit|Low Kick|p2a: Ursaluna",
+      "|-supereffective|p2a: Ursaluna",
+      "|-damage|p2a: Ursaluna|0 fnt",
+      "|faint|p2a: Ursaluna",
+      "|",
+      "|-heal|p1a: Kingambit|165/404|[from] Grassy Terrain",
+      "|-heal|p1a: Kingambit|190/404|[from] item: Leftovers",
+      "|upkeep",
+      "|",
+      "|t:|1792448358",
+      "|switch|p2a: Magnezone|Magnezone|100/100",
+      "|-damage|p2a: Magnezone|94/100|[from] Stealth Rock",
+      "|turn|19",
+      "|inactive|Time left: 300 sec this turn | 300 sec total",
+      "|error|[Unavailable choice] Can't switch: The active Pok\u00e9mon is trapped"
+     ],
+     "reason": "hidden_trap",
+     "battle_id": "battle-gen9ou-108860",
+     "matchup_index": 444
+    }
+   ],
+   "opponent": []
+  },
+  "config": {
+   "player": "neural:checkpoints/epn/kk100_c20",
+   "metamon": "Kakuna",
+   "metamon_checkpoint": null,
+   "metamon_temperature": 1.0,
+   "metamon_attention": "flex",
+   "teams": "data/teams_w5/dev",
+   "battles": 500,
+   "seed": 20261018,
+   "out": "runs/h2h500_kakuna_kk100",
+   "timeout_s": 300.0,
+   "startup_timeout_s": 1200.0,
+   "sample": false,
+   "temperature": 1.0,
+   "device": "cpu",
+   "team_preview_checkpoint": "third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt"
+  },
+  "metamon": {
+   "model": "Kakuna",
+   "checkpoint": 34,
+   "checkpoint_path": "/home/thangnc/code/en-tutor/.cache/metamon/pretrained_models/blobs/c2/c25512da785582b714c5bc6e9454c91994bfcf6f48c3fa7eadee2ee34e97e95e",
+   "checkpoint_sha256": "7e7474d5b2ec6624afdeb29a7cf1dc5c84817d5aee8ec39c1d35a153b18df26c",
+   "backend": "metamon",
+   "temperature": 1.0,
+   "attention": "flex",
+   "observation_space": "OpponentMoveObservationSpace"
+  },
+  "backend": "metamon",
+  "neural": {
+   "player": "neural:checkpoints/epn/kk100_c20",
+   "checkpoint_sha256": "2378b514b83618ddfdba1814d1c2a2a0971db9eac23be4c8edfedfc4801a12de",
+   "backend": "metamon",
+   "illegal_actions": 0,
+   "fallbacks": {
+    "recharge": 2,
+    "struggle": 43
+   }
+  },
+  "illegal_actions": 0,
+  "errors": [],
+  "server": "ws://localhost:8000/showdown/websocket",
+  "schedule": {
+   "seed": 20261018,
+   "teams": "data/teams_w5/dev",
+   "swap_team_pairs": true,
+   "player_challenges": true
+  },
+  "valid": true,
+  "problems": [],
+  "paired_vs_epn20": {
+   "win_rate_difference": 0.106,
+   "bootstrap_95": [
+    0.05,
+    0.16004999999999928
+   ],
+   "verdict": "positive",
+   "clusters": 250,
+   "seed": 20271020,
+   "resamples": 5000
+  }
+ }
+}
