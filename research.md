@@ -238,6 +238,41 @@ Số liệu BS1.2 là dev, và dev pool đã dùng cho QA/requalification nên +
 
 Thứ tự triển khai: chốt W6.0 (decision record trong version control) → W6-A → W6-B pilot (chuẩn bị collector song song với W6-A) → W6-C design. Phụ thuộc thật duy nhất: W6-B cần W6.0 xác nhận nhãn đủ tin cậy; W6-A thành công chỉ đổi teacher của vòng distillation sau, không chặn pilot đầu.
 
+### W8: hướng tiếp theo sau KK (research 10/2026)
+
+Chi tiết và nguồn: `reports/w8_approach_research.md`.
+
+**Bối cảnh 2025–2026:**
+- Kakuna (12/2025) vẫn là model Gen 9 OU công khai mạnh nhất của Metamon \[22\].
+- Giải PokéAgent NeurIPS 2025, nhánh Gen 9 OU, do **FoulPlay** thắng. FoulPlay không có mạng neural: chỉ search MCTS/DUCT trên engine Rust, kèm suy luận set đối thủ từ thống kê usage và các bộ lọc damage/tốc độ/item \[21\]\[23\].
+- Model nhỏ mạnh nhất là **Jaxcalibur** (8,5M), nhưng chơi Random Battles, không phải OU, và số liệu do tác giả tự báo cáo. Công thức của nó \[24\]:
+  - self-play PPO;
+  - token matchup chứa kết quả tính damage;
+  - head phụ dự đoán set và hành động kế tiếp của đối thủ;
+  - search chỉ thêm khoảng +100–150 Elo.
+- Chưa có model dưới 10M nào ngang Kakuna ở Gen 9 OU.
+
+**Kết luận cho dự án:**
+- Distill có trần xấp xỉ thầy. Kiến trúc và đặc trưng tốt hơn chỉ kéo KK lại gần Kakuna.
+- Muốn vượt Kakuna cần thầy mạnh hơn, tức search, hoặc tín hiệu từ kết quả trận, tức RL.
+
+**Thứ tự thí nghiệm** (một biến mỗi lần, có gate dev, final trên pool mới chỉ cho ứng viên promote):
+
+| Bước | Thay đổi | Lý do và bằng chứng | Chi phí |
+|---|---|---|---|
+| **E1** | **Khối đặc trưng v0** trên key của mỗi hành động: hệ số khắc hệ, STAB, sức mạnh và độ chính xác của chiêu, priority; % damage và P(hạ gục) theo set phổ biến nhất; damage nhận từ chiêu đã lộ hoặc chiêu khả năng cao của đối thủ; P(ra đòn trước). Thêm slot cho chiêu, PP và item đối thủ đã lộ. | Bù thông tin Kakuna có mà mình thiếu \[22\]. Tính damage giúp rõ ở bot tra cứu một bước và LLM \[25\]\[26\]. Chưa ai ablate trên model nhỏ, nên phải tự đo. | Encoder mới (phá invariant parity → version mới, encode lại pile). Nhãn Kakuna giữ nguyên vì không đổi các dòng quyết định. |
+| **E2** | **Head phụ:** hành động kế tiếp của đối thủ và set đối thủ (chiêu, item, ability, Tera). Nhãn lấy từ POV còn lại, chỉ làm target. | Jaxcalibur: head hành động đối thủ làm bot "mạnh hơn đáng kể" \[24\] (tự báo cáo) | Chỉ đổi loss |
+| **E3** | Đặc trưng damage lấy **kỳ vọng theo belief**: set đối thủ theo thống kê usage, có bộ lọc kiểu FoulPlay | FoulPlay: dự đoán set quan trọng ngang search \[23\] | Trung bình. Chỉ làm nếu E1 cho thấy đặc trưng damage có ích |
+| **E4** | **Search làm thầy** (expert iteration): search DUCT/Gumbel trên các world được sample, chỉ ở trạng thái KK và Kakuna bất đồng hoặc entropy cao, ≤1 s mỗi quyết định; distill vào policy, giữ KL tới nhãn Kakuna | Hướng chính để vượt Kakuna. FoulPlay thắng giải bằng search; W5 có search +26,7 pp \[23\]\[27\] | Bị simulator giới hạn. Đã có sidecar snapshot/restore và bộ sample belief |
+| **E5** | **PPO giữ KL tới KK**, đấu với một league nhỏ (Kakuna, các checkpoint KK, heuristic), team đa dạng | piKL/AlphaStar; PPO đủ mạnh cho game thông tin ẩn \[28\]\[29\]. Rủi ro overfit team \[30\] | Hàng triệu trận |
+| Sau cùng | Đổi bộ nhớ: minGRU hoặc cửa sổ attention ngắn + slot tường minh | Chưa có bằng chứng ở ≤5M cho Pokémon; Metamon đã giảm nhấn mạnh bộ nhớ dài \[22\]\[31\] | Trung bình |
+
+**Quy tắc chống rò rỉ cho đặc trưng mới:**
+- chỉ dùng thông tin công khai cộng với prior cố định (thống kê usage có ngày trước kỳ đánh giá);
+- không dùng set thật của đối thủ, không dùng team đối thủ do Metamon tái dựng;
+- replay và lúc chơi thật phải đi cùng một đường code;
+- mỗi đặc trưng có regression test.
+
 ### Experiment card
 
 Mỗi thí nghiệm mới phải trả lời một câu hỏi W5 chưa giải quyết, và ghi đủ:
@@ -393,3 +428,36 @@ Policy improvement offline, hạn chế extrapolation.
 
 **\[20\] Guo et al. (ICML 2017).** On Calibration of Modern Neural Networks. [Mở nguồn](https://arxiv.org/abs/1706.04599)  
 Temperature scaling làm baseline calibration.
+
+**\[21\] PokéAgent Challenge (NeurIPS 2025), arXiv 2603.15563.** [Mở nguồn](https://arxiv.org/html/2603.15563v2)  
+Kết quả và phương pháp các đội; FoulPlay thắng Gen 9 OU, PA-Agent thắng Gen 1 bằng offline RL lặp.
+
+**\[22\] Metamon README (bản sau giải).** [Mở nguồn](https://github.com/UT-Austin-RPL/metamon)  
+Kakuna là model công khai mạnh nhất; `OpponentMoveObservationSpace`; giảm nhấn mạnh bộ nhớ dài.
+
+**\[23\] P. Mariglia.** Foul Play write-up. [Mở nguồn](https://pmariglia.github.io/posts/foul-play/)  
+MCTS/DUCT, suy luận set đối thủ, gộp roll damage theo KO / không KO.
+
+**\[24\] Jaxcalibur (tự báo cáo).** [Mở nguồn](https://jaxcalibur.github.io/)  
+8,5M, self-play PPO, token matchup chứa damage, head phụ dự đoán đối thủ.
+
+**\[25\] Karten et al.** PokéChamp, arXiv 2503.04094. [Mở nguồn](https://arxiv.org/abs/2503.04094)  
+Bot tra cứu một bước bằng công thức damage.
+
+**\[26\] Hu et al.** PokéLLMon. [Mở nguồn](https://arxiv.org/html/2402.01118v2)  
+Chú thích khắc hệ làm tăng win rate.
+
+**\[27\] Danihelka et al. (ICLR 2022).** Gumbel AlphaZero/MuZero. [Mở nguồn](https://www.iclr.cc/virtual/2022/spotlight/6419)  
+Cải thiện policy với ít lần mô phỏng.
+
+**\[28\] Jacob et al.** piKL. [Mở nguồn](https://arxiv.org/pdf/2112.07544)  
+RL/search giữ KL tới policy bắt chước.
+
+**\[29\] Rudolph et al.** Reevaluating policy gradient methods for imperfect-information games. [Mở nguồn](https://arxiv.org/abs/2502.08938)  
+PPO cạnh tranh với các phương pháp FP/DO/CFR.
+
+**\[30\] VGC-Bench (AAMAS 2026).** [Mở nguồn](https://arxiv.org/abs/2506.10326)  
+Càng nhiều team, policy càng dễ bị khai thác.
+
+**\[31\] RLBenchNet (một nguồn) và minGRU.** [Mở nguồn](https://arxiv.org/html/2505.15040v1) · [minGRU](https://arxiv.org/pdf/2410.01201)  
+So sánh GRU, Mamba-2, Transformer-XL trong RL.
