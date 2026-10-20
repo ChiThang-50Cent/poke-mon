@@ -1,0 +1,36 @@
+# W8 E1: encoder v2 matchup extras (src/pokeai/data/matchup.py), dev only.
+# Both arms: KK recipe (EPN architecture 1.01M, --kakuna-weight 1.0), 20 min from scratch on the
+# same w7_c train cache (.cache/epn-w7c-x), same seed, trained side by side on one Colab GPU.
+# They differ only in --config extras=66 (the extras columns are present in both caches;
+# the control model ignores them).
+# - ctl: kk100 without extras (control)
+# - e1: kk100 + matchup extras
+# Reference: KK (production). Primary: e1 - ctl, pooled vs KK and GymLeader; then vs Kakuna
+# (scripts/run_metamon_h2h.py).
+reference_arm: KK
+pool: data/teams_w5/dev
+battles: 500
+arms:
+  KK:
+    model_dir: models/pokedecision-v4-kk
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+  ctl:
+    model_dir: checkpoints/epn/w8_ctl20
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+  e1:
+    model_dir: checkpoints/epn/w8_e1_20
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+opponents:
+  KK:
+    model_dir: models/pokedecision-v4-kk
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+  GymLeader:
+    baseline: GymLeader
