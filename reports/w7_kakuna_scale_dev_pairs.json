@@ -1,0 +1,119 @@
+{
+ "kk100_full60-kk100_c20": {
+  "EPN": {
+   "win_rate_difference": 0.006,
+   "bootstrap_95": [
+    -0.048,
+    0.06
+   ],
+   "verdict": "inconclusive",
+   "clusters": 250,
+   "seed": 20271017,
+   "resamples": 5000
+  },
+  "GymLeader": {
+   "win_rate_difference": -0.006,
+   "bootstrap_95": [
+    -0.032,
+    0.018
+   ],
+   "verdict": "inconclusive",
+   "clusters": 250,
+   "seed": 20271017,
+   "resamples": 5000
+  },
+  "pooled": {
+   "win_rate_difference": 0.0,
+   "bootstrap_95": [
+    -0.029,
+    0.03
+   ],
+   "verdict": "inconclusive",
+   "clusters": 500,
+   "strata": {
+    "EPN": 250,
+    "GymLeader": 250
+   },
+   "seed": 20271019,
+   "resamples": 10000
+  }
+ },
+ "kk100_full60-EPN": {
+  "EPN": {
+   "win_rate_difference": 0.124,
+   "bootstrap_95": [
+    0.07,
+    0.176
+   ],
+   "verdict": "positive",
+   "clusters": 250,
+   "seed": 20271017,
+   "resamples": 5000
+  },
+  "GymLeader": {
+   "win_rate_difference": 0.024,
+   "bootstrap_95": [
+    -0.002,
+    0.05
+   ],
+   "verdict": "inconclusive",
+   "clusters": 250,
+   "seed": 20271017,
+   "resamples": 5000
+  },
+  "pooled": {
+   "win_rate_difference": 0.074,
+   "bootstrap_95": [
+    0.044,
+    0.104
+   ],
+   "verdict": "positive",
+   "clusters": 500,
+   "strata": {
+    "EPN": 250,
+    "GymLeader": 250
+   },
+   "seed": 20271019,
+   "resamples": 10000
+  }
+ },
+ "kk100_c20-EPN": {
+  "EPN": {
+   "win_rate_difference": 0.118,
+   "bootstrap_95": [
+    0.064,
+    0.17
+   ],
+   "verdict": "positive",
+   "clusters": 250,
+   "seed": 20271017,
+   "resamples": 5000
+  },
+  "GymLeader": {
+   "win_rate_difference": 0.03,
+   "bootstrap_95": [
+    0.006,
+    0.054
+   ],
+   "verdict": "positive",
+   "clusters": 250,
+   "seed": 20271017,
+   "resamples": 5000
+  },
+  "pooled": {
+   "win_rate_difference": 0.074,
+   "bootstrap_95": [
+    0.045,
+    0.103
+   ],
+   "verdict": "positive",
+   "clusters": 500,
+   "strata": {
+    "EPN": 250,
+    "GymLeader": 250
+   },
+   "seed": 20271019,
+   "resamples": 10000
+  }
+ }
+}

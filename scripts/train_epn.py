@@ -40,7 +40,11 @@ def main() -> None:
     ap.add_argument("--kakuna-weight", type=float, default=0.0,
                     help="policy loss = (1-w)*CE(data action) + w*CE(Kakuna probs) on rows the "
                          "cache's train_kakuna.npy labels; data CE only elsewhere")
+    ap.add_argument("--config", nargs="*", default=[], metavar="FIELD=INT",
+                    help="override train.Config fields (e.g. d_entity=192); baked into the "
+                         "exported model.py so load_pokedecision rebuilds the same shape")
     args = ap.parse_args()
+    overrides = {k: int(v) for k, v in (kv.split("=", 1) for kv in args.config)}
     if args.cache:
         H.CACHE = Path(args.cache).resolve()
     kakuna = np.load(H.CACHE / "train_kakuna.npy", mmap_mode="r") if args.kakuna_weight else None
@@ -50,7 +54,7 @@ def main() -> None:
     torch.manual_seed(args.seed)
     rng = np.random.default_rng(args.seed)
     device = torch.device("cuda")
-    model = T.build_model()
+    model = T.Policy(T.Config(**overrides))
     model.feature_mean.copy_(H.FEATURE_MEAN)
     model.feature_std.copy_(H.FEATURE_STD)
     model.to(device)
@@ -107,8 +111,12 @@ def main() -> None:
             next_eval += args.eval_every * 60
     summary = {**curve[-1], **H.check_contract(model, device), "curve": curve,
                "minutes": args.minutes, "seed": args.seed, "batch": T.BATCH, "lr": T.LR,
-               "cache": str(H.CACHE), "kakuna_weight": args.kakuna_weight}
+               "cache": str(H.CACHE), "kakuna_weight": args.kakuna_weight, "config": overrides}
     H.save(model, out, ROOT / "autoresearch/train.py", summary)
+    if overrides:
+        with open(out / "model.py", "a") as f:
+            f.write(f"\n\n# train_epn.py --config overrides\ndef build_model() -> Policy:\n"
+                    f"    return Policy(Config(**{overrides!r}))\n")
     print("saved", out)
 
 
