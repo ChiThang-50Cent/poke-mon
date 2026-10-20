@@ -1,0 +1,68 @@
+{
+ "e1-ctl": {
+  "KK": {
+   "win_rate_difference": -0.01,
+   "bootstrap_95": [
+    -0.064,
+    0.048
+   ],
+   "verdict": "inconclusive",
+   "clusters": 250,
+   "seed": 20271017,
+   "resamples": 5000
+  },
+  "GymLeader": {
+   "win_rate_difference": 0.022,
+   "bootstrap_95": [
+    -0.002,
+    0.046
+   ],
+   "verdict": "inconclusive",
+   "clusters": 250,
+   "seed": 20271017,
+   "resamples": 5000
+  },
+  "pooled": {
+   "win_rate_difference": 0.006,
+   "bootstrap_95": [
+    -0.024,
+    0.037
+   ],
+   "verdict": "inconclusive",
+   "clusters": 500,
+   "strata": {
+    "KK": 250,
+    "GymLeader": 250
+   },
+   "seed": 20271019,
+   "resamples": 10000
+  },
+  "Kakuna": {
+   "win_rate_difference": -0.036,
+   "bootstrap_95": [
+    -0.088,
+    0.02
+   ],
+   "verdict": "inconclusive",
+   "clusters": 250,
+   "seed": 20271017,
+   "resamples": 5000
+  },
+  "pooled_with_Kakuna": {
+   "win_rate_difference": -0.008,
+   "bootstrap_95": [
+    -0.035333333333333335,
+    0.019333333333333334
+   ],
+   "verdict": "inconclusive",
+   "clusters": 750,
+   "strata": {
+    "KK": 250,
+    "GymLeader": 250,
+    "Kakuna": 250
+   },
+   "seed": 20271019,
+   "resamples": 10000
+  }
+ }
+}

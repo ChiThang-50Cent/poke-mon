@@ -1,4 +1,4 @@
-# W8 E1: matchup feature block (encoder v2), dev
+# W8 E1: matchup feature block (encoder v2), dev: CLOSED (no gain)
 
 ## Setup
 
@@ -33,12 +33,13 @@ Paired differences, 95% team-pair cluster bootstrap:
 
 Vs Kakuna (500 battles, seed 20261018, paired with ctl's W7 run at 0.396):
 
-- In progress, `runs/h2h500_kakuna_w8_e1_l{0,1}`.
-- Interim: 14/38 wins, similar to ctl.
+- e1: **180/500 = 0.360**, valid, 0 errors, 0 illegal actions (`runs/h2h500_kakuna_w8_e1_l{0,1}`, 2 lanes).
+- e1 − ctl vs Kakuna: **−0.036 [−0.088, +0.020]**.
+- Pooled over KK, GymLeader and Kakuna: **−0.008 [−0.035, +0.019]** (`reports/w8_e1_dev_pairs_kakuna.json`).
 
-## Verdict (interim)
+## Verdict
 
-- **Inconclusive, no useful gain.**
+- **No gain; E1 is closed.** The user decided to pause this direction (feature/aux levers on the distilled EPN).
 - Hand-built damage/type/speed features do not move a Kakuna-distilled 1M EPN.
   - Most likely reason: the student already gets this matchup knowledge from Kakuna's soft labels plus the species and move tokens.
   - Other possible reasons: the features are approximations (fixed spread, no items for the opponent), or the remaining gap is not about matchup arithmetic.
