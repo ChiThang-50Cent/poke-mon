@@ -6,7 +6,7 @@ self-play play better than bigger generic models. Fixed training budget on one R
 
 ## Why this loop exists
 
-- **The production policy underfits.** The 1.30M GRU fits the Metamon self-play pile almost
+- **The W6 production policy underfit (historical motivation).** The 1.30M GRU (C/P) fit the Metamon self-play pile almost
   equally on train and val, and 3x more data barely helped (`reports/w6p_pile_report.md`).
 - **The cause is architectural.** Mean/max pooling of the 87 tokens loses which move or bench
   Pokémon belongs to which action slot. A slot-preserving encoder fixed most of it at a fixed
@@ -134,5 +134,5 @@ Then stop and report the best commit, its metrics and the notes.
 
 The proxy is imperfect: better imitation does not always mean more wins. A candidate is only
 promoted by the project process: train it fully, check the sealed `datasets/w6p/val`, run the paired
-dev benchmark against the champion (`configs/w6p_scale_dev.yaml` pattern; `model_dir` = the
+dev benchmark against the current production model (KK, `models/pokedecision-v4-kk`; `configs/w8_e1_dev.yaml` pattern; `model_dir` = the
 exported checkpoint directory, loaded via `load_research_model`), then one fresh-pool final.

@@ -1,0 +1,10 @@
+{
+  "tokenizer_name": "DefaultObservationSpace-v1",
+  "vocab_size": 2542,
+  "token_len": 87,
+  "unknown_id": 2541,
+  "native_unknown_id": -1,
+  "unknown_handling": "native -1 maps to appended unknown_id; known IDs unchanged",
+  "observation_space": "DefaultObservationSpace",
+  "observation_space_version": "DefaultObservationSpace@metamon-0a00a75"
+}

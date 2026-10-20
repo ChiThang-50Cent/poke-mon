@@ -2,13 +2,13 @@
 
 ## Goal
 
-A "Jev-like" decision model that plays **Pokémon Showdown Gen 9 OU Singles** (`gen9ou`). It is a **practice bot and research benchmark on a local server**. Never connect training or eval to the public ladder.
+A "Jev-like" decision model that plays **Pokémon Showdown Gen 9 OU Singles** (`gen9ou`). It is a practice bot and research benchmark. **Training, selection and evaluation run on the local server only.** The one exception is `scripts/ladder_bot.py`: by user decision, it plays the production model on the public rated ladder against humans, as a read-out and source of real games for error analysis. Ladder games are never used for selection.
 
-The model is small: a structured-state policy + value network with 1–20M params, not an LLM. It is built on Metamon (data, 13-action interface, baselines), poke-env and a pinned local Showdown.
+The model is small: a structured-state policy + value network, ≤ 4.7M params (user decision), not an LLM. It is built on Metamon (data, 13-action interface, baselines), poke-env and a pinned local Showdown.
 
 Design, roadmap and gates: `research.md`. The overriding aim is a **strong, usable AI**, not maximal certainty about every change.
 
-## Current state (W1–W5 done)
+## Current state (W1–W7 done; W8 paused)
 
 - **Production: KK** = `models/pokedecision-v4-kk`, tag `w7-kk` (W7). Same 1.01M EPN architecture, trained 60 min from scratch on Kakuna soft labels (`train_epn.py --kakuna-weight 1.0`) over the whole 905k-trajectory Alakazam-family pile; fresh-pool final vs EPN +6.0 pp [+0.6, +11.4], Grunt +0.2, GymLeader +1.8, pooled +2.7 [+0.5, +4.9] (`reports/w7_next_lever_report.md` §5). Vs Kakuna (dev, 500): 43.8% [39.5, 48.2], paired vs EPN +14.8 [+9.4, +20.2] (`reports/w7_v4_vs_kakuna.json`). Pure distillation: its ceiling is ≈ Kakuna; beating Kakuna needs a non-imitation signal (RL from outcomes, search as teacher).
 - **Previous: EPN** = `models/pokedecision-v3-epn`, tag `w7-epn`. Entity-pointer network, 1.01M params, BC on the Metamon pile; fresh-pool final vs P pooled +19.6 [+17.1, +22.1] (`reports/w7_epn_final_report.md`). Vs Metamon: Minikazam 76.2%, Alakazam 41.2%, Kakuna 29.0%.
@@ -20,8 +20,8 @@ Design, roadmap and gates: `research.md`. The overriding aim is a **strong, usab
   - **Dev-validated only.** Dev, 600 paired battles: Δ +0.267 [0.210, 0.323]; wins/100 Grunt 64→96, GymLeader 65→95, C 54→72 (`reports/w5_bs1_2_report.md`).
   - Independent heldout confirmation is unavailable: BS1.3 and BS1.4 were aborted by infrastructure bugs (now fixed), and BS1.5 was stopped on a cost decision (`reports/w5_bs1_5_closure.md`).
 - **Closed W5 variants** (closed as tried; the algorithm families are not refuted, and can be revisited if the data or the estimator/target changes substantially):
-  - outcome-weighted AWBC / GAE (`w5_3_final_report.md`, `w5_a2_3_final_report.md`);
-  - a supervised counterfactual action head on frozen C features (`w5_cf1_5d_report.md`).
+  - outcome-weighted AWBC / GAE (`reports/w5_3_final_report.md`, `reports/w5_a2_3_final_report.md`);
+  - a supervised counterfactual action head on frozen C features (`reports/w5_cf1_5d_report.md`).
 - **"Jev-like"** = a small, non-generative model that takes a structured observation and emits a legal decision directly, with decision quality improved by outcome-driven learning. Opponent head, Q critic and search distillation are tools, not required heads; keep a head only if it makes the fast policy play better or the teacher cheaper/better.
 - **W6+ north star: fast-policy strength improvement per unit of training compute** (paired Δ vs C without search, per GPU-h/CPU-h). Search, heuristics and the simulator are training-time teachers only: optimize teacher quality and cost per useful training label, not search inference latency (track coverage, confidence, label time, usable-label rate). **Model size (user decision):** small, structure-aware architectures, ≤ 4.7M params (below Metamon's smallest agent, Minikazam), at least as strong as the Metamon reference. Architecture changes are allowed; one changed component per experiment. Roadmap, gates and experiment card: `research.md` §8.
   - **W6.0** done: distillation feasibility (`reports/w6_0_distill_feasibility.md`). The collector executed-action bug is fixed (`executed_index` + `search_row` in behavior; C's `chosen_index`/probs kept for replay parity).
@@ -33,7 +33,11 @@ Design, roadmap and gates: `research.md`. The overriding aim is a **strong, usab
     - `epn20` (20 min from scratch, pile only): `val_nll` 0.808 vs P 1.19; dev vs P +23.8 pp pooled [+21.3, +26.4]; vs Minikazam 76.2% (P 49.4%); **vs Kakuna (142M) 29.0% [25.2, 33.1]**, so it is not yet at Metamon's best (`reports/ar_epn_vs_kakuna.json`).
     - Promoted after the W7 fresh-pool final (see Production).
   - **W6-C** (design only): format spec + candidate-action interface + compatibility checks. No UU training or VGC until the OU fast policy clearly improves. Gen 9 UU is not in Metamon `SUPPORTED_BATTLE_FORMATS` (own replays and team pool needed).
-  - Later: W7 self-play league (diverse opponents and teams), W8 multi-format adaptation; error analysis from real games against the bot throughout.
+  - **W7** done: EPN promoted (`reports/w7_epn_final_report.md`), then KK (Kakuna soft-label distillation, `scripts/w7_kakuna_label.py`, `scripts/train_epn.py`; `reports/w7_next_lever_report.md`).
+  - **W8** (plan: `research.md` §8), **paused by the user** after E1:
+    - **E1 closed, no gain** (`reports/w8_e1_report.md`): a 66-column public matchup block (`src/pokeai/data/matchup.py`, `ObservationEncoder(extras="matchup-v0")`, `scripts/w8_build_extras.py`, train with `--config extras=66`). e1 − ctl pooled over KK/GymLeader/Kakuna −0.8 [−3.5, +1.9]. Input-side levers stay bounded by the Kakuna teacher.
+    - E2 (training-only opponent aux heads: `Config.aux`, `train_epn.py --aux-weight`) is coded and tested, not run. E3 dropped. E4 (search as teacher) and E5 (KL-anchored RL) not started.
+  - **Public ladder read-out**: `scripts/ladder_bot.py` (account `PokeDecisionKK`, credentials in gitignored `.omp/ps/credentials.env`, unit `w8-ladder`, output `runs/ladder_kk_v4/`). Never kill a running ladder unit mid-battle: the opponent is a human waiting on us.
 
 ## Evaluation process (W6+)
 
@@ -58,10 +62,13 @@ Partial BS1.3/BS1.4/BS1.5 gameplay is **sealed**: never read it or merge it.
 
 ```
 Showdown request + public protocol → player-view state (metamon backend)
-  → ObservationEncoder (87 tokens + 48 numbers) → GRU encoder
-  → policy (13 logits) | value P(win)
+  → ObservationEncoder (87 tokens + 48 numbers [+ optional extras])
+  → EPN: per-type entity encoders → entity self-attention → GRU over turns
+  → policy (13 logits, each scored against the entity its action refers to) | value P(win)
   → engine legality mask → masked softmax / argmax → action
 ```
+
+Older models (C, P) use a GRU over pooled tokens (`src/pokeai/models/pokedecision.py`).
 
 - **Actions:** Metamon UniversalAction has 13 slots: 4 moves + 5 switches + 4 move+Tera. `-1` means not representable and always carries a reason. Team preview uses a separate model.
 - **Masking:** legality comes from the engine, never learned; illegal logits are `-inf`.
@@ -72,19 +79,19 @@ Showdown request + public protocol → player-view state (metamon backend)
 | Path | Purpose |
 |---|---|
 | `src/pokeai/env/` | `teams.py` (`load_teamset()`, the only sanctioned team source), `runner.py` (`RunConfig`, bounded concurrent battles → `battles.jsonl` + `summary.json`, lanes/pair windows), `collector.py` (per-decision capture) |
-| `src/pokeai/data/` | `features.py` `ObservationEncoder` (**the only** state→features path, shared by training and live play), datasets, splits, validation, replay download |
+| `src/pokeai/data/` | `features.py` `ObservationEncoder` (**the only** state→features path, shared by training and live play), `matchup.py` (W8 E1 extras), `search_capture.py` (search-row join), datasets, splits, validation, replay download |
 | `src/pokeai/models/pokedecision.py` | `PokeDecision`, `masked_logits`, `load_pokedecision()` |
 | `src/pokeai/training/` | BC training, GAE utilities |
 | `src/pokeai/agents/` | `neural_player.py` (`NeuralPlayer`), `live_search.py` (`LiveSearch`: hard deadline, worker lifecycle, fail-fast on unknown exceptions) |
 | `src/pokeai/cf/` | Offline sim: `sim_driver.js` (Node sidecar: snapshot/restore/PRNG over pinned `dist/sim`), `offline.py` (server-less matches; typed `RolloutStalled`/`RolloutHorizonExceeded`), `belief.py` (opponent set sampler from Smogon usage stats), `reconstruct.py`/`recon_world.py` (public → sim world; must never import `recon_oracle.py`), `recon_search.py` (anytime paired root search, `opp_model`) |
-| `scripts/` | Thin CLIs per milestone: `run_battles.py`, `evaluate_w5.py` (paired benchmark), `run_metamon_h2h.py` + `metamon_h2h_worker.py` (paired h2h vs a Metamon pretrained agent via named challenge; Minikazam works on CPU), `bs1_2_run.py` (block × lane driver), `build_teamset.py` (`--w5-fresh-heldout --exclude-dirs`), `pool_claim.py` + `bs14_manifest.py` + `bs_watchdog.py` (final-run claim/verify/watchdog), `bs_rehearsal_{prep,check}.py` |
+| `scripts/` | Thin CLIs per milestone: `run_battles.py`, `evaluate_w5.py` (paired benchmark, `--lanes`), `run_metamon_h2h.py` + `metamon_h2h_worker.py` (paired h2h vs a Metamon pretrained agent via named challenge, `--lanes`), `w8_pairs.py` (paired CIs from a benchmark report + h2h runs), `train_epn.py` (EPN/KK training), `w7_kakuna_label.py`, `w7_build_cache.py`, `w8_build_extras.py`, `ladder_bot.py` (public ladder), `bs1_2_run.py` (block × lane driver), `build_teamset.py` (`--w5-fresh-heldout --exclude-dirs`), `pool_claim.py` + `bs14_manifest.py` + `bs_watchdog.py` (final-run claim/verify/watchdog). Closed one-off experiment runners were removed; their results stay in `reports/` and git history |
 | `autoresearch/` | Autonomous architecture search: `prepare.py` (fixed harness: `uv run python autoresearch/prepare.py` once → `.cache/autoresearch/`), `train.py` (the only file the agent edits), `program.md` (rules + run command). Results in untracked `results.tsv` |
-| `configs/` | Training and benchmark configs (`w5_bs1_2_benchmark.yaml` = dev design) |
+| `configs/` | Training and benchmark configs (`w8_e1_dev.yaml` = latest dev design; `w5_bs1_2_benchmark.yaml` = search benchmark) |
 | `data/teams/`, `data/teams_w5*/` | Server-validated pools. `teams_w5/collect` = self-play/rollout data, `teams_w5/dev` = selection; the rest are spent |
-| `models/` | v0, v1, `v1-value` (C), `v2-pile` (P), `v3-epn` (EPN), `v4-kk` (KK, production); research exports are `model.py` + state_dict, loaded via `load_research_model`; `v2-candidate` (not production), critic pilot |
+| `models/` | v0, v1, `v1-value` (C), `v2-pile` (P), `v3-epn` (EPN), `v4-kk` (KK, production); research exports are `model.py` + `best.pt` (state dict), loaded via `load_research_model`; `v2-candidate` (not production), critic pilot |
 | `reports/` | Every milestone's evidence and final report; check here for details instead of this file |
 | `third_party/metamon/` | Vendored Metamon `0a00a75` + pinned Showdown (gitignored; **never patch**) |
-| `runs/`, `.cache/metamon/`, `datasets/*.npz` | Gitignored outputs and caches |
+| `runs/`, `.cache/`, `checkpoints/`, `datasets/**/*.np[yz]` | Gitignored outputs and caches; small dataset sidecars (`report.json`, `encoder.json`, `kakuna_train.json`, `extras.json`) are tracked |
 
 ## Commands
 

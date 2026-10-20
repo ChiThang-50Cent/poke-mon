@@ -1,0 +1,11 @@
+{
+ "extras": "matchup-v0",
+ "dim": 66,
+ "splits": {
+  "val": {
+   "trajectories": 9895,
+   "decisions": 359830,
+   "pad_fraction": 0.22319731792538397
+  }
+ }
+}

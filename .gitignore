@@ -11,12 +11,10 @@ shard-*.tar
 shard-*.tar.part
 datasets/w4/outcomes.json
 datasets/w4/outcomes_holdout.json
-datasets/w4/*.npz
-datasets/w6a/*.npz
+datasets/**/*.npz
+datasets/**/*.npy
+data/teams_*/heldout/final.lock
 models/*/feature_cache.pt
 .omp/
-datasets/w6p/*.npz
-datasets/w6p_b/*.npz
 autoresearch/results.tsv
 autoresearch/notes.md
-.omp/colab/
