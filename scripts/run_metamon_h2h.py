@@ -114,7 +114,8 @@ async def play(
         records: list[dict] = []
         try:
             with (out / "battles.jsonl").open("x") as log:
-                for index, ((team, team_name), (opp_team, opp_name)) in enumerate(schedule):
+                for index, ((team, team_name), (opp_team, opp_name)) in zip(
+                        args.indices, schedule):
                     start = time.perf_counter()
                     previous = next(reversed(player.battles), None)
                     illegal_before = getattr(player, "illegal_actions", 0)
@@ -195,6 +196,10 @@ def main() -> int:
     parser.add_argument("--temperature", type=float, default=1.0)
     parser.add_argument("--device", default="cpu")
     parser.add_argument("--team-preview-checkpoint", default=DEFAULT_PREVIEW)
+    parser.add_argument("--lane", type=int, default=0)
+    parser.add_argument("--lanes", type=int, default=1,
+                        help="play only swapped pairs p with p %% lanes == lane (own worker); "
+                             "matchup_index stays global, merge lanes by concatenation")
     args = parser.parse_args()
     if not args.player.startswith(("neural:", "baseline:")):
         parser.error("--player must be neural:<model_dir> or baseline:<Name>")
@@ -204,7 +209,11 @@ def main() -> int:
     out.mkdir(parents=True, exist_ok=False)
     os.environ.setdefault("METAMON_CACHE_DIR", str(Path(".cache/metamon").resolve()))
 
-    schedule = build_h2h_schedule(args.teams, args.seed, args.battles)
+    full = build_h2h_schedule(args.teams, args.seed, args.battles)
+    if not 0 <= args.lane < args.lanes:
+        parser.error("--lane must be in [0, --lanes)")
+    args.indices = [i for i in range(len(full)) if (i // 2) % args.lanes == args.lane]
+    schedule = [full[i] for i in args.indices]
     (out / "schedule.json").write_text(json.dumps(
         [{"packed": opp[0], "name": opp[1]} for _, opp in schedule]
     ))
@@ -282,8 +291,8 @@ def main() -> int:
                 f"Metamon win rate {win_rates} disagrees with neural-side "
                 f"losses {summary['losses']}/{summary['completed']}"
             )
-    if len(records) != args.battles:
-        problems.append(f"only {len(records)}/{args.battles} battles ran")
+    if len(records) != len(schedule):
+        problems.append(f"only {len(records)}/{len(schedule)} battles ran")
     elif worker.returncode != 0:
         problems.append(f"Metamon worker exit code {worker.returncode}")
     if not problems:

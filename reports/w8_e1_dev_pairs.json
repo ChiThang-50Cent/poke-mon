@@ -1,0 +1,119 @@
+{
+ "e1-ctl": {
+  "KK": {
+   "win_rate_difference": -0.01,
+   "bootstrap_95": [
+    -0.064,
+    0.048
+   ],
+   "verdict": "inconclusive",
+   "clusters": 250,
+   "seed": 20271017,
+   "resamples": 5000
+  },
+  "GymLeader": {
+   "win_rate_difference": 0.022,
+   "bootstrap_95": [
+    -0.002,
+    0.046
+   ],
+   "verdict": "inconclusive",
+   "clusters": 250,
+   "seed": 20271017,
+   "resamples": 5000
+  },
+  "pooled": {
+   "win_rate_difference": 0.006,
+   "bootstrap_95": [
+    -0.024,
+    0.037
+   ],
+   "verdict": "inconclusive",
+   "clusters": 500,
+   "strata": {
+    "KK": 250,
+    "GymLeader": 250
+   },
+   "seed": 20271019,
+   "resamples": 10000
+  }
+ },
+ "e1-KK": {
+  "KK": {
+   "win_rate_difference": 0.024,
+   "bootstrap_95": [
+    -0.032,
+    0.08
+   ],
+   "verdict": "inconclusive",
+   "clusters": 250,
+   "seed": 20271017,
+   "resamples": 5000
+  },
+  "GymLeader": {
+   "win_rate_difference": 0.018,
+   "bootstrap_95": [
+    -0.002,
+    0.04
+   ],
+   "verdict": "inconclusive",
+   "clusters": 250,
+   "seed": 20271017,
+   "resamples": 5000
+  },
+  "pooled": {
+   "win_rate_difference": 0.021,
+   "bootstrap_95": [
+    -0.008,
+    0.05
+   ],
+   "verdict": "inconclusive",
+   "clusters": 500,
+   "strata": {
+    "KK": 250,
+    "GymLeader": 250
+   },
+   "seed": 20271019,
+   "resamples": 10000
+  }
+ },
+ "ctl-KK": {
+  "KK": {
+   "win_rate_difference": 0.034,
+   "bootstrap_95": [
+    -0.02,
+    0.086
+   ],
+   "verdict": "inconclusive",
+   "clusters": 250,
+   "seed": 20271017,
+   "resamples": 5000
+  },
+  "GymLeader": {
+   "win_rate_difference": -0.004,
+   "bootstrap_95": [
+    -0.03,
+    0.022
+   ],
+   "verdict": "inconclusive",
+   "clusters": 250,
+   "seed": 20271017,
+   "resamples": 5000
+  },
+  "pooled": {
+   "win_rate_difference": 0.015,
+   "bootstrap_95": [
+    -0.016,
+    0.045
+   ],
+   "verdict": "inconclusive",
+   "clusters": 500,
+   "strata": {
+    "KK": 250,
+    "GymLeader": 250
+   },
+   "seed": 20271019,
+   "resamples": 10000
+  }
+ }
+}

@@ -160,4 +160,5 @@ Baselines: `metamon.baselines.get_all_baseline_names()` (`RandomBaseline`, `Grun
   - `train_epn.py`: ~1 core + GPU, ~5 GB.
   - High total RAM on this box is mostly desktop apps (browsers, IDE), not these jobs. Colab High-RAM does not help.
   - **To go faster, split battles into lanes**: N processes `evaluate_w5.py --lanes N --lane i` (≈ N cores, 2 GB each), merged afterwards as `bs1_2_run.py`/`bs1_2_report.merge_block` do. Use 4 lanes for 500-battle cells.
+  - **RAM is shared with the user's desktop (~20 GB of browsers/IDE).** Before running lanes in parallel, check `free -m` "available" and cap each unit with `-p MemoryMax=… -p MemorySwapMax=0`, so our job is killed instead of the user's apps. 4 Kakuna h2h lanes (~2.1 GB each) once exhausted RAM and crashed the user's browser; 2 capped lanes are safe.
 - **No LLM fine-tuning.**
