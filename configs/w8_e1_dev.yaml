@@ -1,12 +1,10 @@
 # W8 E1: encoder v2 matchup extras (src/pokeai/data/matchup.py), dev only.
 # Both arms: KK recipe (EPN architecture 1.01M, --kakuna-weight 1.0), 20 min from scratch on the
-# same w7_c train cache (.cache/epn-w7c-x), same seed, trained side by side on one Colab GPU.
-# They differ only in --config extras=66 (the extras columns are present in both caches;
-# the control model ignores them).
-# - ctl: kk100 without extras (control)
+# same w7_c train cache (.cache/epn-w7c), same seed, same RTX 3060, alone on the GPU.
+# They differ only in --config extras=66. The control is the W7 run kk100_c20 itself: the
+# extras columns now in the cache are sliced off by a v1 model, so its computation is unchanged.
+# - ctl: kk100_c20 (control)
 # - e1: kk100 + matchup extras
-# Reference: KK (production). Primary: e1 - ctl, pooled vs KK and GymLeader; then vs Kakuna
-# (scripts/run_metamon_h2h.py).
 reference_arm: KK
 pool: data/teams_w5/dev
 battles: 500
@@ -17,7 +15,7 @@ arms:
     preview_argmax: true
     greedy: true
   ctl:
-    model_dir: checkpoints/epn/w8_ctl20
+    model_dir: checkpoints/epn/kk100_c20
     preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
     preview_argmax: true
     greedy: true

@@ -154,4 +154,10 @@ Baselines: `metamon.baselines.get_all_baseline_names()` (`RandomBaseline`, `Grun
 - **Python and Node:** Python 3.11 via `uv` only. Node 22 / npm 11 are for Showdown; npm 11 blocks some install scripts, and the server still works.
 - **Hardware:** this box has an RTX 3060 12 GB and 16 threads. The simulator is the bottleneck, not the GPU. Heuristic battles run at ~35–40 games/s; C+search at ~110 s/battle.
 - **Resource limits (user rule):** never run heavy jobs unbounded; use the wrapper above. Long battle runs go in a transient `systemd-run --user --unit=…` with `Restart=no`. For the dev benchmark, CPUQuota 1000% / MemoryMax 14G is approved.
+- **Per-job CPU/RAM profile (measured W8).** CPU is high only for multi-process jobs; most eval jobs are one process:
+  - `evaluate_w5.py` / `run_metamon_h2h.py`: **one Python process ≈ 1 core** (asyncio + batch-1 inference), ~2 GB RSS, plus Showdown `node` ~1 GB. Neural-vs-neural dev benchmark ≈ 70 battles/min. A high CPUQuota does not speed it up.
+  - Data builds (`w6p_build_pile.py`, `w8_build_extras.py --workers N`): N cores while encoding, then near 0 while concatenating/saving. `w8_build_extras` on w7_c: 11 min with 4 workers, 6 GB peak.
+  - `train_epn.py`: ~1 core + GPU, ~5 GB.
+  - High total RAM on this box is mostly desktop apps (browsers, IDE), not these jobs. Colab High-RAM does not help.
+  - **To go faster, split battles into lanes**: N processes `evaluate_w5.py --lanes N --lane i` (≈ N cores, 2 GB each), merged afterwards as `bs1_2_run.py`/`bs1_2_report.merge_block` do. Use 4 lanes for 500-battle cells.
 - **No LLM fine-tuning.**
