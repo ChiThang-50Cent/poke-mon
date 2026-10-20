@@ -1,0 +1,42 @@
+# W7 Kakuna-distilled EPN one-shot final: checkpoints/epn/kk100_full60 (EPN architecture, 1.01M,
+# Kakuna soft labels on the whole 905k-trajectory pile, 60 min) vs production EPN on the FRESH
+# heldout pool data/teams_w8/heldout (build_teamset.py --w5-fresh-heldout --seed 20262501,
+# disjoint from every used and spent pool incl. teams_w7).
+# Selected on dev only (reports/w7_next_lever_report.md): kk100_full60, kk100_c20 and
+# kk100_wide60 tie on dev; full60 = smallest model trained on the most data.
+# Same design as the dev runs: 500 battles per cell = 250 team pairs, both directions, greedy.
+# Run:  uv run python scripts/evaluate_w5.py --config configs/w7_kk_final.yaml --final \
+#         --seed 20262511 --out reports/w7_kk_final_benchmark.json
+# Gate (pre-registered, as for the W7 EPN final): promote only if the pooled CI (all three
+# opponents, team-pair clusters) > 0, the vs-EPN CI > 0, no opponent CI entirely < 0,
+# illegal_actions = 0 and battle errors = 0.
+run:
+  final: true
+  release_manifest: reports/w7_kk_final_manifest.json
+  label: W7 Kakuna-distilled EPN final bundle (kk100_full60 vs EPN)
+  code_commit: 2ed14bd
+  seed: 20262511
+reference_arm: EPN
+pool: data/teams_w8/heldout
+battles: 500
+arms:
+  EPN:
+    model_dir: models/pokedecision-v3-epn
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+  kk:
+    model_dir: checkpoints/epn/kk100_full60
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+opponents:
+  EPN:
+    model_dir: models/pokedecision-v3-epn
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+  Grunt:
+    baseline: Grunt
+  GymLeader:
+    baseline: GymLeader
