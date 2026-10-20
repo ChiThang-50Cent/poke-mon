@@ -188,6 +188,33 @@ def test_extras_model_routes_v2_columns_and_v1_model_ignores_them(tmp_path):
         assert torch.equal(restored(tokens, numbers)[0], base)
 
 
+def test_opp_aux_labels_next_action_switch_and_species_sets():
+    """E2 targets: step t is labelled with the opponent's turn-t action revealed at t+1 (move id,
+    or SWITCH when the active species changes); unusable steps are -1; the set target spreads
+    over every move that species reveals in the trajectory and nothing else."""
+    module, _ = _research_module()
+    V = 2542
+    tusk, ghold = 1839, 1500
+    eq, rs, mir = 354, 700, 800
+    species = [tusk, tusk, tusk, ghold, ghold, tusk]
+    prev = [852, eq, rs, 852, mir, 852]   # nomove at start and after each switch
+    tokens = torch.zeros(1, 7, 87, dtype=torch.long)
+    tokens[0, :6, 72] = torch.tensor(species)
+    tokens[0, :6, 86] = torch.tensor(prev)
+    real = torch.tensor([[True] * 6 + [False]])
+    nxt, target = module.opp_aux_labels(tokens, real, V)
+    assert nxt[0].tolist() == [eq, rs, V, mir, V, -1, -1]
+    for t in (0, 1, 2, 5):
+        assert target[0, t, eq] == target[0, t, rs] == 0.5
+    for t in (3, 4):
+        assert target[0, t, mir] == 1.0
+    assert torch.allclose(target[0, :6].sum(-1), torch.ones(6))
+    assert target[0, 6].sum() == 0
+    model = module.Policy(module.Config(aux=1))
+    out = model.forward_aux(tokens, torch.zeros(1, 7, 48))
+    assert out[2].shape == (1, 7, V + 1) and out[3].shape == (1, 7, V)
+
+
 def test_gru_hidden_state_matches_uninterrupted_sequence():
     torch.manual_seed(11)
     model = PokeDecision(

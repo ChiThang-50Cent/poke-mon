@@ -56,6 +56,7 @@ class Config:
     d_score: int = 128
     value_head: bool = True
     extras: int = 0             # 0 = v1 inputs; EXTRAS_DIM = encoder v2 matchup extras
+    aux: int = 0                # 1 = training-only opponent heads (next action, revealed set)
 
 
 class EntityEncoder(nn.Module):
@@ -114,6 +115,9 @@ class Policy(nn.Module):
         self.tera_score = Scorer(config)
         self.switch_score = Scorer(config)
         self.value = nn.Linear(config.hidden_size, 1)
+        if config.aux:  # training-only; live play never calls them
+            self.opp_next = nn.Linear(config.hidden_size, config.vocab_size + 1)  # +1 = switch
+            self.opp_set = nn.Linear(config.hidden_size, config.vocab_size)
 
     def encode(self, tokens, numbers):
         emb = self.tokens(tokens)                                   # [B,T,87,D]
@@ -149,6 +153,44 @@ class Policy(nn.Module):
     def forward_with_value(self, tokens, numbers, hidden=None):
         logits, h, hidden = self.run(tokens, numbers, hidden)
         return logits, self.value(h).squeeze(-1), hidden
+
+    def forward_aux(self, tokens, numbers):
+        """Full-sequence training pass: policy, value, opponent next-action and set logits."""
+        logits, h, _ = self.run(tokens, numbers, None)
+        return logits, self.value(h).squeeze(-1), self.opp_next(h), self.opp_set(h)
+
+
+# Opponent aux labels, built from the public token stream of the same trajectory (no new data):
+# slot 72 = opponent active species, slot 86 = opponent's previous move (revealed next step).
+OPP_SPECIES, OPP_PREV_MOVE = 72, 86
+NOT_A_MOVE = (1, 852)          # <blank>, nomove (DefaultObservationSpace-v1 ids)
+
+
+def opp_aux_labels(tokens, real, vocab_size: int):
+    """Targets for step t: what the opponent did during turn t, seen at t+1.
+
+    next [B,T] long: SWITCH (= vocab_size) if the opponent's active species changed, else the
+    move token revealed at t+1; -1 = no label (last step, padding, nomove/blank/unknown).
+    set [B,T,V] float: the distribution over every move the current opponent species reveals in
+    this trajectory (uniform over the set; all-zero rows = no label). Training targets only."""
+    unk = vocab_size - 1
+    species, move = tokens[..., OPP_SPECIES], tokens[..., OPP_PREV_MOVE]
+    nxt = torch.full_like(species, -1)
+    both = real[:, 1:] & real[:, :-1]
+    switched = species[:, 1:] != species[:, :-1]
+    m = move[:, 1:]
+    is_move = (m != unk) & ~torch.isin(m, torch.tensor(NOT_A_MOVE, device=m.device))
+    nxt[:, :-1] = torch.where(both & switched, vocab_size,
+                              torch.where(both & is_move, m, -1))
+    target = torch.zeros(*species.shape, vocab_size, device=tokens.device)
+    moved = (nxt >= 0) & (nxt < vocab_size)  # move labels at step t belong to species[t]
+    for b in range(species.shape[0]):
+        for s in species[b][real[b]].unique():
+            rows = (species[b] == s) & real[b]
+            ids = nxt[b][rows & moved[b]].unique()
+            if len(ids):
+                target[b, rows.nonzero(as_tuple=True)[0][:, None], ids[None, :]] = 1.0 / len(ids)
+    return nxt, target
 
 
 def build_model() -> Policy:

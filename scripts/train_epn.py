@@ -43,8 +43,13 @@ def main() -> None:
     ap.add_argument("--config", nargs="*", default=[], metavar="FIELD=INT",
                     help="override train.Config fields (e.g. d_entity=192); baked into the "
                          "exported model.py so load_pokedecision rebuilds the same shape")
+    ap.add_argument("--aux-weight", type=float, default=0.0,
+                    help="W8 E2: add w * (CE(opponent next action) + CE(opponent revealed-move "
+                         "set)) from train.opp_aux_labels; builds the model with aux=1")
     args = ap.parse_args()
     overrides = {k: int(v) for k, v in (kv.split("=", 1) for kv in args.config)}
+    if args.aux_weight:
+        overrides["aux"] = 1
     if args.cache:
         H.CACHE = Path(args.cache).resolve()
     kakuna = np.load(H.CACHE / "train_kakuna.npy", mmap_mode="r") if args.kakuna_weight else None
@@ -75,7 +80,10 @@ def main() -> None:
         b = data.batch(idx, device)
         cursor += T.BATCH
         with torch.autocast("cuda", dtype=torch.bfloat16):
-            logits, values, _ = model.forward_with_value(b["tokens"], b["numbers"])
+            if args.aux_weight:
+                logits, values, opp_next, opp_set = model.forward_aux(b["tokens"], b["numbers"])
+            else:
+                logits, values, _ = model.forward_with_value(b["tokens"], b["numbers"])
         logits, values = logits.float(), values.float()
         v = b["valid"]
         legal = b["masks"] | ~b["masks"].any(-1, keepdim=True)  # padding rows: no -inf-only rows
@@ -93,6 +101,12 @@ def main() -> None:
                 w_data.sum() + args.kakuna_weight * labeled.sum())
         value = F.binary_cross_entropy_with_logits(values[b["real"]], b["outcomes"][b["real"]])
         loss = policy + T.VALUE_WEIGHT * value
+        if args.aux_weight:
+            nxt, target = T.opp_aux_labels(b["tokens"], b["real"], model.config.vocab_size)
+            aux = F.cross_entropy(opp_next.float()[nxt >= 0], nxt[nxt >= 0])
+            has = target.sum(-1) > 0
+            aux = aux - (target[has] * torch.log_softmax(opp_set.float()[has], -1)).sum(-1).mean()
+            loss = loss + args.aux_weight * aux
         if not torch.isfinite(loss):
             raise FloatingPointError("non-finite loss")
         optimizer.zero_grad(set_to_none=True)
@@ -111,7 +125,8 @@ def main() -> None:
             next_eval += args.eval_every * 60
     summary = {**curve[-1], **H.check_contract(model, device), "curve": curve,
                "minutes": args.minutes, "seed": args.seed, "batch": T.BATCH, "lr": T.LR,
-               "cache": str(H.CACHE), "kakuna_weight": args.kakuna_weight, "config": overrides}
+               "cache": str(H.CACHE), "kakuna_weight": args.kakuna_weight,
+               "aux_weight": args.aux_weight, "config": overrides}
     H.save(model, out, ROOT / "autoresearch/train.py", summary)
     if overrides:
         with open(out / "model.py", "a") as f:
