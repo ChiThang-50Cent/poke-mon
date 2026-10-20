@@ -1,0 +1,91 @@
+{
+ "v4_kk_vs_kakuna": {
+  "attempted": 500,
+  "completed": 500,
+  "wins": 219,
+  "losses": 281,
+  "ties": 0,
+  "error_count": 0,
+  "win_rate": 0.438,
+  "lose_rate": 0.562,
+  "tie_rate": 0.0,
+  "win_rate_wilson_95": [
+   0.39514834408666566,
+   0.48179707413056694
+  ],
+  "wall_time_s": 2039.6621524710208,
+  "games_per_s": 0.245138637001357,
+  "decisions_player": 22082,
+  "decisions_per_s": 10.826302764527929,
+  "lead_source_counts": {
+   "model": 500
+  },
+  "protocol_retry_counts": {
+   "player": 0,
+   "opponent": 0
+  },
+  "protocol_retry_evidence": {
+   "player": [],
+   "opponent": []
+  },
+  "config": {
+   "player": "neural:models/pokedecision-v4-kk",
+   "metamon": "Kakuna",
+   "metamon_checkpoint": null,
+   "metamon_temperature": 1.0,
+   "metamon_attention": "flex",
+   "teams": "data/teams_w5/dev",
+   "battles": 500,
+   "seed": 20261018,
+   "out": "runs/h2h500_kakuna_v4",
+   "timeout_s": 300.0,
+   "startup_timeout_s": 1200.0,
+   "sample": false,
+   "temperature": 1.0,
+   "device": "cpu",
+   "team_preview_checkpoint": "third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt"
+  },
+  "metamon": {
+   "model": "Kakuna",
+   "checkpoint": 34,
+   "checkpoint_path": "/home/thangnc/code/en-tutor/.cache/metamon/pretrained_models/blobs/c2/c25512da785582b714c5bc6e9454c91994bfcf6f48c3fa7eadee2ee34e97e95e",
+   "checkpoint_sha256": "7e7474d5b2ec6624afdeb29a7cf1dc5c84817d5aee8ec39c1d35a153b18df26c",
+   "backend": "metamon",
+   "temperature": 1.0,
+   "attention": "flex",
+   "observation_space": "OpponentMoveObservationSpace"
+  },
+  "backend": "metamon",
+  "neural": {
+   "player": "neural:models/pokedecision-v4-kk",
+   "checkpoint_sha256": "3f871157a804c9ec8d52a924d66b6d6e5b16ae84cff6e0ef6b2e09bc822bc635",
+   "backend": "metamon",
+   "illegal_actions": 0,
+   "fallbacks": {
+    "struggle": 64
+   }
+  },
+  "illegal_actions": 0,
+  "errors": [],
+  "server": "ws://localhost:8000/showdown/websocket",
+  "schedule": {
+   "seed": 20261018,
+   "teams": "data/teams_w5/dev",
+   "swap_team_pairs": true,
+   "player_challenges": true
+  },
+  "valid": true,
+  "problems": [],
+  "paired_vs_epn20": {
+   "win_rate_difference": 0.148,
+   "bootstrap_95": [
+    0.094,
+    0.202
+   ],
+   "verdict": "positive",
+   "clusters": 250,
+   "seed": 20271020,
+   "resamples": 5000
+  }
+ }
+}

@@ -183,3 +183,33 @@ Gate check:
   been reused many times; trust the fresh-pool number.
 - Grunt and GymLeader are near saturation (~94%), so the pooled number mostly reflects the
   vs-EPN cell.
+
+### Against Metamon (dev pool, not part of the gate)
+
+Production KK vs Kakuna (flex, temperature 1): 500 battles, the same schedule as EPN's run,
+0 errors, 0 illegal actions (`reports/w7_v4_vs_kakuna.json`).
+
+| Player | Wins vs Kakuna | Wilson 95% |
+|---|---:|---|
+| EPN | 0.290 | [0.252, 0.331] |
+| kk100_c20 | 0.396 | [0.354, 0.440] |
+| **KK (`v4-kk`)** | **0.438** | [0.395, 0.482] |
+
+Paired KK − EPN: **+0.148 [+0.094, +0.202]**.
+
+## 6. What this does and does not show
+
+- KK is pure distillation. Its loss is minimised by copying Kakuna, so its expected ceiling is
+  about 50% against Kakuna.
+  - It can edge past that slightly, through greedy play on the teacher's distribution
+    (Kakuna samples at temperature 1). That effect is not measured.
+  - It cannot clearly beat its teacher.
+- More data, more minutes and 3.5× width did not help.
+  - Unmeasured candidates: information parity (Kakuna's richer observation and context) and
+    off-policy states.
+  - A cheap discriminating test, not run: label the val split with Kakuna, then compare the KL
+    of the 1.01M and 3.53M students to it.
+- Exceeding Kakuna needs a signal beyond imitation:
+  - RL from game outcomes, starting from KK with a KL anchor to KK, against a mixed opponent pool
+    (not always Kakuna);
+  - search as the teacher (expert iteration), distilled back into the policy.

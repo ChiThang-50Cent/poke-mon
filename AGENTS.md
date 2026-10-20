@@ -10,7 +10,7 @@ Design, roadmap and gates: `research.md`. The overriding aim is a **strong, usab
 
 ## Current state (W1–W5 done)
 
-- **Production: KK** = `models/pokedecision-v4-kk`, tag `w7-kk` (W7). Same 1.01M EPN architecture, trained 60 min from scratch on Kakuna soft labels (`train_epn.py --kakuna-weight 1.0`) over the whole 905k-trajectory Alakazam-family pile; fresh-pool final vs EPN +6.0 pp [+0.6, +11.4], Grunt +0.2, GymLeader +1.8, pooled +2.7 [+0.5, +4.9] (`reports/w7_next_lever_report.md` §5).
+- **Production: KK** = `models/pokedecision-v4-kk`, tag `w7-kk` (W7). Same 1.01M EPN architecture, trained 60 min from scratch on Kakuna soft labels (`train_epn.py --kakuna-weight 1.0`) over the whole 905k-trajectory Alakazam-family pile; fresh-pool final vs EPN +6.0 pp [+0.6, +11.4], Grunt +0.2, GymLeader +1.8, pooled +2.7 [+0.5, +4.9] (`reports/w7_next_lever_report.md` §5). Vs Kakuna (dev, 500): 43.8% [39.5, 48.2], paired vs EPN +14.8 [+9.4, +20.2] (`reports/w7_v4_vs_kakuna.json`). Pure distillation: its ceiling is ≈ Kakuna; beating Kakuna needs a non-imitation signal (RL from outcomes, search as teacher).
 - **Previous: EPN** = `models/pokedecision-v3-epn`, tag `w7-epn`. Entity-pointer network, 1.01M params, BC on the Metamon pile; fresh-pool final vs P pooled +19.6 [+17.1, +22.1] (`reports/w7_epn_final_report.md`). Vs Metamon: Minikazam 76.2%, Alakazam 41.2%, Kakuna 29.0%.
 - **Previous: P** = `models/pokedecision-v2-pile`, tag `w6p-pile` (W6-P). Same 1.30M GRU as C, fine-tuned on Metamon self-play; fresh-pool final vs C +9.6 pp, Grunt +5.8, GymLeader +5.8 (`reports/w6p_pile_report.md`).
 - **C** = `models/pokedecision-v1-value`, tag `w5-baseline`: previous champion, still the init/reference for W5–W6 scripts.
