@@ -1,0 +1,30 @@
+# W7 lever 2 capacity probe, dev only: Kakuna soft labels (w = 1.0), whole pile, 60 min.
+# kk100_wide60 (3.53M: d_token 64, d_entity 192, hidden 512, d_score 256) vs kk100_full60 (1.01M),
+# same data/labels/minutes; production EPN as reference.
+reference_arm: EPN
+pool: data/teams_w5/dev
+battles: 500
+arms:
+  EPN:
+    model_dir: models/pokedecision-v3-epn
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+  kk100_full60:
+    model_dir: checkpoints/epn/kk100_full60
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+  kk100_wide60:
+    model_dir: checkpoints/epn/kk100_wide60
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+opponents:
+  EPN:
+    model_dir: models/pokedecision-v3-epn
+    preview_checkpoint: third_party/metamon/metamon/backend/team_preview/gen9ou_high_elo_v4/best_model.pt
+    preview_argmax: true
+    greedy: true
+  GymLeader:
+    baseline: GymLeader
