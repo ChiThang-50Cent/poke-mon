@@ -1,0 +1,53 @@
+{
+ "kk-EPN": {
+  "pooled": {
+   "win_rate_difference": 0.02666666666666667,
+   "bootstrap_95": [
+    0.004666666666666667,
+    0.04933333333333333
+   ],
+   "verdict": "positive",
+   "clusters": 750,
+   "strata": {
+    "EPN": 250,
+    "Grunt": 250,
+    "GymLeader": 250
+   },
+   "seed": 20262512,
+   "resamples": 10000
+  },
+  "EPN": {
+   "win_rate_difference": 0.06,
+   "bootstrap_95": [
+    0.006,
+    0.114
+   ],
+   "verdict": "positive",
+   "clusters": 250,
+   "seed": 20272511,
+   "resamples": 5000
+  },
+  "Grunt": {
+   "win_rate_difference": 0.002,
+   "bootstrap_95": [
+    -0.024,
+    0.03
+   ],
+   "verdict": "inconclusive",
+   "clusters": 250,
+   "seed": 20272512,
+   "resamples": 5000
+  },
+  "GymLeader": {
+   "win_rate_difference": 0.018,
+   "bootstrap_95": [
+    -0.012,
+    0.046
+   ],
+   "verdict": "inconclusive",
+   "clusters": 250,
+   "seed": 20272513,
+   "resamples": 5000
+  }
+ }
+}

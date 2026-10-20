@@ -123,3 +123,63 @@ Paired kk100 − EPN against Kakuna: **+0.106 [+0.050, +0.160]**.
 - kk100 closes a third of the gap to Kakuna. kk50 vs kk100 is inconclusive; kk100 is chosen
   for the next step because the primary opponents (EPN and Kakuna) favour it.
 - Next: label the whole 905k-trajectory pile and train kk100 for 60 minutes.
+
+## 4. Scale and capacity probes on Kakuna labels (both negative)
+
+- All 905,082 pile trajectories (33.1M decisions) are now labelled by Kakuna:
+  - 0 NaN rows, 0 misaligned rows in every batch;
+  - Kakuna's argmax agrees with the data action 65.9–66.1% of the time.
+- `.cache/epn-pile953/train_kakuna.npy`.
+- Evidence: `reports/w7_kakuna_scale_dev*.json`, `reports/w7_kakuna_wide_dev*.json`. Pooled =
+  vs EPN and GymLeader, paired, 95% CI.
+
+| Comparison | What changes | Pooled Δ |
+|---|---|---|
+| kk100_full60 − kk100_c20 | 3.2 times the data, 3 times the minutes | +0.000 [−0.029, +0.030] |
+| kk100_wide60 (3.53M) − kk100_full60 (1.01M) | width only | +0.002 [−0.026, +0.031] |
+| kk100_full60 − EPN (replicated, two runs) | | +0.074 / +0.068 |
+
+With Kakuna labels, data, compute and width (up to 3.5M) are not the limit. Likely remaining
+limits:
+
+- **Information parity:** our encoder lacks Kakuna's opponent-move features and long attention
+  context.
+- **Off-policy states:** labels are only on states other agents reached. Kakuna labels on the
+  student's own games (DAgger) would fix this.
+
+## 5. Final on a fresh pool: PASS, promoted as `models/pokedecision-v4-kk`
+
+- Candidate: `kk100_full60`. The three Kakuna arms tie on dev, so the choice is the 1.01M model
+  trained on the most data.
+- Bundle:
+  - `configs/w7_kk_final.yaml` (seed 20262511);
+  - fresh pool `data/teams_w8/heldout` (`build_teamset.py --w5-fresh-heldout --seed 20262501`,
+    excluding every used and spent pool including `teams_w7`; 0 content overlap with old pools,
+    checked by sha256);
+  - manifest `reports/w7_kk_final_manifest.json`, `verify_bundle` returned no problems.
+- Results:
+  - `reports/w7_kk_final_benchmark.json`, `reports/w7_kk_final_pooled.json`;
+  - 3,000 battles, 0 errors, 0 illegal actions.
+
+| Opponent | EPN | KK | KK − EPN [95% CI] |
+|---|---:|---:|---|
+| EPN | 0.532 | 0.592 | **+0.060 [+0.006, +0.114]** |
+| Grunt | 0.938 | 0.940 | +0.002 [−0.024, +0.030] |
+| GymLeader | 0.930 | 0.948 | +0.018 [−0.012, +0.046] |
+| pooled | | | **+0.027 [+0.005, +0.049]** |
+
+Gate check:
+
+| Condition | Result |
+|---|---|
+| Pooled CI > 0 | ✔ |
+| vs-EPN CI > 0 | ✔ |
+| No opponent CI below 0 | ✔ |
+| 0 illegal actions, 0 errors | ✔ |
+
+- **Promoted:** `models/pokedecision-v4-kk` (byte-identical to `checkpoints/epn/kk100_full60`).
+  Smoke: 19/20 wins vs GymLeader, 0 errors. Tag `w7-kk`.
+- The fresh-pool effect vs EPN (+6.0) is about half the dev effect (+12.4). The dev pool has
+  been reused many times; trust the fresh-pool number.
+- Grunt and GymLeader are near saturation (~94%), so the pooled number mostly reflects the
+  vs-EPN cell.

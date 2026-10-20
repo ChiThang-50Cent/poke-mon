@@ -10,7 +10,8 @@ Design, roadmap and gates: `research.md`. The overriding aim is a **strong, usab
 
 ## Current state (W1–W5 done)
 
-- **Production: EPN** = `models/pokedecision-v3-epn`, tag `w7-epn` (W7). Entity-pointer network, 1.01M params, trained from scratch on the Metamon pile; fresh-pool final vs P +23.6 pp, Grunt +20.4, GymLeader +14.8, pooled +19.6 [+17.1, +22.1] (`reports/w7_epn_final_report.md`). Vs Metamon: Minikazam 76.2%, Kakuna 29.0%.
+- **Production: KK** = `models/pokedecision-v4-kk`, tag `w7-kk` (W7). Same 1.01M EPN architecture, trained 60 min from scratch on Kakuna soft labels (`train_epn.py --kakuna-weight 1.0`) over the whole 905k-trajectory Alakazam-family pile; fresh-pool final vs EPN +6.0 pp [+0.6, +11.4], Grunt +0.2, GymLeader +1.8, pooled +2.7 [+0.5, +4.9] (`reports/w7_next_lever_report.md` §5).
+- **Previous: EPN** = `models/pokedecision-v3-epn`, tag `w7-epn`. Entity-pointer network, 1.01M params, BC on the Metamon pile; fresh-pool final vs P pooled +19.6 [+17.1, +22.1] (`reports/w7_epn_final_report.md`). Vs Metamon: Minikazam 76.2%, Alakazam 41.2%, Kakuna 29.0%.
 - **Previous: P** = `models/pokedecision-v2-pile`, tag `w6p-pile` (W6-P). Same 1.30M GRU as C, fine-tuned on Metamon self-play; fresh-pool final vs C +9.6 pp, Grunt +5.8, GymLeader +5.8 (`reports/w6p_pile_report.md`).
 - **C** = `models/pokedecision-v1-value`, tag `w5-baseline`: previous champion, still the init/reference for W5–W6 scripts.
   - 1.30M GRU BC policy trained on 2025–2026 human replays, plus a probe value head and the pretrained team preview.
@@ -49,7 +50,7 @@ The process is deliberately light:
 
 **Spent data (never use again for selection or evaluation):**
 - W3 and W4 test splits;
-- heldout pools `data/teams_w5/heldout`, `data/teams_w5_bs14`, `data/teams_w5_bs15`, `data/teams_w6p`, `data/teams_w7`.
+- heldout pools `data/teams_w5/heldout`, `data/teams_w5_bs14`, `data/teams_w5_bs15`, `data/teams_w6p`, `data/teams_w7`, `data/teams_w8`.
 
 Partial BS1.3/BS1.4/BS1.5 gameplay is **sealed**: never read it or merge it.
 
@@ -80,7 +81,7 @@ Showdown request + public protocol → player-view state (metamon backend)
 | `autoresearch/` | Autonomous architecture search: `prepare.py` (fixed harness: `uv run python autoresearch/prepare.py` once → `.cache/autoresearch/`), `train.py` (the only file the agent edits), `program.md` (rules + run command). Results in untracked `results.tsv` |
 | `configs/` | Training and benchmark configs (`w5_bs1_2_benchmark.yaml` = dev design) |
 | `data/teams/`, `data/teams_w5*/` | Server-validated pools. `teams_w5/collect` = self-play/rollout data, `teams_w5/dev` = selection; the rest are spent |
-| `models/` | v0, v1, `v1-value` (C), `v2-pile` (P), `v3-epn` (EPN, production; `model.py` + state_dict, loaded via `load_research_model`), `v2-candidate` (not production), critic pilot |
+| `models/` | v0, v1, `v1-value` (C), `v2-pile` (P), `v3-epn` (EPN), `v4-kk` (KK, production); research exports are `model.py` + state_dict, loaded via `load_research_model`; `v2-candidate` (not production), critic pilot |
 | `reports/` | Every milestone's evidence and final report; check here for details instead of this file |
 | `third_party/metamon/` | Vendored Metamon `0a00a75` + pinned Showdown (gitignored; **never patch**) |
 | `runs/`, `.cache/metamon/`, `datasets/*.npz` | Gitignored outputs and caches |
