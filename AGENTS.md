@@ -8,6 +8,23 @@ The model is small: a structured-state policy + value network, ≤ 4.7M params (
 
 Design, roadmap and gates: `research.md`. The overriding aim is a **strong, usable AI**, not maximal certainty about every change.
 
+## Direction on branch `harness` (user decision, 20/10/2026)
+
+The project pivots from "one small model" to a **ruleset-agnostic, self-improving game harness**. Study and evidence: `reports/harness_research.md`.
+
+- **Ruleset pack per format** (gen9ou, gen8ou, gen4ou…): a Showdown format as the exact oracle, a fast engine build (poke-engine, one build per gen), a per-gen mechanics table, usage-based set priors and a team pool. Everything above the pack is format-agnostic; swapping gens is a config change.
+- **Search plays.** DUCT/determinized MCTS over sampled opponent sets runs at play time. Live search is allowed again, which replaces the W6+ "fast policy without search" north star.
+- **The small model (≤ 4.7M, Jev-like) works inside search**: it is the prior, the value, opponent/belief heads and a fast fallback. It must become a candidate scorer over an explicit action list with engine-computed features, so it can run under any pack. KK is the first prior.
+- **LLMs never choose moves.** They stay off the critical path: loss diagnosis and proposed diffs to evaluators, filters and adapters.
+- **Self-improvement loops**: expert iteration (search → distill the scorer) and code evolution under a frozen evaluator. The evaluator stays outside every agent's write scope.
+- **Gated steps**:
+  1. engine behind a `World` interface, with differential tests vs Showdown;
+  2. search-only gen9ou;
+  3. same code on gen4ou (portability test);
+  4. scorer as prior/value;
+  5. self-improvement loops.
+- `main` keeps the KK line as it is.
+
 ## Current state (W1–W7 done; W8 paused)
 
 - **Production: KK** = `models/pokedecision-v4-kk`, tag `w7-kk` (W7). Same 1.01M EPN architecture, trained 60 min from scratch on Kakuna soft labels (`train_epn.py --kakuna-weight 1.0`) over the whole 905k-trajectory Alakazam-family pile; fresh-pool final vs EPN +6.0 pp [+0.6, +11.4], Grunt +0.2, GymLeader +1.8, pooled +2.7 [+0.5, +4.9] (`reports/w7_next_lever_report.md` §5). Vs Kakuna (dev, 500): 43.8% [39.5, 48.2], paired vs EPN +14.8 [+9.4, +20.2] (`reports/w7_v4_vs_kakuna.json`). Pure distillation: its ceiling is ≈ Kakuna; beating Kakuna needs a non-imitation signal (RL from outcomes, search as teacher).
