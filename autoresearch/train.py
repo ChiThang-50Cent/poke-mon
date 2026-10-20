@@ -25,6 +25,26 @@ BENCH_TOKENS = [list(range(27 + 9 * j, 35 + 9 * j)) for j in range(5)]
 BENCH_NUMBERS = [[28 + j] for j in range(5)]
 GLOBAL_TOKENS = [0, 1, 80, 81, 82, 84, 86]
 GLOBAL_NUMBERS = [0]
+# Encoder v2 matchup extras (src/pokeai/data/matchup.py), appended after the 48 numbers:
+# 4 own moves x 6 | 4 opp revealed moves x 3 | opp STAB threat 2 | 5 bench x 5 | speed 3.
+EXTRAS_DIM = 66
+
+
+def extras_rows(extras: int):
+    """Numbers routed to (move, bench, context) entities; extras=0 -> the v1 layout."""
+    moves = [list(r) for r in MOVE_NUMBERS]
+    bench = [list(r) for r in BENCH_NUMBERS]
+    context = list(GLOBAL_NUMBERS)
+    if extras:
+        if extras != EXTRAS_DIM:
+            raise ValueError(f"extras={extras}, expected {EXTRAS_DIM}")
+        for k in range(4):
+            moves[k] += list(range(48 + 6 * k, 48 + 6 * k + 6))
+        bench_start = 48 + 24 + 12 + 2
+        for j in range(5):
+            bench[j] += list(range(bench_start + 5 * j, bench_start + 5 * j + 5))
+        context += list(range(48 + 24, bench_start)) + list(range(48 + 63, 48 + 66))
+    return moves, bench, context
 
 
 @dataclass
@@ -35,6 +55,7 @@ class Config:
     hidden_size: int = 256
     d_score: int = 128
     value_head: bool = True
+    extras: int = 0             # 0 = v1 inputs; EXTRAS_DIM = encoder v2 matchup extras
 
 
 class EntityEncoder(nn.Module):
@@ -67,18 +88,19 @@ class Policy(nn.Module):
         self.config = config
         self.register_buffer("feature_mean", torch.zeros(48))
         self.register_buffer("feature_std", torch.ones(48))
+        move_numbers, bench_numbers, global_numbers = extras_rows(config.extras)
         for name, rows in (("active_tokens", ACTIVE_TOKENS), ("move_tokens", MOVE_TOKENS),
                            ("bench_tokens", BENCH_TOKENS), ("active_numbers", ACTIVE_NUMBERS),
-                           ("move_numbers", MOVE_NUMBERS), ("bench_numbers", BENCH_NUMBERS)):
+                           ("move_numbers", move_numbers), ("bench_numbers", bench_numbers)):
             self.register_buffer(name, torch.tensor(rows), persistent=False)
         self.register_buffer("global_tokens", torch.tensor(GLOBAL_TOKENS), persistent=False)
-        self.register_buffer("global_numbers", torch.tensor(GLOBAL_NUMBERS), persistent=False)
+        self.register_buffer("global_numbers", torch.tensor(global_numbers), persistent=False)
         self.tokens = nn.Embedding(config.vocab_size, config.d_token)
         self.side = nn.Parameter(torch.zeros(2, config.d_entity))
         self.active = EntityEncoder(7, 15, config)
-        self.move = EntityEncoder(3, 3, config)
-        self.bench = EntityEncoder(8, 1, config)
-        self.context = EntityEncoder(len(GLOBAL_TOKENS), len(GLOBAL_NUMBERS), config)
+        self.move = EntityEncoder(3, len(move_numbers[0]), config)
+        self.bench = EntityEncoder(8, len(bench_numbers[0]), config)
+        self.context = EntityEncoder(len(GLOBAL_TOKENS), len(global_numbers), config)
         # kinds: context, ours, opponent, move x4, bench x5 (shared kind ids keep slot symmetry)
         self.register_buffer("kind_ids", torch.tensor([0, 1, 2] + [3] * 4 + [4] * 5),
                              persistent=False)
@@ -95,7 +117,10 @@ class Policy(nn.Module):
 
     def encode(self, tokens, numbers):
         emb = self.tokens(tokens)                                   # [B,T,87,D]
-        num = (numbers - self.feature_mean) / self.feature_std      # [B,T,48]
+        n = self.config.extras
+        num = (numbers[..., :48] - self.feature_mean) / self.feature_std  # [B,T,48]
+        if n:  # extras are already bounded in [-2, 2]; inputs may carry more columns
+            num = torch.cat((num, numbers[..., 48:48 + n]), -1)
         active = self.active(emb[..., self.active_tokens, :], num[..., self.active_numbers])
         active = active + self.side                                 # [B,T,2,E]
         moves = self.move(emb[..., self.move_tokens, :], num[..., self.move_numbers])

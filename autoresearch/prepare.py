@@ -81,6 +81,9 @@ class Split:
         self.offsets = np.load(CACHE / f"{split}_offsets.npy")
         self.outcomes = np.load(CACHE / f"{split}_outcomes.npy")
         self.arrays = {k: np.load(CACHE / f"{split}_{k}.npy", mmap_mode="r") for k in KEYS}
+        # encoder v2: matchup extras (float16 [decisions, 66]) appended to `numbers`
+        extras = CACHE / f"{split}_extras.npy"
+        self.extras = np.load(extras, mmap_mode="r") if extras.exists() else None
         lengths = np.diff(self.offsets)
         self.lengths = lengths
         self.indices = np.flatnonzero(lengths <= MAX_LEN)
@@ -97,6 +100,11 @@ class Split:
             for i, t in enumerate(trajectories):
                 pad[i, :lengths[i]] = ref[self.offsets[t]:self.offsets[t + 1]]
             out[key] = torch.from_numpy(pad)
+        if self.extras is not None:
+            pad = np.zeros((len(trajectories), n, self.extras.shape[1]), dtype=np.float32)
+            for i, t in enumerate(trajectories):
+                pad[i, :lengths[i]] = self.extras[self.offsets[t]:self.offsets[t + 1]]
+            out["numbers"] = torch.cat((out["numbers"], torch.from_numpy(pad)), -1)
         real = torch.arange(n)[None, :] < torch.tensor(lengths)[:, None]
         out["tokens"] = out["tokens"].long()
         out["real"] = real

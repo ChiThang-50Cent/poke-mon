@@ -135,6 +135,59 @@ def test_research_export_loads_through_production_loader(tmp_path):
     torch.testing.assert_close(torch.cat((stepped, stepped2), 1), expected[:, :2])
 
 
+def _research_module():
+    import importlib.util
+    from pathlib import Path
+
+    source = Path(__file__).resolve().parents[1] / "autoresearch/train.py"
+    spec = importlib.util.spec_from_file_location("research_train_extras", source)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module, source
+
+
+def test_extras_model_routes_v2_columns_and_v1_model_ignores_them(tmp_path):
+    """Encoder v2: a model built with extras uses columns 48: (each own-move block moves its
+    own move's score most), a v1 model on the same wide input is unchanged, and the export
+    reloads with an extras-enabled encoder whose width matches the model."""
+    import shutil
+
+    from pokeai.data.features import ObservationEncoder
+    from pokeai.data.matchup import EXTRAS_DIM, EXTRAS_VERSION
+
+    module, source = _research_module()
+    assert module.EXTRAS_DIM == EXTRAS_DIM
+    torch.manual_seed(5)
+    tokens = torch.randint(2542, (2, 1, 87))
+    numbers = torch.randn(2, 1, 48 + EXTRAS_DIM)
+    v1 = module.Policy(module.Config()).eval()
+    with torch.no_grad():
+        narrow, _ = v1(tokens, numbers[..., :48])
+        wide, _ = v1(tokens, numbers)
+    assert torch.equal(narrow, wide)
+
+    model = module.Policy(module.Config(extras=EXTRAS_DIM)).eval()
+    bumped = numbers.clone()
+    bumped[..., 48 + 6 * 2 : 48 + 6 * 3] += 3.0  # own move 3's block
+    with torch.no_grad():
+        base, _ = model(tokens, numbers)
+        after, _ = model(tokens, bumped)
+    delta = (after - base).abs()[0, 0]
+    assert delta[2] > 0 and delta[2] == delta[:4].max()
+
+    torch.save(model.state_dict(), tmp_path / "best.pt")
+    shutil.copy(source, tmp_path / "model.py")
+    with open(tmp_path / "model.py", "a") as f:
+        f.write(f"\n\ndef build_model() -> Policy:\n"
+                f"    return Policy(Config(extras={EXTRAS_DIM}))\n")
+    ObservationEncoder().save(tmp_path / "tokenizer.json")  # v1 file, as prepare.save copies
+    restored, encoder, config = load_pokedecision(tmp_path, "cpu")
+    assert config.extras == EXTRAS_DIM
+    assert encoder.extras == EXTRAS_VERSION and encoder.n_numbers == 48 + EXTRAS_DIM
+    with torch.no_grad():
+        assert torch.equal(restored(tokens, numbers)[0], base)
+
+
 def test_gru_hidden_state_matches_uninterrupted_sequence():
     torch.manual_seed(11)
     model = PokeDecision(

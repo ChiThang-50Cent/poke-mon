@@ -20,6 +20,7 @@ import numpy as np
 
 KEYS = ("tokens", "numbers", "masks", "actions", "valid")
 VAL_FROM = Path(".cache/autoresearch")
+VAL_EXTRAS = Path("datasets/w6p_b/extras_val.npy")
 
 
 def main() -> None:
@@ -30,7 +31,11 @@ def main() -> None:
                     help="w7_kakuna_label.py outputs for a prefix of a source's train split; "
                          "written as train_kakuna.npy (float16 [decisions, 13], NaN = unlabeled)")
     ap.add_argument("--labels-only", action="store_true",
-                    help="add train_kakuna.npy to an existing cache built from the same --train")
+                    help="add train_kakuna.npy / extras to an existing cache built from the same "
+                         "--train")
+    ap.add_argument("--extras", action="store_true",
+                    help="also write {train,val}_extras.npy from each source's extras_train.npy "
+                         "and w6p_b's extras_val.npy (scripts/w8_build_extras.py)")
     args = ap.parse_args()
     out = Path(args.out)
     sources = [Path(d) for d in args.train]
@@ -48,6 +53,8 @@ def main() -> None:
     n = sum(totals)
     if args.kakuna:
         write_kakuna(out, args.train, zips, totals, dict(kv.split("=", 1) for kv in args.kakuna))
+    if args.extras and args.labels_only:
+        write_extras(out, sources, totals)
     if args.labels_only:
         return
     offsets, outcomes, base = [np.zeros(1, np.int64)], [], 0
@@ -81,6 +88,27 @@ def main() -> None:
         "trajectories": int(len(np.load(out / "train_offsets.npy")) - 1),
         "val": "symlinked from .cache/autoresearch (fixed w6p_b/val sample)"}, indent=1))
     print("trajectories", len(np.load(out / "train_offsets.npy")) - 1, "decisions", n)
+    if args.extras:  # after the val symlinks: the val length check needs val_actions.npy
+        write_extras(out, sources, totals)
+
+
+def write_extras(out: Path, sources: list[Path], totals: list[int]) -> None:
+    parts = [np.load(d / "extras_train.npy", mmap_mode="r") for d in sources]
+    for d, part, total in zip(sources, parts, totals):
+        if len(part) != total:
+            raise ValueError(f"{d}: {len(part)} extras rows != {total} decisions")
+    dest = np.lib.format.open_memmap(out / "train_extras.npy", mode="w+", dtype=np.float16,
+                                     shape=(sum(totals), parts[0].shape[1]))
+    start = 0
+    for part in parts:
+        dest[start:start + len(part)] = part
+        start += len(part)
+    dest.flush()
+    val = np.load(VAL_EXTRAS, mmap_mode="r")
+    if len(val) != len(np.load(out / "val_actions.npy", mmap_mode="r")):
+        raise ValueError("val extras do not match the cache's val split (w6p_b/val)")
+    np.save(out / "val_extras.npy", val)
+    print("extras done", dest.shape, flush=True)
 
 
 def write_kakuna(out: Path, names: list[str], zips, totals, labels: dict[str, str]) -> None:

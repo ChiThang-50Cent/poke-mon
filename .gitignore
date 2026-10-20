@@ -19,3 +19,4 @@ datasets/w6p/*.npz
 datasets/w6p_b/*.npz
 autoresearch/results.tsv
 autoresearch/notes.md
+.omp/colab/

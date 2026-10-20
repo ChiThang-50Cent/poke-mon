@@ -175,5 +175,12 @@ def load_research_model(
         torch.load(model_dir / "best.pt", map_location="cpu", weights_only=True)
     )
     model.to(device).eval()
-    encoder = ObservationEncoder.load(model_dir / "tokenizer.json")
+    from pokeai.data.matchup import EXTRAS_DIM, EXTRAS_VERSION
+
+    extras = getattr(model.config, "extras", 0)
+    if extras not in (0, EXTRAS_DIM):
+        raise ValueError(f"model expects {extras} extras; encoder provides {EXTRAS_DIM}")
+    encoder = ObservationEncoder.load(
+        model_dir / "tokenizer.json", EXTRAS_VERSION if extras else None
+    )
     return model, encoder, model.config
